@@ -51,20 +51,28 @@ ElvDB.AnimGroup = function (self,x,y,duration)
 end
 
 ElvDB.SlideIn = function(self)
-	if not self.anim then
-		ElvDB.AnimGroup(self)
-	end
-
-	self.anim_o:Stop()
-	self:Show()
-	self.anim:Play()
+    if not self.anim then
+        ElvDB.AnimGroup(self)
+    end
+    self.anim_o:Stop()
+    self:Show()
+    self.anim:Play()
+    -- New line for Skada
+    if IsAddOnLoaded("Skada") and self:GetName() == "ChatRBackground" then
+        Skada:SetActive(false)
+    end
+    -- New line for Skada
 end
 
 ElvDB.SlideOut = function(self)
-	if self.anim then
-		self.anim:Finish()
-	end
-
-	self.anim:Stop()
-	self.anim_o:Play()
+    if self.anim then
+        self.anim:Finish()
+    end
+    self.anim:Stop()
+    self.anim_o:Play()
+    -- New line for Skada
+  if IsAddOnLoaded("Skada") and self:GetName() == "ChatRBackground" then
+        Skada:SetActive(true)
+    end
+    -- New line for Skada
 end
