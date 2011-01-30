@@ -105,7 +105,7 @@ end
 
 local restoreDefaultPosition = function(style, identifier)
 	-- We've not saved any default position for this style.
-	if(not _E.__INITIAL or not _E.__INITIAL[style] or not _E.__INITIAL[style][identifier]) then return end
+	if(not _DB.__INITIAL or not _DB.__INITIAL[style] or not _DB.__INITIAL[style][identifier]) then return end
 
 	local obj, isHeader
 	for _, frame in next, oUF.objects do
@@ -125,7 +125,7 @@ local restoreDefaultPosition = function(style, identifier)
 
 		target:ClearAllPoints()
 
-		local point, parentName, x, y = string.split('\031', _E.__INITIAL[style][identifier])
+		local point, parentName, x, y = string.split('\031', _DB.__INITIAL[style][identifier])
 		SetPoint(target, point, parentName, point, x / scale, y / scale)
 
 		local backdrop = backdropPool[target]
@@ -135,8 +135,8 @@ local restoreDefaultPosition = function(style, identifier)
 		end
 
 		-- We don't need this anymore
-		_E.__INITIAL[style][identifier] = nil
-		if(not next(_E.__INITIAL[style])) then
+		_DB.__INITIAL[style][identifier] = nil
+		if(not next(_DB.__INITIAL[style])) then
 			_DB[style] = nil
 		end
 	end
@@ -166,15 +166,15 @@ end
 
 local saveDefaultPosition = function(obj)
 	local style, identifier, isHeader = getObjectInformation(obj)
-	if(not _E.__INITIAL) then
-		_E.__INITIAL = {}
+	if(not _DB.__INITIAL) then
+		_DB.__INITIAL = {}
 	end
 
-	if(not _E.__INITIAL[style]) then
-		_E.__INITIAL[style] = {}
+	if(not _DB.__INITIAL[style]) then
+		_DB.__INITIAL[style] = {}
 	end
 
-	if(not _E.__INITIAL[style][identifier]) then
+	if(not _DB.__INITIAL[style][identifier]) then
 		local point
 		if(isHeader) then
 			point = getPoint(isHeader)
@@ -182,7 +182,7 @@ local saveDefaultPosition = function(obj)
 			point = getPoint(obj)
 		end
 
-		_E.__INITIAL[style][identifier] = point
+		_DB.__INITIAL[style][identifier] = point
 	end
 end
 
@@ -316,7 +316,6 @@ do
 
 	function frame:PLAYER_REGEN_DISABLED()
 		if(_LOCK) then
-			print("Anchors hidden due to combat.")
 			for k, bdrop in next, backdropPool do
 				bdrop:Hide()
 			end
@@ -367,15 +366,15 @@ do
 		local name = backdrop:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 		name:SetPoint"CENTER"
 		name:SetJustifyH"CENTER"
-		name:SetFont(GameFontNormal:GetFont(), 12)
-		name:SetTextColor(1, 1, 1)
-
+		name:SetFont(GameFontNormal:GetFont(), 12, "THINOUTLINE")
+		name:SetShadowOffset(E.mult, -E.mult)
+		name:SetTextColor(unpack(C["media"].valuecolor))
+		
 		backdrop.name = name
 		backdrop.obj = obj
 		backdrop.header = isHeader
 
-		backdrop:SetBackdropBorderColor(0, .9, 0)
-		backdrop:SetBackdropColor(0, .9, 0)
+		E.SetNormTexTemplate(backdrop)
 
 		-- Work around the fact that headers with no units displayed are 0 in height.
 		if(isHeader and math.floor(isHeader:GetHeight()) == 0) then
@@ -385,6 +384,14 @@ do
 
 		backdrop:SetScript("OnDragStart", OnDragStart)
 		backdrop:SetScript("OnDragStop", OnDragStop)
+		backdrop:SetScript("OnEnter", function(self)
+			self.name:SetTextColor(1, 1, 1)
+			self:SetBackdropBorderColor(unpack(C["media"].valuecolor))		
+		end)
+		backdrop:SetScript("OnLeave", function(self)
+			self.name:SetTextColor(unpack(C["media"].valuecolor))
+			E.SetNormTexTemplate(self)	
+		end)		
 
 		backdropPool[target] = backdrop
 
@@ -393,23 +400,17 @@ do
 end
 
 -- reset data
-local function RESETUF()
+function E.ResetUF()
 	if C["unitframes"].positionbychar == true then
 		ElvuiUFpos = {}
 	else
 		ElvuiData.ufpos = {}
 	end
-	ReloadUI()
 end
-SLASH_RESETUF1 = "/resetuf"
-SlashCmdList["RESETUF"] = RESETUF
 
-SLASH_OUF_MOVABLEFRAMES1 = '/uf'
-SlashCmdList['OUF_MOVABLEFRAMES'] = function(inp)
-	if(InCombatLockdown()) then
-		return print"Frames cannot be moved while in combat. Bailing out."
-	end
-
+function E.MoveUF()
+	if InCombatLockdown() then return end
+	
 	if(not _LOCK) then
 		for k, obj in next, oUF.objects do
 			local style, identifier, isHeader = getObjectInformation(obj)
@@ -426,4 +427,3 @@ SlashCmdList['OUF_MOVABLEFRAMES'] = function(inp)
 		_LOCK = nil
 	end
 end
--- It's not in your best interest to disconnect me. Someone could get hurt.
