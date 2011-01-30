@@ -6,10 +6,10 @@
 	File version v37.37
 	(C)2010 Darth Android / Telroth - Black Dragonflight
 ]]
-local ElvDB = ElvDB
-local ElvCF = ElvCF
+local E, C, L = unpack(select(2, ...)) -- Import Functions/Constants, Config, Locales
 
-if not Mod_AddonSkins or not IsAddOnLoaded("DXE") or not ElvCF["skin"].dxe == true then return end
+
+if not Mod_AddonSkins or not IsAddOnLoaded("DXE") or not C["skin"].dxe == true then return end
 local DXE = DXE
 local _G = getfenv(0)
 
@@ -127,13 +127,13 @@ Mod_AddonSkins:RegisterSkin("DXE",function(Skin, skin, Layout, layout, config)
 	kill(DXE.Pane.border)
 	
 	if not DXEDB then DXEDB = {} end
-	if not DXEDB["profiles"] then DXEDB["profiles"] = {} end
-	if not DXEDB["profiles"][ElvDB.myname.." - "..GetRealmName()] then DXEDB["profiles"][ElvDB.myname.." - "..GetRealmName()] = {} end
-	if not DXEDB["profiles"][ElvDB.myname.." - "..GetRealmName()]["Globals"] then DXEDB["profiles"][ElvDB.myname.." - "..GetRealmName()]["Globals"] = {} end
-	DXEDB["profiles"][ElvDB.myname.." - "..GetRealmName()]["Globals"]["BackgroundTexture"] = "Elvui Blank"
-	DXEDB["profiles"][ElvDB.myname.." - "..GetRealmName()]["Globals"]["BarTexture"] = "Elvui Gloss"
-	DXEDB["profiles"][ElvDB.myname.." - "..GetRealmName()]["Globals"]["Border"] = "None"
-	DXEDB["profiles"][ElvDB.myname.." - "..GetRealmName()]["Globals"]["Font"] = "Elvui Font"
-	DXEDB["profiles"][ElvDB.myname.." - "..GetRealmName()]["Globals"]["TimerFont"] = "Elvui Font"
+	if not DXEE["profiles"] then DXEE["profiles"] = {} end
+	if not DXEE["profiles"][E.myname.." - "..GetRealmName()] then DXEE["profiles"][E.myname.." - "..GetRealmName()] = {} end
+	if not DXEE["profiles"][E.myname.." - "..GetRealmName()]["Globals"] then DXEE["profiles"][E.myname.." - "..GetRealmName()]["Globals"] = {} end
+	DXEE["profiles"][E.myname.." - "..GetRealmName()]["Globals"]["BackgroundTexture"] = "Elvui Blank"
+	DXEE["profiles"][E.myname.." - "..GetRealmName()]["Globals"]["BarTexture"] = "Elvui Gloss"
+	DXEE["profiles"][E.myname.." - "..GetRealmName()]["Globals"]["Border"] = "None"
+	DXEE["profiles"][E.myname.." - "..GetRealmName()]["Globals"]["Font"] = "Elvui Font"
+	DXEE["profiles"][E.myname.." - "..GetRealmName()]["Globals"]["TimerFont"] = "Elvui Font"
 end)
 

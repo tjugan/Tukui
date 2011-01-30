@@ -1,3 +1,4 @@
+local E, C, L = unpack(ElvUI) -- Import Functions/Constants, Config, Locales
 if not oUF then return end
 
 local _, ns = ...
@@ -104,7 +105,7 @@ end
 
 local restoreDefaultPosition = function(style, identifier)
 	-- We've not saved any default position for this style.
-	if(not _DB.__INITIAL or not _DB.__INITIAL[style] or not _DB.__INITIAL[style][identifier]) then return end
+	if(not _E.__INITIAL or not _E.__INITIAL[style] or not _E.__INITIAL[style][identifier]) then return end
 
 	local obj, isHeader
 	for _, frame in next, oUF.objects do
@@ -124,7 +125,7 @@ local restoreDefaultPosition = function(style, identifier)
 
 		target:ClearAllPoints()
 
-		local point, parentName, x, y = string.split('\031', _DB.__INITIAL[style][identifier])
+		local point, parentName, x, y = string.split('\031', _E.__INITIAL[style][identifier])
 		SetPoint(target, point, parentName, point, x / scale, y / scale)
 
 		local backdrop = backdropPool[target]
@@ -134,8 +135,8 @@ local restoreDefaultPosition = function(style, identifier)
 		end
 
 		-- We don't need this anymore
-		_DB.__INITIAL[style][identifier] = nil
-		if(not next(_DB.__INITIAL[style])) then
+		_E.__INITIAL[style][identifier] = nil
+		if(not next(_E.__INITIAL[style])) then
 			_DB[style] = nil
 		end
 	end
@@ -165,15 +166,15 @@ end
 
 local saveDefaultPosition = function(obj)
 	local style, identifier, isHeader = getObjectInformation(obj)
-	if(not _DB.__INITIAL) then
-		_DB.__INITIAL = {}
+	if(not _E.__INITIAL) then
+		_E.__INITIAL = {}
 	end
 
-	if(not _DB.__INITIAL[style]) then
-		_DB.__INITIAL[style] = {}
+	if(not _E.__INITIAL[style]) then
+		_E.__INITIAL[style] = {}
 	end
 
-	if(not _DB.__INITIAL[style][identifier]) then
+	if(not _E.__INITIAL[style][identifier]) then
 		local point
 		if(isHeader) then
 			point = getPoint(isHeader)
@@ -181,7 +182,7 @@ local saveDefaultPosition = function(obj)
 			point = getPoint(obj)
 		end
 
-		_DB.__INITIAL[style][identifier] = point
+		_E.__INITIAL[style][identifier] = point
 	end
 end
 
@@ -295,7 +296,7 @@ do
 
 	function frame:VARIABLES_LOADED()
 		-- I honestly don't trust the load order of SVs.
-		if ElvCF["unitframes"].positionbychar == true then
+		if C["unitframes"].positionbychar == true then
 			_DB = ElvuiUFpos or {}
 			ElvuiUFpos = _DB
 		else
@@ -393,7 +394,7 @@ end
 
 -- reset data
 local function RESETUF()
-	if ElvCF["unitframes"].positionbychar == true then
+	if C["unitframes"].positionbychar == true then
 		ElvuiUFpos = {}
 	else
 		ElvuiData.ufpos = {}

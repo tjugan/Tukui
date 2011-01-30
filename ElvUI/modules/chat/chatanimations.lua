@@ -1,44 +1,44 @@
-local ElvCF = ElvCF
-local ElvDB = ElvDB
+
+local E, C, L = unpack(select(2, ...)) -- Import Functions/Constants, Config, Locales
 
 ------------------------------------------------------------------------
 -- Chat Animation Functions
 ------------------------------------------------------------------------
-ElvDB.ToggleSlideChatL = function()
-	if ElvDB.ChatLIn == true then
+E.ToggleSlideChatL = function()
+	if E.ChatLIn == true then
 		for i = 1, NUM_CHAT_WINDOWS do
 			local chat = _G[format("ChatFrame%s", i)]
 			local tab = _G[format("ChatFrame%sTab", i)]
 			chat:SetParent(tab)
 		end
-		ElvDB.SlideOut(ChatLBackground)	
-		ElvDB.ChatLIn = false
-		ElvuiInfoLeftLButton.Text:SetTextColor(unpack(ElvCF["media"].valuecolor))
+		E.SlideOut(ChatLBackground)	
+		E.ChatLIn = false
+		ElvuiInfoLeftLButton.Text:SetTextColor(unpack(C["media"].valuecolor))
 	else
-		ElvDB.SlideIn(ChatLBackground)
-		ElvDB.ChatLIn = true
+		E.SlideIn(ChatLBackground)
+		E.ChatLIn = true
 		ElvuiInfoLeftLButton.Text:SetTextColor(1,1,1,1)
 	end
 end
 
-ElvDB.ToggleSlideChatR = function()
-	if ElvDB.ChatRIn == true then
-		ElvDB.SlideOut(ChatRBackground)	
-		if IsAddOnLoaded("DXE") and DXEAlertsTopStackAnchor and ElvCF["skin"].hookdxeright == true and ElvCF["chat"].rightchat == true and ElvCF["chat"].showbackdrop == true then
+E.ToggleSlideChatR = function()
+	if E.ChatRIn == true then
+		E.SlideOut(ChatRBackground)	
+		if IsAddOnLoaded("DXE") and DXEAlertsTopStackAnchor and C["skin"].hookdxeright == true and C["chat"].rightchat == true and C["chat"].showbackdrop == true then
 			DXEAlertsTopStackAnchor:ClearAllPoints()
 			DXEAlertsTopStackAnchor:SetPoint("BOTTOM", ChatRBackground2, "TOP", 13, -5)
 		end
-		ElvDB.ChatRIn = false
-		ElvDB.ChatRightShown = false
-		ElvuiInfoRightRButton.Text:SetTextColor(unpack(ElvCF["media"].valuecolor))
+		E.ChatRIn = false
+		E.ChatRightShown = false
+		ElvuiInfoRightRButton.Text:SetTextColor(unpack(C["media"].valuecolor))
 	else
-		ElvDB.SlideIn(ChatRBackground)
-		if IsAddOnLoaded("DXE") and DXEAlertsTopStackAnchor and ElvCF["skin"].hookdxeright == true and ElvCF["chat"].rightchat == true and ElvCF["chat"].showbackdrop == true then
+		E.SlideIn(ChatRBackground)
+		if IsAddOnLoaded("DXE") and DXEAlertsTopStackAnchor and C["skin"].hookdxeright == true and C["chat"].rightchat == true and C["chat"].showbackdrop == true then
 			DXEAlertsTopStackAnchor:ClearAllPoints()
 			DXEAlertsTopStackAnchor:SetPoint("BOTTOM", ChatRBackground2, "TOP", 13, 18)
 		end
-		ElvDB.ChatRIn = true
-		ElvDB.ChatRightShown = true
+		E.ChatRIn = true
+		E.ChatRightShown = true
 		ElvuiInfoRightRButton.Text:SetTextColor(1,1,1,1)
 	end
 end
@@ -46,35 +46,35 @@ end
 --Bindings For Chat Sliders
 function ChatLeft_HotkeyPressed(keystate)
 	if keystate == "up" then return end
-	if ElvDB.ChatLIn == true then
+	if E.ChatLIn == true then
 		for i = 1, NUM_CHAT_WINDOWS do
 			local chat = _G[format("ChatFrame%s", i)]
 			local tab = _G[format("ChatFrame%sTab", i)]
 			chat:SetParent(tab)
 		end
-		ElvDB.ToggleSlideChatL()
+		E.ToggleSlideChatL()
 	else
-		ElvDB.ToggleSlideChatL()
+		E.ToggleSlideChatL()
 	end		
 end
 
 function ChatRight_HotkeyPressed(keystate)
 	if keystate == "up" then return end
-	ElvDB.ToggleSlideChatR()		
+	E.ToggleSlideChatR()		
 end
 
 function ChatBoth_HotkeyPressed(keystate)
 	if keystate == "up" then return end
-	if ElvDB.ChatLIn == true then
+	if E.ChatLIn == true then
 		for i = 1, NUM_CHAT_WINDOWS do
 			local chat = _G[format("ChatFrame%s", i)]
 			local tab = _G[format("ChatFrame%sTab", i)]
 			chat:SetParent(tab)
 		end
-		ElvDB.ToggleSlideChatR()
-		ElvDB.ToggleSlideChatL()
+		E.ToggleSlideChatR()
+		E.ToggleSlideChatL()
 	else
-		ElvDB.ToggleSlideChatR()
-		ElvDB.ToggleSlideChatL()
+		E.ToggleSlideChatR()
+		E.ToggleSlideChatL()
 	end
 end

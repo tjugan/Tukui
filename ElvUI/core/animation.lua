@@ -1,9 +1,9 @@
 ------------------------------------------------------------------------
 -- Animation Functions (Credit AlleyCat, Hydra)
 ------------------------------------------------------------------------
-local ElvDB = ElvDB
+local E, C, L = unpack(select(2, ...)) -- Import Functions/Constants, Config, Locales
 
-ElvDB.SetUpAnimGroup = function(self)
+E.SetUpAnimGroup = function(self)
 	self.anim = self:CreateAnimationGroup("Flash")
 	self.anim.fadein = self.anim:CreateAnimation("ALPHA", "FadeIn")
 	self.anim.fadein:SetChange(1)
@@ -14,9 +14,9 @@ ElvDB.SetUpAnimGroup = function(self)
 	self.anim.fadeout:SetOrder(1)
 end
 
-ElvDB.Flash = function(self, duration)
+E.Flash = function(self, duration)
 	if not self.anim then
-		ElvDB.SetUpAnimGroup(self)
+		E.SetUpAnimGroup(self)
 	end
 
 	self.anim.fadein:SetDuration(duration)
@@ -24,13 +24,13 @@ ElvDB.Flash = function(self, duration)
 	self.anim:Play()
 end
 
-ElvDB.StopFlash = function(self)
+E.StopFlash = function(self)
 	if self.anim then
 		self.anim:Finish()
 	end
 end
 
-ElvDB.AnimGroup = function (self,x,y,duration)
+E.AnimGroup = function (self,x,y,duration)
 	self.anim = self:CreateAnimationGroup("Move_In")
 	self.anim.in1 = self.anim:CreateAnimation("Translation")
 	self.anim.in1:SetDuration(0)
@@ -50,28 +50,30 @@ ElvDB.AnimGroup = function (self,x,y,duration)
 	self.anim_o:SetScript("OnFinished",function() self:Hide() end)
 end
 
-ElvDB.SlideIn = function(self)
-    if not self.anim then
-        ElvDB.AnimGroup(self)
-    end
-    self.anim_o:Stop()
-    self:Show()
-    self.anim:Play()
-    -- New line for Skada
+E.SlideIn = function(self)
+	if not self.anim then
+		E.AnimGroup(self)
+	end
+
+	self.anim_o:Stop()
+	self:Show()
+	self.anim:Play()
+	 -- New line for Skada
     if IsAddOnLoaded("Skada") and self:GetName() == "ChatRBackground" then
         Skada:SetActive(false)
     end
     -- New line for Skada
 end
 
-ElvDB.SlideOut = function(self)
-    if self.anim then
-        self.anim:Finish()
-    end
-    self.anim:Stop()
-    self.anim_o:Play()
-    -- New line for Skada
-  if IsAddOnLoaded("Skada") and self:GetName() == "ChatRBackground" then
+E.SlideOut = function(self)
+	if self.anim then
+		self.anim:Finish()
+	end
+
+	self.anim:Stop()
+	self.anim_o:Play()
+	-- New line for Skada
+	if IsAddOnLoaded("Skada") and self:GetName() == "ChatRBackground" then
         Skada:SetActive(true)
     end
     -- New line for Skada

@@ -1,3 +1,5 @@
+local E, C, L = unpack(select(2, ...)) -- Import Functions/Constants, Config, Locales
+
 -- enable or disable an addon via command
 SlashCmdList.DISABLE_ADDON = function(s) DisableAddOn(s) ReloadUI() end
 SLASH_DISABLE_ADDON1 = "/disable"
@@ -39,11 +41,11 @@ SLASH_LUAERROR1 = '/luaerror'
 function DisbandRaidGroup()
 		if InCombatLockdown() then return end -- Prevent user error in combat
 		
-		SendChatMessage(ElvL.disband, "RAID" or "PARTY")
+		SendChatMessage(L.disband, "RAID" or "PARTY")
 		if UnitInRaid("player") then
 			for i = 1, GetNumRaidMembers() do
 				local name, _, _, _, _, _, _, online = GetRaidRosterInfo(i)
-				if online and name ~= ElvDB.myname then
+				if online and name ~= E.myname then
 					UninviteUnit(name)
 				end
 			end
@@ -86,9 +88,9 @@ function SlashCmdList.FARMMODE(msg, editbox)
 	ElvuiMinimapStatsLeft:SetWidth((Minimap:GetWidth() / 2) - 1)
 	ElvuiMinimapStatsRight:SetWidth((Minimap:GetWidth() / 2) - 1)
 	
-	if ElvDB.Movers["AurasMover"]["moved"] ~= true then
+	if E.Movers["AurasMover"]["moved"] ~= true then
 		AurasMover:ClearAllPoints()
-		AurasMover:SetPoint("TOPRIGHT", Minimap, "TOPLEFT", ElvDB.Scale(-8), ElvDB.Scale(2))
+		AurasMover:SetPoint("TOPRIGHT", Minimap, "TOPLEFT", E.Scale(-8), E.Scale(2))
 	end	
 end
 SLASH_FARMMODE1 = '/farmmode'
@@ -100,7 +102,7 @@ SlashCmdList["GM"] = function() ToggleHelpFrame() end
 
 -- Print list of commands to chat
 SLASH_UIHELP1 = "/UIHelp"
-SlashCmdList["UIHELP"] = ElvDB.UIHelp
+SlashCmdList["UIHELP"] = E.UIHelp
 
 --ReInstall UI
 SLASH_CONFIGURE1 = "/installui"
@@ -108,11 +110,35 @@ SlashCmdList.CONFIGURE = function() StaticPopup_Show("INSTALL_UI") end
 
 -- Command to Toggle showing the UI Movers
 SLASH_MOVEUI1 = '/moveui'
-SlashCmdList.MOVEUI = function() ElvDB.ToggleMovers() end
+SlashCmdList.MOVEUI = function()		
+	E.ToggleMovers()
+	
+	if C["actionbar"].enable == true then
+		E.ToggleABLock()
+	end
+	
+	if ElvuiInfoLeftRButton.hovered == true then
+		local locked = false
+		GameTooltip:ClearLines()
+		for name, _ in pairs(E.CreatedMovers) do
+			if _G[name]:IsShown() then
+				locked = true
+			else
+				locked = false
+			end
+		end	
+		
+		if locked ~= true then
+			GameTooltip:AddLine(LOCKED,1,1,1)
+		else
+			GameTooltip:AddLine(UNLOCK,unpack(C["media"].valuecolor))
+		end
+	end
+end
 
 -- Command to reset the movers
 SLASH_RESETMOVERS1 = '/resetui'
-SlashCmdList.RESETMOVERS = function(arg) ElvDB.ResetMovers(arg) end
+SlashCmdList.RESETMOVERS = function(arg) E.ResetMovers(arg) end
 
 --Command to fix the Combat Log if it breaks
 local function CLFIX()

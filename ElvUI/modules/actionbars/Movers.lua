@@ -1,50 +1,54 @@
 --Create interactable actionbars
-if not IsAddOnLoaded("ElvUI_ConfigUI") or not ElvCF["actionbar"].enable == true then return end
-local ElvDB = ElvDB
-local ElvCF = ElvCF
+local E, C, L = unpack(select(2, ...)) -- Import Functions/Constants, Config, Locales
 
+if not C["actionbar"].enable == true or not IsAddOnLoaded("ElvUI_ConfigUI") then return end
 
 local function Button_OnEnter(self)
-	if InCombatLockdown() then return end
-	self:SetAlpha(1)
-	self.shown = true
+	self.Text:SetTextColor(1, 1, 1)
+	self:SetBackdropBorderColor(unpack(C["media"].valuecolor))
 end
 
 local function Button_OnLeave(self)
-	self:SetAlpha(0)
-	self.shown = false
+	self.Text:SetTextColor(unpack(C["media"].valuecolor))
+	E.SetNormTexTemplate(self)
+end
+
+local function Button_OnEvent(self, event)
+	if self:IsShown() then self:Hide() end
 end
 
 local btnnames = {}
 
 local function CreateMoverButton(name, text)
 	local b = CreateFrame("Button", name, UIParent)
-	ElvDB.SetNormTexTemplate(b)
+	E.SetNormTexTemplate(b)
+	b:RegisterEvent("PLAYER_REGEN_DISABLED")
+	b:SetScript("OnEvent", Button_OnEvent)
 	b:SetScript("OnEnter", Button_OnEnter)
 	b:SetScript("OnLeave", Button_OnLeave)
 	b:EnableMouse(true)
-	b:SetAlpha(0)
-	ElvDB.CreateShadow(b)
+	b:Hide()
+	E.CreateShadow(b)
 	tinsert(btnnames, tostring(name))
 	
 	local t = b:CreateFontString(nil, "OVERLAY", b)
-	t:SetFont(ElvCF.media.font,14,"THINOUTLINE")
-	t:SetShadowOffset(ElvDB.mult, -ElvDB.mult)
+	t:SetFont(C.media.font,14,"THINOUTLINE")
+	t:SetShadowOffset(E.mult, -E.mult)
 	t:SetShadowColor(0, 0, 0)
 	t:SetPoint("CENTER")
 	t:SetJustifyH("CENTER")
 	t:SetText(text)
-	t:SetTextColor(unpack(ElvCF["media"].valuecolor))
+	t:SetTextColor(unpack(C["media"].valuecolor))
 	b.Text = t
 end
 
 local function SaveBars(var, val)
-	ElvCF["actionbar"][var] = val
+	C["actionbar"][var] = val
 	PositionAllBars()
 	
 	--Save configui variables
 	local myPlayerRealm = GetCVar("realmName")
-	local myPlayerName  = ElvDB.myname
+	local myPlayerName  = E.myname
 
 	if ElvuiConfigAll[myPlayerRealm][myPlayerName] == true then
 		if not ElvuiConfig then ElvuiConfig = {} end
@@ -57,28 +61,28 @@ local function SaveBars(var, val)
 	end
 end
 
-function ToggleABLock()
+function E.ToggleABLock()
 	if InCombatLockdown() then return end
 	
-	if ElvuiABLock == true then
-		ElvuiABLock = false
+	if E.ABLock == true then
+		E.ABLock = false
 	else
-		ElvuiABLock = true
+		E.ABLock = true
 	end
 	
 	for i, btnnames in pairs(btnnames) do
-		if ElvuiABLock == false then
+		if E.ABLock == false then
 			_G[btnnames]:EnableMouse(false)
 			_G[btnnames]:Hide()
 			ElvuiInfoLeftRButton.Text:SetTextColor(1,1,1)
 		else
 			_G[btnnames]:EnableMouse(true)
-			if btnnames == "RightBarBig" and not (ElvCF["actionbar"].rightbars ~= 0 or (ElvCF["actionbar"].bottomrows == 3 and ElvCF["actionbar"].splitbar == true)) then
+			if btnnames == "RightBarBig" and not (C["actionbar"].rightbars ~= 0 or (C["actionbar"].bottomrows == 3 and C["actionbar"].splitbar == true)) then
 				_G[btnnames]:Show()
 			elseif btnnames ~= "RightBarBig" then
 				_G[btnnames]:Show()
 			end
-			ElvuiInfoLeftRButton.Text:SetTextColor(unpack(ElvCF["media"].valuecolor))
+			ElvuiInfoLeftRButton.Text:SetTextColor(unpack(C["media"].valuecolor))
 		end
 	end
 end
@@ -99,68 +103,68 @@ barloader:RegisterEvent("PLAYER_ENTERING_WORLD")
 barloader:SetScript("OnEvent", function(self)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	
-	if ElvCF["actionbar"].splitbar == true then
-		LeftSplit:SetPoint("TOPRIGHT", ElvuiSplitActionBarLeftBackground, "TOPLEFT", ElvDB.Scale(-4), 0)
-		LeftSplit:SetPoint("BOTTOMLEFT", ElvuiSplitActionBarLeftBackground, "BOTTOMLEFT", ElvDB.Scale(-19), 0)
+	if C["actionbar"].splitbar == true then
+		LeftSplit:SetPoint("TOPRIGHT", ElvuiSplitActionBarLeftBackground, "TOPLEFT", E.Scale(-4), 0)
+		LeftSplit:SetPoint("BOTTOMLEFT", ElvuiSplitActionBarLeftBackground, "BOTTOMLEFT", E.Scale(-19), 0)
 		LeftSplit.Text:SetText(">")
 		
-		RightSplit:SetPoint("TOPLEFT", ElvuiSplitActionBarRightBackground, "TOPRIGHT", ElvDB.Scale(4), 0)
-		RightSplit:SetPoint("BOTTOMRIGHT", ElvuiSplitActionBarRightBackground, "BOTTOMRIGHT", ElvDB.Scale(19), 0)
+		RightSplit:SetPoint("TOPLEFT", ElvuiSplitActionBarRightBackground, "TOPRIGHT", E.Scale(4), 0)
+		RightSplit:SetPoint("BOTTOMRIGHT", ElvuiSplitActionBarRightBackground, "BOTTOMRIGHT", E.Scale(19), 0)
 		RightSplit.Text:SetText("<")
 	else
-		LeftSplit:SetPoint("TOPRIGHT", ElvuiMainMenuBar, "TOPLEFT", ElvDB.Scale(-4), 0)
-		LeftSplit:SetPoint("BOTTOMLEFT", ElvuiMainMenuBar, "BOTTOMLEFT", ElvDB.Scale(-19), 0)	
+		LeftSplit:SetPoint("TOPRIGHT", ElvuiMainMenuBar, "TOPLEFT", E.Scale(-4), 0)
+		LeftSplit:SetPoint("BOTTOMLEFT", ElvuiMainMenuBar, "BOTTOMLEFT", E.Scale(-19), 0)	
 		
-		RightSplit:SetPoint("TOPLEFT", ElvuiMainMenuBar, "TOPRIGHT", ElvDB.Scale(4), 0)
-		RightSplit:SetPoint("BOTTOMRIGHT", ElvuiMainMenuBar, "BOTTOMRIGHT", ElvDB.Scale(19), 0)
+		RightSplit:SetPoint("TOPLEFT", ElvuiMainMenuBar, "TOPRIGHT", E.Scale(4), 0)
+		RightSplit:SetPoint("BOTTOMRIGHT", ElvuiMainMenuBar, "BOTTOMRIGHT", E.Scale(19), 0)
 	end
 	
-	if ElvCF["actionbar"].bottomrows == 3 then
+	if C["actionbar"].bottomrows == 3 then
 		TopMainBar.Text:SetText("-")
 	else
 		TopMainBar.Text:SetText("+")
 	end
 	
-	TopMainBar:SetPoint("BOTTOMLEFT", ElvuiMainMenuBar, "TOPLEFT", 0, ElvDB.Scale(4))
-	TopMainBar:SetPoint("TOPRIGHT", ElvuiMainMenuBar, "TOPRIGHT", 0, ElvDB.Scale(19))
+	TopMainBar:SetPoint("BOTTOMLEFT", ElvuiMainMenuBar, "TOPLEFT", 0, E.Scale(4))
+	TopMainBar:SetPoint("TOPRIGHT", ElvuiMainMenuBar, "TOPRIGHT", 0, E.Scale(19))
 	
-	if ElvuiPetBar:IsShown() and not ElvCF["actionbar"].bottompetbar == true then
-		RightBarBig:SetPoint("TOPRIGHT", ElvuiPetBar, "LEFT", ElvDB.Scale(-3), (ElvuiActionBarBackgroundRight:GetHeight() * 0.2))
-		RightBarBig:SetPoint("BOTTOMLEFT", ElvuiPetBar, "LEFT", ElvDB.Scale(-19), -(ElvuiActionBarBackgroundRight:GetHeight() * 0.2))			
+	if ElvuiPetBar:IsShown() and not C["actionbar"].bottompetbar == true then
+		RightBarBig:SetPoint("TOPRIGHT", ElvuiPetBar, "LEFT", E.Scale(-3), (ElvuiActionBarBackgroundRight:GetHeight() * 0.2))
+		RightBarBig:SetPoint("BOTTOMLEFT", ElvuiPetBar, "LEFT", E.Scale(-19), -(ElvuiActionBarBackgroundRight:GetHeight() * 0.2))			
 	else
-		RightBarBig:SetPoint("TOPRIGHT", UIParent, "RIGHT", ElvDB.Scale(-1), (ElvuiActionBarBackgroundRight:GetHeight() * 0.2))
-		RightBarBig:SetPoint("BOTTOMLEFT", UIParent, "RIGHT", ElvDB.Scale(-16), -(ElvuiActionBarBackgroundRight:GetHeight() * 0.2))		
+		RightBarBig:SetPoint("TOPRIGHT", UIParent, "RIGHT", E.Scale(-1), (ElvuiActionBarBackgroundRight:GetHeight() * 0.2))
+		RightBarBig:SetPoint("BOTTOMLEFT", UIParent, "RIGHT", E.Scale(-16), -(ElvuiActionBarBackgroundRight:GetHeight() * 0.2))		
 	end
 	
 	ElvuiPetBar:HookScript("OnShow", function(self)
-		if ElvCF["actionbar"].bottompetbar == true then return end
+		if C["actionbar"].bottompetbar == true then return end
 		if InCombatLockdown() then return end
 		RightBarBig:ClearAllPoints()
-		RightBarBig:SetPoint("TOPRIGHT", ElvuiPetBar, "LEFT", ElvDB.Scale(-3), (ElvuiActionBarBackgroundRight:GetHeight() * 0.2))
-		RightBarBig:SetPoint("BOTTOMLEFT", ElvuiPetBar, "LEFT", ElvDB.Scale(-19), -(ElvuiActionBarBackgroundRight:GetHeight() * 0.2))	
+		RightBarBig:SetPoint("TOPRIGHT", ElvuiPetBar, "LEFT", E.Scale(-3), (ElvuiActionBarBackgroundRight:GetHeight() * 0.2))
+		RightBarBig:SetPoint("BOTTOMLEFT", ElvuiPetBar, "LEFT", E.Scale(-19), -(ElvuiActionBarBackgroundRight:GetHeight() * 0.2))	
 	end)
 	
 	ElvuiPetBar:HookScript("OnHide", function(self)
 		if InCombatLockdown() then return end
-		if ElvCF["actionbar"].bottompetbar == true then return end
+		if C["actionbar"].bottompetbar == true then return end
 		RightBarBig:ClearAllPoints()
-		RightBarBig:SetPoint("TOPRIGHT", UIParent, "RIGHT", ElvDB.Scale(-1), (ElvuiActionBarBackgroundRight:GetHeight() * 0.2))
-		RightBarBig:SetPoint("BOTTOMLEFT", UIParent, "RIGHT", ElvDB.Scale(-16), -(ElvuiActionBarBackgroundRight:GetHeight() * 0.2))
+		RightBarBig:SetPoint("TOPRIGHT", UIParent, "RIGHT", E.Scale(-1), (ElvuiActionBarBackgroundRight:GetHeight() * 0.2))
+		RightBarBig:SetPoint("BOTTOMLEFT", UIParent, "RIGHT", E.Scale(-16), -(ElvuiActionBarBackgroundRight:GetHeight() * 0.2))
 	end)
 	
 	RightBarBig:HookScript("OnEnter", function()
 		if InCombatLockdown() then return end
 		RightBarBig:ClearAllPoints()
-		if ElvuiPetBar:IsShown() and not ElvCF["actionbar"].bottompetbar == true then
-			RightBarBig:SetPoint("TOPRIGHT", ElvuiPetBar, "LEFT", ElvDB.Scale(-3), (ElvuiActionBarBackgroundRight:GetHeight() * 0.2))
-			RightBarBig:SetPoint("BOTTOMLEFT", ElvuiPetBar, "LEFT", ElvDB.Scale(-19), -(ElvuiActionBarBackgroundRight:GetHeight() * 0.2))			
+		if ElvuiPetBar:IsShown() and not C["actionbar"].bottompetbar == true then
+			RightBarBig:SetPoint("TOPRIGHT", ElvuiPetBar, "LEFT", E.Scale(-3), (ElvuiActionBarBackgroundRight:GetHeight() * 0.2))
+			RightBarBig:SetPoint("BOTTOMLEFT", ElvuiPetBar, "LEFT", E.Scale(-19), -(ElvuiActionBarBackgroundRight:GetHeight() * 0.2))			
 		else
-			RightBarBig:SetPoint("TOPRIGHT", UIParent, "RIGHT", ElvDB.Scale(-1), (ElvuiActionBarBackgroundRight:GetHeight() * 0.2))
-			RightBarBig:SetPoint("BOTTOMLEFT", UIParent, "RIGHT", ElvDB.Scale(-16), -(ElvuiActionBarBackgroundRight:GetHeight() * 0.2))		
+			RightBarBig:SetPoint("TOPRIGHT", UIParent, "RIGHT", E.Scale(-1), (ElvuiActionBarBackgroundRight:GetHeight() * 0.2))
+			RightBarBig:SetPoint("BOTTOMLEFT", UIParent, "RIGHT", E.Scale(-16), -(ElvuiActionBarBackgroundRight:GetHeight() * 0.2))		
 		end
 	end)
 	
-	if ElvCF["actionbar"].rightbars ~= 0 or (ElvCF["actionbar"].bottomrows == 3 and ElvCF["actionbar"].splitbar == true) then
+	if C["actionbar"].rightbars ~= 0 or (C["actionbar"].bottomrows == 3 and C["actionbar"].splitbar == true) then
 		RightBarBig:Hide()
 	end
 	
@@ -168,7 +172,7 @@ barloader:SetScript("OnEvent", function(self)
 	RightBarDec:SetParent(ElvuiActionBarBackgroundRight)
 	
 	--Disable some default button stuff
-	if ElvCF["actionbar"].rightbarmouseover == true then
+	if C["actionbar"].rightbarmouseover == true then
 		RightBarInc:SetScript("OnEnter", function() RightBarMouseOver(1) end)
 		RightBarInc:SetScript("OnLeave", function() RightBarMouseOver(0) end)
 		RightBarDec:SetScript("OnEnter", function() RightBarMouseOver(1) end)
@@ -183,112 +187,92 @@ barloader:SetScript("OnEvent", function(self)
 	RightBarDec:SetAlpha(1)
 	RightBarInc:SetAlpha(1)
 	
-	RightBarInc:SetPoint("TOPLEFT", ElvuiActionBarBackgroundRight, "BOTTOMLEFT", 0, ElvDB.Scale(-4))
-	RightBarInc:SetPoint("BOTTOMRIGHT", ElvuiActionBarBackgroundRight, "BOTTOM", ElvDB.Scale(-2), ElvDB.Scale(-19))
+	RightBarInc:SetPoint("TOPLEFT", ElvuiActionBarBackgroundRight, "BOTTOMLEFT", 0, E.Scale(-4))
+	RightBarInc:SetPoint("BOTTOMRIGHT", ElvuiActionBarBackgroundRight, "BOTTOM", E.Scale(-2), E.Scale(-19))
 	
-	RightBarDec:SetPoint("TOPRIGHT", ElvuiActionBarBackgroundRight, "BOTTOMRIGHT", 0, ElvDB.Scale(-4))
-	RightBarDec:SetPoint("BOTTOMLEFT", ElvuiActionBarBackgroundRight, "BOTTOM", ElvDB.Scale(2), ElvDB.Scale(-19))
+	RightBarDec:SetPoint("TOPRIGHT", ElvuiActionBarBackgroundRight, "BOTTOMRIGHT", 0, E.Scale(-4))
+	RightBarDec:SetPoint("BOTTOMLEFT", ElvuiActionBarBackgroundRight, "BOTTOM", E.Scale(2), E.Scale(-19))
 	
-	if not ElvuiABLock == nil then ElvuiABLock = false end
-	for i, btnnames in pairs(btnnames) do
-		if ElvuiABLock == false then
-			_G[btnnames]:EnableMouse(false)
-			_G[btnnames]:Hide()
-			ElvuiInfoLeftRButton.Text:SetTextColor(1,1,1)
-		else
-			_G[btnnames]:EnableMouse(true)
-			if btnnames == "RightBarBig" and not (ElvCF["actionbar"].rightbars ~= 0 or (ElvCF["actionbar"].bottomrows == 3 and ElvCF["actionbar"].splitbar == true)) then
-				_G[btnnames]:Show()
-			elseif btnnames ~= "RightBarBig" then
-				_G[btnnames]:Show()
-			end
-			ElvuiInfoLeftRButton.Text:SetTextColor(unpack(ElvCF["media"].valuecolor))
-		end
-	end
-
+	E.ABLock = false
+	ElvuiInfoLeftRButton.Text:SetTextColor(1,1,1)
 end)
 
 --Setup button clicks
 do
 	LeftSplit:SetScript("OnMouseDown", function(self)
 		if InCombatLockdown() then return end	
-		if ElvCF["actionbar"].splitbar ~= true then
+		if C["actionbar"].splitbar ~= true then
 			SaveBars("splitbar", true)
 			LeftSplit.Text:SetText(">")
 			LeftSplit:ClearAllPoints()
-			LeftSplit:SetPoint("TOPRIGHT", ElvuiSplitActionBarLeftBackground, "TOPLEFT", ElvDB.Scale(-4), 0)
-			LeftSplit:SetPoint("BOTTOMLEFT", ElvuiSplitActionBarLeftBackground, "BOTTOMLEFT", ElvDB.Scale(-19), 0)
+			LeftSplit:SetPoint("TOPRIGHT", ElvuiSplitActionBarLeftBackground, "TOPLEFT", E.Scale(-4), 0)
+			LeftSplit:SetPoint("BOTTOMLEFT", ElvuiSplitActionBarLeftBackground, "BOTTOMLEFT", E.Scale(-19), 0)
 			
 			RightSplit.Text:SetText("<")
 			RightSplit:ClearAllPoints()
-			RightSplit:SetPoint("TOPLEFT", ElvuiSplitActionBarRightBackground, "TOPRIGHT", ElvDB.Scale(4), 0)
-			RightSplit:SetPoint("BOTTOMRIGHT", ElvuiSplitActionBarRightBackground, "BOTTOMRIGHT", ElvDB.Scale(19), 0)				
+			RightSplit:SetPoint("TOPLEFT", ElvuiSplitActionBarRightBackground, "TOPRIGHT", E.Scale(4), 0)
+			RightSplit:SetPoint("BOTTOMRIGHT", ElvuiSplitActionBarRightBackground, "BOTTOMRIGHT", E.Scale(19), 0)				
 		else
 			SaveBars("splitbar", false)
 			LeftSplit.Text:SetText("<")
 			LeftSplit:ClearAllPoints()
-			LeftSplit:SetPoint("TOPRIGHT", ElvuiMainMenuBar, "TOPLEFT", ElvDB.Scale(-4), 0)
-			LeftSplit:SetPoint("BOTTOMLEFT", ElvuiMainMenuBar, "BOTTOMLEFT", ElvDB.Scale(-19), 0)
+			LeftSplit:SetPoint("TOPRIGHT", ElvuiMainMenuBar, "TOPLEFT", E.Scale(-4), 0)
+			LeftSplit:SetPoint("BOTTOMLEFT", ElvuiMainMenuBar, "BOTTOMLEFT", E.Scale(-19), 0)
 			
 			RightSplit.Text:SetText(">")
 			RightSplit:ClearAllPoints()
-			RightSplit:SetPoint("TOPLEFT", ElvuiMainMenuBar, "TOPRIGHT", ElvDB.Scale(4), 0)
-			RightSplit:SetPoint("BOTTOMRIGHT", ElvuiMainMenuBar, "BOTTOMRIGHT", ElvDB.Scale(19), 0)
+			RightSplit:SetPoint("TOPLEFT", ElvuiMainMenuBar, "TOPRIGHT", E.Scale(4), 0)
+			RightSplit:SetPoint("BOTTOMRIGHT", ElvuiMainMenuBar, "BOTTOMRIGHT", E.Scale(19), 0)
 		end
-		LeftSplit:SetAlpha(0)
-		RightSplit:SetAlpha(0)
 	end)
 	
 	RightSplit:SetScript("OnMouseDown", function(self)
 		if InCombatLockdown() then return end
 		
-		if ElvCF["actionbar"].splitbar ~= true then
+		if C["actionbar"].splitbar ~= true then
 			SaveBars("splitbar", true)
 			LeftSplit.Text:SetText(">")
 			LeftSplit:ClearAllPoints()
-			LeftSplit:SetPoint("TOPRIGHT", ElvuiSplitActionBarLeftBackground, "TOPLEFT", ElvDB.Scale(-4), 0)
-			LeftSplit:SetPoint("BOTTOMLEFT", ElvuiSplitActionBarLeftBackground, "BOTTOMLEFT", ElvDB.Scale(-19), 0)
+			LeftSplit:SetPoint("TOPRIGHT", ElvuiSplitActionBarLeftBackground, "TOPLEFT", E.Scale(-4), 0)
+			LeftSplit:SetPoint("BOTTOMLEFT", ElvuiSplitActionBarLeftBackground, "BOTTOMLEFT", E.Scale(-19), 0)
 			
 			RightSplit.Text:SetText("<")
 			RightSplit:ClearAllPoints()
-			RightSplit:SetPoint("TOPLEFT", ElvuiSplitActionBarRightBackground, "TOPRIGHT", ElvDB.Scale(4), 0)
-			RightSplit:SetPoint("BOTTOMRIGHT", ElvuiSplitActionBarRightBackground, "BOTTOMRIGHT", ElvDB.Scale(19), 0)				
+			RightSplit:SetPoint("TOPLEFT", ElvuiSplitActionBarRightBackground, "TOPRIGHT", E.Scale(4), 0)
+			RightSplit:SetPoint("BOTTOMRIGHT", ElvuiSplitActionBarRightBackground, "BOTTOMRIGHT", E.Scale(19), 0)				
 		else
 			SaveBars("splitbar", false)
 			LeftSplit.Text:SetText("<")
 			LeftSplit:ClearAllPoints()
-			LeftSplit:SetPoint("TOPRIGHT", ElvuiMainMenuBar, "TOPLEFT", ElvDB.Scale(-4), 0)
-			LeftSplit:SetPoint("BOTTOMLEFT", ElvuiMainMenuBar, "BOTTOMLEFT", ElvDB.Scale(-19), 0)
+			LeftSplit:SetPoint("TOPRIGHT", ElvuiMainMenuBar, "TOPLEFT", E.Scale(-4), 0)
+			LeftSplit:SetPoint("BOTTOMLEFT", ElvuiMainMenuBar, "BOTTOMLEFT", E.Scale(-19), 0)
 			
 			RightSplit.Text:SetText(">")
 			RightSplit:ClearAllPoints()
-			RightSplit:SetPoint("TOPLEFT", ElvuiMainMenuBar, "TOPRIGHT", ElvDB.Scale(4), 0)
-			RightSplit:SetPoint("BOTTOMRIGHT", ElvuiMainMenuBar, "BOTTOMRIGHT", ElvDB.Scale(19), 0)
+			RightSplit:SetPoint("TOPLEFT", ElvuiMainMenuBar, "TOPRIGHT", E.Scale(4), 0)
+			RightSplit:SetPoint("BOTTOMRIGHT", ElvuiMainMenuBar, "BOTTOMRIGHT", E.Scale(19), 0)
 		end
-		LeftSplit:SetAlpha(0)
-		RightSplit:SetAlpha(0)
 	end)
 	
 	TopMainBar:SetScript("OnMouseDown", function(self)
 		if InCombatLockdown() then return end
 		
-		if ElvCF["actionbar"].bottomrows == 1 then
+		if C["actionbar"].bottomrows == 1 then
 			SaveBars("bottomrows", 2)
 			TopMainBar.Text:SetText("+")
-		elseif ElvCF["actionbar"].bottomrows == 2 then
+		elseif C["actionbar"].bottomrows == 2 then
 			SaveBars("bottomrows", 3)
 			TopMainBar.Text:SetText("-")
-		elseif ElvCF["actionbar"].bottomrows == 3 then
+		elseif C["actionbar"].bottomrows == 3 then
 			SaveBars("bottomrows", 1)
 			TopMainBar.Text:SetText("+")
 		end
-		TopMainBar:SetAlpha(0)
 	end)
 	
 	RightBarBig:SetScript("OnMouseDown", function(self)
 		if InCombatLockdown() then return end
-		if ElvCF["actionbar"].rightbarmouseover ~= true then 
-			ElvDB.SlideIn(ElvuiActionBarBackgroundRight)
+		if C["actionbar"].rightbarmouseover ~= true then 
+			E.SlideIn(ElvuiActionBarBackgroundRight)
 		else
 			ElvuiActionBarBackgroundRight:SetAlpha(0)
 		end
@@ -299,23 +283,23 @@ do
 	RightBarInc:SetScript("OnMouseDown", function(self)
 		if InCombatLockdown() then return end
 		
-		if ElvCF["actionbar"].rightbars == 1 then
+		if C["actionbar"].rightbars == 1 then
 			SaveBars("rightbars", 2)
-		elseif ElvCF["actionbar"].rightbars == 2 then
+		elseif C["actionbar"].rightbars == 2 then
 			SaveBars("rightbars", 3)
-		elseif ElvCF["actionbar"].rightbars == 3 then
+		elseif C["actionbar"].rightbars == 3 then
 			SaveBars("rightbars", 0)
 			RightBarBig:Show()
 			RightBarBig:ClearAllPoints()
-			if ElvuiPetBar:IsShown() and not ElvCF["actionbar"].bottompetbar == true then
-				RightBarBig:SetPoint("TOPRIGHT", ElvuiPetBar, "LEFT", ElvDB.Scale(-3), (ElvuiActionBarBackgroundRight:GetHeight() * 0.2))
-				RightBarBig:SetPoint("BOTTOMLEFT", ElvuiPetBar, "LEFT", ElvDB.Scale(-19), -(ElvuiActionBarBackgroundRight:GetHeight() * 0.2))			
+			if ElvuiPetBar:IsShown() and not C["actionbar"].bottompetbar == true then
+				RightBarBig:SetPoint("TOPRIGHT", ElvuiPetBar, "LEFT", E.Scale(-3), (ElvuiActionBarBackgroundRight:GetHeight() * 0.2))
+				RightBarBig:SetPoint("BOTTOMLEFT", ElvuiPetBar, "LEFT", E.Scale(-19), -(ElvuiActionBarBackgroundRight:GetHeight() * 0.2))			
 			else
-				RightBarBig:SetPoint("TOPRIGHT", UIParent, "RIGHT", ElvDB.Scale(-1), (ElvuiActionBarBackgroundRight:GetHeight() * 0.2))
-				RightBarBig:SetPoint("BOTTOMLEFT", UIParent, "RIGHT", ElvDB.Scale(-16), -(ElvuiActionBarBackgroundRight:GetHeight() * 0.2))		
+				RightBarBig:SetPoint("TOPRIGHT", UIParent, "RIGHT", E.Scale(-1), (ElvuiActionBarBackgroundRight:GetHeight() * 0.2))
+				RightBarBig:SetPoint("BOTTOMLEFT", UIParent, "RIGHT", E.Scale(-16), -(ElvuiActionBarBackgroundRight:GetHeight() * 0.2))		
 			end			
 		end		
-		if ElvCF["actionbar"].rightbarmouseover == true then 
+		if C["actionbar"].rightbarmouseover == true then 
 			RightBarMouseOver(1)
 		end
 	end)
@@ -323,62 +307,25 @@ do
 	RightBarDec:SetScript("OnMouseDown", function(self)
 		if InCombatLockdown() then return end
 		
-		if ElvCF["actionbar"].rightbars == 1 then
+		if C["actionbar"].rightbars == 1 then
 			SaveBars("rightbars", 0)
 			RightBarBig:Show()
 			RightBarBig:ClearAllPoints()
-			if ElvuiPetBar:IsShown() and not ElvCF["actionbar"].bottompetbar == true then
-				RightBarBig:SetPoint("TOPRIGHT", ElvuiPetBar, "LEFT", ElvDB.Scale(-3), (ElvuiActionBarBackgroundRight:GetHeight() * 0.2))
-				RightBarBig:SetPoint("BOTTOMLEFT", ElvuiPetBar, "LEFT", ElvDB.Scale(-19), -(ElvuiActionBarBackgroundRight:GetHeight() * 0.2))			
+			if ElvuiPetBar:IsShown() and not C["actionbar"].bottompetbar == true then
+				RightBarBig:SetPoint("TOPRIGHT", ElvuiPetBar, "LEFT", E.Scale(-3), (ElvuiActionBarBackgroundRight:GetHeight() * 0.2))
+				RightBarBig:SetPoint("BOTTOMLEFT", ElvuiPetBar, "LEFT", E.Scale(-19), -(ElvuiActionBarBackgroundRight:GetHeight() * 0.2))			
 			else
-				RightBarBig:SetPoint("TOPRIGHT", UIParent, "RIGHT", ElvDB.Scale(-1), (ElvuiActionBarBackgroundRight:GetHeight() * 0.2))
-				RightBarBig:SetPoint("BOTTOMLEFT", UIParent, "RIGHT", ElvDB.Scale(-16), -(ElvuiActionBarBackgroundRight:GetHeight() * 0.2))		
+				RightBarBig:SetPoint("TOPRIGHT", UIParent, "RIGHT", E.Scale(-1), (ElvuiActionBarBackgroundRight:GetHeight() * 0.2))
+				RightBarBig:SetPoint("BOTTOMLEFT", UIParent, "RIGHT", E.Scale(-16), -(ElvuiActionBarBackgroundRight:GetHeight() * 0.2))		
 			end
-		elseif ElvCF["actionbar"].rightbars == 2 then
+		elseif C["actionbar"].rightbars == 2 then
 			SaveBars("rightbars", 1)
-		elseif ElvCF["actionbar"].rightbars == 3 then
+		elseif C["actionbar"].rightbars == 3 then
 			SaveBars("rightbars", 2)
 		end		
 		
-		if ElvCF["actionbar"].rightbarmouseover == true then 
+		if C["actionbar"].rightbarmouseover == true then 
 			RightBarMouseOver(1)
 		end
 	end)
-	
-	--Toggle lock button
-	ElvuiInfoLeftRButton:SetScript("OnMouseDown", function(self)
-		if InCombatLockdown() then return end
-		ToggleABLock()	
-		
-		if ElvuiInfoLeftRButton.hovered == true then
-			GameTooltip:ClearLines()
-			if ElvuiABLock == false then
-				GameTooltip:AddDoubleLine(ACTIONBAR_LABEL..":", LOCKED,1,1,1,unpack(ElvCF["media"].valuecolor))
-			else
-				GameTooltip:AddDoubleLine(ACTIONBAR_LABEL..":", UNLOCK,1,1,1,unpack(ElvCF["media"].valuecolor))
-			end
-		end
-	end)
-	
-	ElvuiInfoLeftRButton:SetScript("OnEnter", function(self)
-		ElvuiInfoLeftRButton.hovered = true
-		if InCombatLockdown() then return end
-		GameTooltip:SetOwner(self, "ANCHOR_TOP", 0, ElvDB.Scale(6));
-		GameTooltip:ClearAllPoints()
-		GameTooltip:SetPoint("BOTTOM", self, "TOP", 0, ElvDB.mult)
-		GameTooltip:ClearLines()
-		
-		if ElvuiABLock == false then
-			GameTooltip:AddDoubleLine(ACTIONBAR_LABEL..":", LOCKED,1,1,1,unpack(ElvCF["media"].valuecolor))
-		else
-			GameTooltip:AddDoubleLine(ACTIONBAR_LABEL..":", UNLOCK,1,1,1,unpack(ElvCF["media"].valuecolor))
-		end
-		GameTooltip:Show()
-	end)
-	
-	ElvuiInfoLeftRButton:SetScript("OnLeave", function(self)
-		ElvuiInfoLeftRButton.hovered = false
-		GameTooltip:Hide()
-	end)
-	
 end

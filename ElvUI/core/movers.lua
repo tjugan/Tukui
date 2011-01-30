@@ -1,11 +1,11 @@
 --Create a Mover frame
 
-local ElvDB = ElvDB
+local E, C, L = unpack(select(2, ...)) -- Import Functions/Constants, Config, Locales
 
 local myPlayerRealm = GetCVar("realmName")
 local myPlayerName  = UnitName("player")
 
-ElvDB.CreatedMovers = {}
+E.CreatedMovers = {}
 
 local print = function(...)
 	return print('|cffFF6347ElvUI:|r', ...)
@@ -22,18 +22,18 @@ local function CreateMover(parent, name, text, overlay, postdrag)
 	if ElvuiData.Movers[myPlayerRealm][myPlayerName] == nil then ElvuiData.Movers[myPlayerRealm][myPlayerName] = {} end
 	if ElvuiData.Movers[myPlayerRealm][myPlayerName][name] == nil then ElvuiData.Movers[myPlayerRealm][myPlayerName][name] = {} end
 	
-	ElvDB.Movers = ElvuiData.Movers[myPlayerRealm][myPlayerName]
+	E.Movers = ElvuiData.Movers[myPlayerRealm][myPlayerName]
 	
 	local p, p2, p3, p4, p5 = parent:GetPoint()
 	
 	
-	if ElvDB.Movers[name]["moved"] == nil then 
-		ElvDB.Movers[name]["moved"] = false 
+	if E.Movers[name]["moved"] == nil then 
+		E.Movers[name]["moved"] = false 
 		
-		ElvDB.Movers[name]["p"] = nil
-		ElvDB.Movers[name]["p2"] = nil
-		ElvDB.Movers[name]["p3"] = nil
-		ElvDB.Movers[name]["p4"] = nil
+		E.Movers[name]["p"] = nil
+		E.Movers[name]["p2"] = nil
+		E.Movers[name]["p3"] = nil
+		E.Movers[name]["p4"] = nil
 	end
 	
 	local f = CreateFrame("Frame", nil, UIParent)
@@ -51,7 +51,7 @@ local function CreateMover(parent, name, text, overlay, postdrag)
 		f2:SetFrameStrata("BACKGROUND")
 	end
 	f2:SetPoint("CENTER", f, "CENTER")
-	ElvDB.SetTemplate(f2)
+	E.SetTemplate(f2)
 	f2:RegisterForDrag("LeftButton", "RightButton")
 	f2:SetScript("OnDragStart", function(self) 
 		if InCombatLockdown() then print(ERR_NOT_IN_COMBAT) return end
@@ -62,12 +62,12 @@ local function CreateMover(parent, name, text, overlay, postdrag)
 		if InCombatLockdown() then print(ERR_NOT_IN_COMBAT) return end
 		self:StopMovingOrSizing()
 	
-		ElvDB.Movers[name]["moved"] = true
+		E.Movers[name]["moved"] = true
 		local p, _, p2, p3, p4 = self:GetPoint()
-		ElvDB.Movers[name]["p"] = p
-		ElvDB.Movers[name]["p2"] = p2
-		ElvDB.Movers[name]["p3"] = p3
-		ElvDB.Movers[name]["p4"] = p4
+		E.Movers[name]["p"] = p
+		E.Movers[name]["p2"] = p2
+		E.Movers[name]["p3"] = p3
+		E.Movers[name]["p4"] = p4
 		
 		if postdrag ~= nil and type(postdrag) == 'function' then
 			postdrag(self)
@@ -76,32 +76,32 @@ local function CreateMover(parent, name, text, overlay, postdrag)
 	
 	parent:ClearAllPoints()
 	parent:SetPoint(p3, f2, p3, 0, 0)
-	parent.ClearAllPoints = ElvDB.dummy
-	parent.SetAllPoints = ElvDB.dummy
-	parent.SetPoint = ElvDB.dummy
+	parent.ClearAllPoints = E.dummy
+	parent.SetAllPoints = E.dummy
+	parent.SetPoint = E.dummy
 	
-	if ElvDB.Movers[name]["moved"] == true then
+	if E.Movers[name]["moved"] == true then
 		f:ClearAllPoints()
-		f:SetPoint(ElvDB.Movers[name]["p"], UIParent, ElvDB.Movers[name]["p3"], ElvDB.Movers[name]["p4"], ElvDB.Movers[name]["p5"])
+		f:SetPoint(E.Movers[name]["p"], UIParent, E.Movers[name]["p3"], E.Movers[name]["p4"], E.Movers[name]["p5"])
 	end
 	
 	local fs = f2:CreateFontString(nil, "OVERLAY")
-	fs:SetFont(ElvCF["media"].font, ElvCF["general"].fontscale, "THINOUTLINE")
-	fs:SetShadowOffset(ElvDB.mult*1.2, -ElvDB.mult*1.2)
+	fs:SetFont(C["media"].font, C["general"].fontscale, "THINOUTLINE")
+	fs:SetShadowOffset(E.mult*1.2, -E.mult*1.2)
 	fs:SetJustifyH("CENTER")
 	fs:SetPoint("CENTER")
 	fs:SetText(text or name)
+	fs:SetTextColor(unpack(C["media"].valuecolor))
 	f2:SetFontString(fs)
 	f2.text = fs
 	
 	f2:SetScript("OnEnter", function(self) 
-		local color = RAID_CLASS_COLORS[ElvDB.myclass]
-		self.text:SetTextColor(color.r, color.g, color.b)
-		self:SetBackdropBorderColor(color.r, color.g, color.b)
+		self.text:SetTextColor(1, 1, 1)
+		self:SetBackdropBorderColor(unpack(C["media"].valuecolor))
 	end)
 	f2:SetScript("OnLeave", function(self)
-		self.text:SetTextColor(1, 1, 1)
-		self:SetBackdropBorderColor(unpack(ElvCF["media"].bordercolor))
+		self.text:SetTextColor(unpack(C["media"].valuecolor))
+		E.SetNormTexTemplate(self)
 	end)
 	
 	f2:SetMovable(true)
@@ -116,20 +116,20 @@ local function CreateMover(parent, name, text, overlay, postdrag)
 	end	
 end
 
-function ElvDB.CreateMover(parent, name, text, overlay, postdrag)
+function E.CreateMover(parent, name, text, overlay, postdrag)
 	local p, p2, p3, p4, p5 = parent:GetPoint()
 
-	if ElvDB.CreatedMovers[name] == nil then 
-		ElvDB.CreatedMovers[name] = {}
-		ElvDB.CreatedMovers[name]["parent"] = parent
-		ElvDB.CreatedMovers[name]["text"] = text
-		ElvDB.CreatedMovers[name]["overlay"] = overlay
-		ElvDB.CreatedMovers[name]["postdrag"] = postdrag
-		ElvDB.CreatedMovers[name]["p"] = p
-		ElvDB.CreatedMovers[name]["p2"] = p2 or "UIParent"
-		ElvDB.CreatedMovers[name]["p3"] = p3
-		ElvDB.CreatedMovers[name]["p4"] = p4
-		ElvDB.CreatedMovers[name]["p5"] = p5
+	if E.CreatedMovers[name] == nil then 
+		E.CreatedMovers[name] = {}
+		E.CreatedMovers[name]["parent"] = parent
+		E.CreatedMovers[name]["text"] = text
+		E.CreatedMovers[name]["overlay"] = overlay
+		E.CreatedMovers[name]["postdrag"] = postdrag
+		E.CreatedMovers[name]["p"] = p
+		E.CreatedMovers[name]["p2"] = p2 or "UIParent"
+		E.CreatedMovers[name]["p3"] = p3
+		E.CreatedMovers[name]["p4"] = p4
+		E.CreatedMovers[name]["p5"] = p5
 	end	
 	
 	--Post Variables Loaded..
@@ -138,10 +138,10 @@ function ElvDB.CreateMover(parent, name, text, overlay, postdrag)
 	end
 end
 
-function ElvDB.ToggleMovers()
+function E.ToggleMovers()
 	if InCombatLockdown() then print(ERR_NOT_IN_COMBAT) return end
 	
-	for name, _ in pairs(ElvDB.CreatedMovers) do
+	for name, _ in pairs(E.CreatedMovers) do
 		if _G[name]:IsShown() then
 			_G[name]:Hide()
 		else
@@ -150,45 +150,45 @@ function ElvDB.ToggleMovers()
 	end
 end
 
-function ElvDB.ResetMovers(arg)
+function E.ResetMovers(arg)
 	if InCombatLockdown() then print(ERR_NOT_IN_COMBAT) return end
 	if arg == "" then
-		for name, _ in pairs(ElvDB.CreatedMovers) do
+		for name, _ in pairs(E.CreatedMovers) do
 			local n = _G[name]
 			_G[name]:ClearAllPoints()
-			_G[name]:SetPoint(ElvDB.CreatedMovers[name]["p"], ElvDB.CreatedMovers[name]["p2"], ElvDB.CreatedMovers[name]["p3"], ElvDB.CreatedMovers[name]["p4"], ElvDB.CreatedMovers[name]["p5"])
+			_G[name]:SetPoint(E.CreatedMovers[name]["p"], E.CreatedMovers[name]["p2"], E.CreatedMovers[name]["p3"], E.CreatedMovers[name]["p4"], E.CreatedMovers[name]["p5"])
 			
-			ElvDB.Movers[name]["moved"] = false 
+			E.Movers[name]["moved"] = false 
 			
-			ElvDB.Movers[name]["p"] = nil
-			ElvDB.Movers[name]["p2"] = nil
-			ElvDB.Movers[name]["p3"] = nil
-			ElvDB.Movers[name]["p4"] = nil	
+			E.Movers[name]["p"] = nil
+			E.Movers[name]["p2"] = nil
+			E.Movers[name]["p3"] = nil
+			E.Movers[name]["p4"] = nil	
 			
-			for key, value in pairs(ElvDB.CreatedMovers[name]) do
+			for key, value in pairs(E.CreatedMovers[name]) do
 				if key == "postdrag" and type(value) == 'function' then
 					value(n)
 				end
 			end
 		end	
 	else
-		for name, _ in pairs(ElvDB.CreatedMovers) do
-			for key, value in pairs(ElvDB.CreatedMovers[name]) do
+		for name, _ in pairs(E.CreatedMovers) do
+			for key, value in pairs(E.CreatedMovers[name]) do
 				local mover
 				if key == "text" then
 					if arg == value then 
 						_G[name]:ClearAllPoints()
-						_G[name]:SetPoint(ElvDB.CreatedMovers[name]["p"], ElvDB.CreatedMovers[name]["p2"], ElvDB.CreatedMovers[name]["p3"], ElvDB.CreatedMovers[name]["p4"], ElvDB.CreatedMovers[name]["p5"])						
+						_G[name]:SetPoint(E.CreatedMovers[name]["p"], E.CreatedMovers[name]["p2"], E.CreatedMovers[name]["p3"], E.CreatedMovers[name]["p4"], E.CreatedMovers[name]["p5"])						
 						
-						ElvDB.Movers[name]["moved"] = false 
+						E.Movers[name]["moved"] = false 
 						
-						ElvDB.Movers[name]["p"] = nil
-						ElvDB.Movers[name]["p2"] = nil
-						ElvDB.Movers[name]["p3"] = nil
-						ElvDB.Movers[name]["p4"] = nil	
+						E.Movers[name]["p"] = nil
+						E.Movers[name]["p2"] = nil
+						E.Movers[name]["p3"] = nil
+						E.Movers[name]["p4"] = nil	
 
-						if ElvDB.CreatedMovers[name]["postdrag"] ~= nil and type(ElvDB.CreatedMovers[name]["postdrag"]) == 'function' then
-							ElvDB.CreatedMovers[name]["postdrag"](_G[name])
+						if E.CreatedMovers[name]["postdrag"] ~= nil and type(E.CreatedMovers[name]["postdrag"]) == 'function' then
+							E.CreatedMovers[name]["postdrag"](_G[name])
 						end
 					end
 				end
@@ -203,10 +203,10 @@ loadmovers:RegisterEvent("PLAYER_REGEN_DISABLED")
 loadmovers:SetScript("OnEvent", function(self, event, addon)
 	if event == "ADDON_LOADED" then
 		if addon ~= "ElvUI" then return end
-		for name, _ in pairs(ElvDB.CreatedMovers) do
+		for name, _ in pairs(E.CreatedMovers) do
 			local n = name
 			local p, t, o, pd
-			for key, value in pairs(ElvDB.CreatedMovers[name]) do
+			for key, value in pairs(E.CreatedMovers[name]) do
 				if key == "parent" then
 					p = value
 				elseif key == "text" then
@@ -223,7 +223,7 @@ loadmovers:SetScript("OnEvent", function(self, event, addon)
 		self:UnregisterEvent("ADDON_LOADED")
 	else
 		local err = false
-		for name, _ in pairs(ElvDB.CreatedMovers) do
+		for name, _ in pairs(E.CreatedMovers) do
 			if _G[name]:IsShown() then
 				err = true
 				_G[name]:Hide()
