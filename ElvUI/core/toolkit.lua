@@ -1,5 +1,3 @@
--- Tukui API, see DOCS/API.txt for more informations
-
 local E, C, L = unpack(select(2, ...)) -- Import: E - functions, constants, variables; C - config; L - locales
 
 local noop = E.dummy
@@ -156,7 +154,6 @@ local function Kill(object)
 	object:Hide()
 end
 
--- styleButton function authors are Chiril & Karudon.
 local function StyleButton(b, c) 
     local name = b:GetName()
  
@@ -186,14 +183,21 @@ local function StyleButton(b, c)
 	pushed:Point("TOPLEFT",button,2,-2)
 	pushed:Point("BOTTOMRIGHT",button,-2,2)
 	button:SetPushedTexture(pushed)
+	
+	if cooldown then
+		cooldown:ClearAllPoints()
+		cooldown:Point("TOPLEFT",button,2,-2)
+		cooldown:Point("BOTTOMRIGHT",button,-2,2)
+	end
  
 	if c then
 		local checked = b:CreateTexture("frame", nil, self) -- checked
-		checked:SetTexture(0,1,0,0.3)
+		checked:SetTexture(unpack(C["media"].valuecolor))
 		checked:SetHeight(button:GetHeight())
 		checked:SetWidth(button:GetWidth())
 		checked:Point("TOPLEFT",button,2,-2)
 		checked:Point("BOTTOMRIGHT",button,-2,2)
+		checked:SetAlpha(0.3)
 		button:SetCheckedTexture(checked)
 	end
 end
