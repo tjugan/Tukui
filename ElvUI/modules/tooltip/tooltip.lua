@@ -34,7 +34,7 @@ local NeedBackdropBorderRefresh = false
 
 --Check if our embed right addon is shown
 local function CheckAddOnShown()
-	if E.ChatRightShown == true then
+	if E.ChatRightShown == true and E.RightChat and E.RightChat == true then
 		return true
 	elseif C["skin"].embedright == "Omen" and IsAddOnLoaded("Omen") and OmenAnchor then
 		if OmenAnchor:IsShown() then
@@ -86,12 +86,16 @@ local function SetRightTooltipPos(self)
 		else
 			if CheckAddOnShown() == true then
 				if C["chat"].showbackdrop == true and E.ChatRightShown == true then
-					self:SetPoint("BOTTOMRIGHT", ChatRBackground2, "TOPRIGHT", -1, E.Scale(42))	
+					if E.RightChat == true then
+						self:SetPoint("BOTTOMRIGHT", ChatRBackground2, "TOPRIGHT", -1, E.Scale(42))	
+					else
+						self:SetPoint("BOTTOMRIGHT", ChatRBackground2, "TOPRIGHT", -1, E.Scale(18))	
+					end
 				else
 					self:SetPoint("BOTTOMRIGHT", ChatRBackground2, "TOPRIGHT", -1, E.Scale(18))		
 				end	
 			else
-				self:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -15, E.Scale(42))	
+				self:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", E.Scale(-3), E.Scale(42))	
 			end
 		end
 	end
@@ -378,7 +382,7 @@ local Colorize = function(self)
 end
 
 local SetStyle = function(self)
-	E.SetNormTexTemplate(self)
+	self:SetTemplate("Default", true)
 	Colorize(self)
 end
 
@@ -388,12 +392,12 @@ ElvuiTooltip:SetScript("OnEvent", function(self)
 		tt:HookScript("OnShow", SetStyle)
 	end
 	
-	E.SetNormTexTemplate(FriendsTooltip)
-	E.SetNormTexTemplate(BNToastFrame)
-	E.SetNormTexTemplate(DropDownList1MenuBackdrop)
-	E.SetNormTexTemplate(DropDownList2MenuBackdrop)
-	E.SetNormTexTemplate(DropDownList1Backdrop)
-	E.SetNormTexTemplate(DropDownList2Backdrop)
+	FriendsTooltip:SetTemplate("Default", true)
+	BNToastFrame:SetTemplate("Default", true)
+	DropDownList1MenuBackdrop:SetTemplate("Default", true)
+	DropDownList2MenuBackdrop:SetTemplate("Default", true)
+	DropDownList1Backdrop:SetTemplate("Default", true)
+	DropDownList2Backdrop:SetTemplate("Default", true)
 	
 	BNToastFrame:HookScript("OnShow", function(self)
 		self:ClearAllPoints()

@@ -3,16 +3,16 @@
 local E, C, L = unpack(select(2, ...)) -- Import Functions/Constants, Config, Locales
 
 if C["raidframes"].disableblizz ~= true then return end
-E.Kill(CompactRaidFrameManager) --Get rid of old module
+CompactRaidFrameManager:Kill() --Get rid of old module
 
 local panel_height = ((E.Scale(5)*4) + (E.Scale(20)*4))
 
 --Create main frame
 local RaidUtilityPanel = CreateFrame("Frame", "RaidUtilityPanel", UIParent)
-E.CreatePanel(RaidUtilityPanel, E.Scale(170), panel_height, "TOP", UIParent, "TOP", -300, panel_height + 15)
+RaidUtilityPanel:CreatePanel("Default", E.Scale(170), panel_height, "TOP", UIParent, "TOP", -300, panel_height + 15)
 local r,g,b,_ = C["media"].backdropcolor
 RaidUtilityPanel:SetBackdropColor(r,g,b,0.6)
-E.CreateShadow(RaidUtilityPanel)
+RaidUtilityPanel:CreateShadow("Default")
 
 --Check if We are Raid Leader or Raid Officer
 local function CheckRaidStatus()
@@ -149,7 +149,7 @@ do
 		f:SetDisabledTexture("")
 		f:HookScript("OnEnter", ButtonEnter)
 		f:HookScript("OnLeave", ButtonLeave)
-		E.SetNormTexTemplate(f)
+		f:SetTemplate("Default", true)
 	end
 end
 

@@ -46,7 +46,7 @@ local function SkinButton(f)
 	if f.SetDisabledTexture then
 		f:SetDisabledTexture("")
 	end
-	E.SetNormTexTemplate(f)
+	f:SetTemplate("Default", true)
 	
 	f:HookScript("OnEnter", SetModifiedBackdrop)
 	f:HookScript("OnLeave", SetOriginalBackdrop)
@@ -63,6 +63,7 @@ ElvuiSkin:SetScript("OnEvent", function(self, event, addon)
 		local skins = {
 			"StaticPopup1",
 			"StaticPopup2",
+			"StaticPopup3",
 			"GameMenuFrame",
 			"InterfaceOptionsFrame",
 			"VideoOptionsFrame",
@@ -82,9 +83,9 @@ ElvuiSkin:SetScript("OnEvent", function(self, event, addon)
 		}
 		
 		for i = 1, getn(skins) do
-			E.SetNormTexTemplate(_G[skins[i]])
+			_G[skins[i]]:SetTemplate("Default", true)
 			if _G[skins[i]] ~= _G["GhostFrameContentsFrame"] or _G[skins[i]] ~= _G["AutoCompleteBox"] then -- frame to blacklist from create shadow function
-				E.CreateShadow(_G[skins[i]])
+				_G[skins[i]]:CreateShadow("Default")
 			end
 			_G[skins[i]]:SetBackdropColor(unpack(C["media"].backdropfadecolor))
 		end
@@ -98,9 +99,9 @@ ElvuiSkin:SetScript("OnEvent", function(self, event, addon)
 		--
 		for i = 1, getn(ChatMenus) do
 			if _G[ChatMenus[i]] == _G["ChatMenu"] then
-				_G[ChatMenus[i]]:HookScript("OnShow", function(self) E.SetNormTexTemplate(self) self:SetBackdropColor(unpack(C["media"].backdropfadecolor)) self:ClearAllPoints() self:SetPoint("BOTTOMLEFT", ChatFrame1, "TOPLEFT", 0, E.Scale(30)) end)
+				_G[ChatMenus[i]]:HookScript("OnShow", function(self) self:SetTemplate("Default", true) self:SetBackdropColor(unpack(C["media"].backdropfadecolor)) self:ClearAllPoints() self:SetPoint("BOTTOMLEFT", ChatFrame1, "TOPLEFT", 0, E.Scale(30)) end)
 			else
-				_G[ChatMenus[i]]:HookScript("OnShow", function(self) E.SetNormTexTemplate(self) self:SetBackdropColor(unpack(C["media"].backdropfadecolor)) end)
+				_G[ChatMenus[i]]:HookScript("OnShow", function(self) self:SetTemplate("Default", true) self:SetBackdropColor(unpack(C["media"].backdropfadecolor)) end)
 			end
 		end
 		
@@ -232,10 +233,10 @@ ElvuiSkin:SetScript("OnEvent", function(self, event, addon)
 		_G["ReadyCheckListenerFrame"]:SetAlpha(0)
 		_G["ReadyCheckFrame"]:HookScript("OnShow", function(self) if UnitIsUnit("player", self.initiator) then self:Hide() end end) -- bug fix, don't show it if initiator
 		
-		E.SetTransparentTemplate(RolePollPopup)
-		E.CreateShadow(RolePollPopup)
-		E.SetTransparentTemplate(LFDDungeonReadyDialog)
-		E.CreateShadow(LFDDungeonReadyDialog)
+		RolePollPopup:SetTemplate("Transparent")
+		RolePollPopup:CreateShadow("Default")
+		LFDDungeonReadyDialog:SetTemplate("Transparent")
+		LFDDungeonReadyDialog:CreateShadow("Default")
 		SkinButton(LFDDungeonReadyDialogEnterDungeonButton)
 		SkinButton(LFDDungeonReadyDialogLeaveQueueButton)
 		SkinButton(ColorPickerOkayButton)
@@ -245,14 +246,14 @@ ElvuiSkin:SetScript("OnEvent", function(self, event, addon)
 	-- mac menu/option panel, made by affli.
 	if IsMacClient() then
 		-- Skin main frame and reposition the header
-		E.SetNormTexTemplate(MacOptionsFrame)
+		MacOptionsFrame:SetTemplate("Default", true)
 		MacOptionsFrameHeader:SetTexture("")
 		MacOptionsFrameHeader:ClearAllPoints()
 		MacOptionsFrameHeader:SetPoint("TOP", MacOptionsFrame, 0, 0)
  
 		--Skin internal frames
-		E.SetNormTexTemplate(MacOptionsFrameMovieRecording)
-		E.SetNormTexTemplate(MacOptionsITunesRemote)
+		MacOptionsFrameMovieRecording:SetTemplate("Default", true)
+		MacOptionsITunesRemote:SetTemplate("Default", true)
  
 		--Skin buttons
 		SkinButton(_G["MacOptionsFrameCancel"])

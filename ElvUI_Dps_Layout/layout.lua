@@ -97,14 +97,14 @@ local function Shared(self, unit)
 		FrameBorder:SetBackdropBorderColor(unpack(C["media"].altbordercolor))
 		FrameBorder:SetFrameLevel(2)
 		self.FrameBorder = FrameBorder
-		E.CreateShadow(self.FrameBorder)
+		self.FrameBorder:CreateShadow("Default")
 		self.FrameBorder.shadow:SetFrameLevel(0)
 		self.FrameBorder.shadow:SetFrameStrata("BACKGROUND")
 	
 		-- Health Bar Background
 		local healthBG = health:CreateTexture(nil, 'BORDER')
 		healthBG:SetAllPoints()
-		health.value = E.SetFontString(health, font1, C["unitframes"].fontsize, "THINOUTLINE")
+		health:FontString("value", font1, C["unitframes"].fontsize, "THINOUTLINE")
 		health.value:SetPoint("RIGHT", health, "RIGHT", E.Scale(-4), E.Scale(1))
 		health.PostUpdate = E.PostUpdateHealth
 		self.Health = health
@@ -148,7 +148,7 @@ local function Shared(self, unit)
 		PowerFrame:SetBackdropBorderColor(unpack(C["media"].altbordercolor))	
 		self.PowerFrame = PowerFrame
 		if powerbar_offset ~= 0 then
-			E.CreateShadow(self.PowerFrame)
+			self.PowerFrame:CreateShadow("Default")
 		else
 			self.FrameBorder.shadow:SetPoint("BOTTOMLEFT", self.PowerFrame, "BOTTOMLEFT", E.Scale(-4), E.Scale(-4))
 		end
@@ -165,7 +165,8 @@ local function Shared(self, unit)
 		powerBG:SetAllPoints(power)
 		powerBG:SetTexture(normTex)
 		powerBG.multiplier = 0.3
-		power.value = E.SetFontString(health, font1, C["unitframes"].fontsize, "THINOUTLINE")
+		power:FontString("value", font1, C["unitframes"].fontsize, "THINOUTLINE")
+		power.value:SetParent(health)
 		power.value:SetPoint("LEFT", health, "LEFT", E.Scale(4), E.Scale(1))
 		power.PreUpdate = E.PreUpdatePower
 		power.PostUpdate = E.PostUpdatePower
@@ -223,7 +224,7 @@ local function Shared(self, unit)
 			PFrame:SetTemplate("Default")
 			PFrame:SetBackdropBorderColor(unpack(C["media"].altbordercolor))
 			self.PFrame = PFrame
-			E.CreateShadow(self.PFrame)			
+			self.PFrame:CreateShadow("Default")		
 			local portrait = CreateFrame("PlayerModel", nil, PFrame)
 			portrait:SetFrameLevel(2)
 			
@@ -250,7 +251,7 @@ local function Shared(self, unit)
 		FlashInfo.parent = self
 		FlashInfo:SetToplevel(true)
 		FlashInfo:SetAllPoints(health)
-		FlashInfo.ManaLevel = E.SetFontString(FlashInfo, font1, C["unitframes"].fontsize, "THINOUTLINE")
+		FlashInfo:FontString("ManaLevel", font1, C["unitframes"].fontsize, "THINOUTLINE")
 		FlashInfo.ManaLevel:SetPoint("CENTER", health, "CENTER", 0, E.Scale(-5))
 		self.FlashInfo = FlashInfo
 		
@@ -433,9 +434,10 @@ local function Shared(self, unit)
 				player_height = player_height + E.Scale(14)
 				
 				CreateFrame("Frame"):SetScript("OnUpdate", function() E.UpdateDruidMana(self) end)
-				local DruidMana = E.SetFontString(health, font1, C["unitframes"].fontsize, "THINOUTLINE")
+				local DruidMana = health:FontString(nil, font1, C["unitframes"].fontsize, "THINOUTLINE")
 				DruidMana:SetTextColor(1, 0.49, 0.04)
 				self.DruidMana = DruidMana
+
 				local eclipseBar = CreateFrame('Frame', nil, self)
 				eclipseBar:SetPoint("BOTTOMLEFT", self.Health, "TOPLEFT", 0, E.Scale(5))
 				eclipseBar:SetSize(original_width, E.Scale(8))
@@ -458,12 +460,9 @@ local function Shared(self, unit)
 				solarBar:SetStatusBarColor(.80, .82,  .60)
 				eclipseBar.SolarBar = solarBar
 
-				local eclipseBarText = solarBar:CreateFontString(nil, 'OVERLAY')
-				eclipseBarText:SetPoint("CENTER", self.Health, "CENTER", E.Scale(1), E.Scale(-5))
-				eclipseBarText:SetFont(font1, C["unitframes"].fontsize, "THINOUTLINE")
-				eclipseBar.Text = eclipseBarText
+				eclipseBar:FontString("Text", font1, C["unitframes"].fontsize, "THINOUTLINE")
+				eclipseBar.Text:SetPoint("CENTER", self.Health, "CENTER", E.Scale(1), E.Scale(-5))
 			
-
 				self.EclipseBar = eclipseBar
 				
 				self.EclipseBar.PostUpdatePower = E.EclipseDirection
@@ -728,13 +727,13 @@ local function Shared(self, unit)
 			castbar.bg:SetFrameLevel(5)
 			castbar.bg:SetFrameStrata("DIALOG")
 			
-			castbar.time = E.SetFontString(castbar, font1, C["unitframes"].fontsize, "THINOUTLINE")
+			castbar:FontString("time", font1, C["unitframes"].fontsize, "THINOUTLINE")
 			castbar.time:SetPoint("RIGHT", castbar, "RIGHT", E.Scale(-4), 0)
 			castbar.time:SetTextColor(0.84, 0.75, 0.65)
 			castbar.time:SetJustifyH("RIGHT")
 			castbar.CustomTimeText = E.CustomCastTimeText
  
-			castbar.Text = E.SetFontString(castbar, font1, C["unitframes"].fontsize, "THINOUTLINE")
+			castbar:FontString("Text", font1, C["unitframes"].fontsize, "THINOUTLINE")
 			castbar.Text:SetPoint("LEFT", castbar, "LEFT", 4, 1)
 			castbar.Text:SetTextColor(0.84, 0.75, 0.65)
  
@@ -809,15 +808,14 @@ local function Shared(self, unit)
 		
 		-- add combat feedback support
 		if C["unitframes"].combatfeedback == true then
-			local CombatFeedbackText 
-			CombatFeedbackText = E.SetFontString(health, font1, C["unitframes"].fontsize*1.1, "OUTLINE")
+			health:FontString("CombatText", font1, C["unitframes"].fontsize*1.1, "OUTLINE")
 
 			if C["unitframes"].charportrait == true then
-				CombatFeedbackText:SetPoint("CENTER", self.Portrait, "CENTER")
+				health.CombatText:SetPoint("CENTER", self.Portrait, "CENTER")
 			else
-				CombatFeedbackText:SetPoint("CENTER", 0, -5)
+				health.CombatText:SetPoint("CENTER", 0, -5)
 			end
-			CombatFeedbackText.colors = {
+			health.CombatText.colors = {
 				DAMAGE = {0.69, 0.31, 0.31},
 				CRUSHING = {0.69, 0.31, 0.31},
 				CRITICAL = {0.69, 0.31, 0.31},
@@ -833,7 +831,7 @@ local function Shared(self, unit)
 				ENERGIZE = {0.31, 0.45, 0.63},
 				CRITENERGIZE = {0.31, 0.45, 0.63},
 			}
-			self.CombatFeedbackText = CombatFeedbackText
+			self.CombatFeedbackText = health.CombatText
 		end
 		
 		-- player aggro
@@ -916,14 +914,14 @@ local function Shared(self, unit)
 		FrameBorder:SetBackdropBorderColor(unpack(C["media"].altbordercolor))
 		FrameBorder:SetFrameLevel(2)
 		self.FrameBorder = FrameBorder
-		E.CreateShadow(self.FrameBorder)
+		self.FrameBorder:CreateShadow("Default")
 		self.FrameBorder.shadow:SetFrameLevel(0)
 		self.FrameBorder.shadow:SetFrameStrata("BACKGROUND")
 	
 		-- Health Bar Background
 		local healthBG = health:CreateTexture(nil, 'BORDER')
 		healthBG:SetAllPoints()
-		health.value = E.SetFontString(health, font1, C["unitframes"].fontsize, "THINOUTLINE")
+		health:FontString("value", font1, C["unitframes"].fontsize, "THINOUTLINE")
 		health.value:SetPoint("RIGHT", health, "RIGHT", E.Scale(-4), E.Scale(1))
 		health.PostUpdate = E.PostUpdateHealth
 		self.Health = health
@@ -967,7 +965,7 @@ local function Shared(self, unit)
 		PowerFrame:SetBackdropBorderColor(unpack(C["media"].altbordercolor))	
 		self.PowerFrame = PowerFrame
 		if powerbar_offset ~= 0 then
-			E.CreateShadow(self.PowerFrame)
+			self.PowerFrame:CreateShadow("Default")
 		else
 			self.FrameBorder.shadow:SetPoint("BOTTOMLEFT", self.PowerFrame, "BOTTOMLEFT", E.Scale(-4), E.Scale(-4))
 		end
@@ -984,7 +982,8 @@ local function Shared(self, unit)
 		powerBG:SetAllPoints(power)
 		powerBG:SetTexture(normTex)
 		powerBG.multiplier = 0.3
-		power.value = E.SetFontString(health, font1, C["unitframes"].fontsize, "THINOUTLINE")
+		power:FontString("value", font1, C["unitframes"].fontsize, "THINOUTLINE")
+		power.value:SetParent(health)
 		power.value:SetPoint("LEFT", health, "LEFT", E.Scale(4), E.Scale(1))
 		power.PreUpdate = E.PreUpdatePower
 		power.PostUpdate = E.PostUpdatePower
@@ -1040,7 +1039,7 @@ local function Shared(self, unit)
 			PFrame:SetTemplate("Default")
 			PFrame:SetBackdropBorderColor(unpack(C["media"].altbordercolor))
 			self.PFrame = PFrame
-			E.CreateShadow(self.PFrame)			
+			self.PFrame:CreateShadow("Default")		
 			local portrait = CreateFrame("PlayerModel", nil, PFrame)
 			portrait:SetFrameLevel(2)
 			
@@ -1119,13 +1118,13 @@ local function Shared(self, unit)
 			castbar.bg:SetFrameLevel(5)
 
  
-			castbar.time = E.SetFontString(castbar, font1, C["unitframes"].fontsize, "THINOUTLINE")
+			castbar:FontString("time", font1, C["unitframes"].fontsize, "THINOUTLINE")
 			castbar.time:SetPoint("RIGHT", castbar, "RIGHT", E.Scale(-4), 0)
 			castbar.time:SetTextColor(0.84, 0.75, 0.65)
 			castbar.time:SetJustifyH("RIGHT")
 			castbar.CustomTimeText = E.CustomCastTimeText
  
-			castbar.Text = E.SetFontString(castbar, font1, C["unitframes"].fontsize, "THINOUTLINE")
+			castbar:FontString("Text", font1, C["unitframes"].fontsize, "THINOUTLINE")
 			castbar.Text:SetPoint("LEFT", castbar, "LEFT", 4, 1)
 			castbar.Text:SetTextColor(0.84, 0.75, 0.65)
  
@@ -1154,8 +1153,7 @@ local function Shared(self, unit)
 		
 		-- add combat feedback support
 		if C["unitframes"].combatfeedback == true then
-			local CombatFeedbackText 
-			CombatFeedbackText = E.SetFontString(health, font1, C["unitframes"].fontsize*1.1, "OUTLINE")
+			local CombatFeedbackText = health:FontString("CombatFeedback", font1, C["unitframes"].fontsize*1.1, "OUTLINE")
 			
 			if C["unitframes"].charportrait == true then
 				CombatFeedbackText:SetPoint("CENTER", self.Portrait, "CENTER")
@@ -1295,7 +1293,7 @@ local function Shared(self, unit)
 		FrameBorder:SetBackdropBorderColor(unpack(C["media"].altbordercolor))
 		FrameBorder:SetFrameLevel(2)
 		self.FrameBorder = FrameBorder
-		E.CreateShadow(self.FrameBorder)
+		self.FrameBorder:CreateShadow("Default")
 		self.FrameBorder.shadow:SetFrameLevel(0)
 		self.FrameBorder.shadow:SetFrameStrata("BACKGROUND")
 		
@@ -1341,7 +1339,7 @@ local function Shared(self, unit)
 			PowerFrame:SetBackdropBorderColor(unpack(C["media"].altbordercolor))	
 			self.PowerFrame = PowerFrame
 			if powerbar_offset ~= 0 then
-				E.CreateShadow(PowerFrame)
+				PowerFrame:CreateShadow("Default")
 			else
 				self.FrameBorder.shadow:SetPoint("BOTTOMLEFT", PowerFrame, "BOTTOMLEFT", E.Scale(-4), E.Scale(-4))
 			end
@@ -1469,13 +1467,13 @@ local function Shared(self, unit)
 			castbar.bg:SetPoint("BOTTOMRIGHT", E.Scale(2), E.Scale(-2))
 			castbar.bg:SetFrameLevel(5)
 			
-			castbar.time = E.SetFontString(castbar, font1, C["unitframes"].fontsize, "THINOUTLINE")
+			castbar:FontString("time", font1, C["unitframes"].fontsize, "THINOUTLINE")
 			castbar.time:SetPoint("RIGHT", castbar, "RIGHT", E.Scale(-4), 0)
 			castbar.time:SetTextColor(0.84, 0.75, 0.65)
 			castbar.time:SetJustifyH("RIGHT")
 			castbar.CustomTimeText = E.CustomCastTimeText
 
-			castbar.Text = E.SetFontString(castbar, font1, C["unitframes"].fontsize)
+			castbar:FontString("Text", font1, C["unitframes"].fontsize)
 			castbar.Text:SetPoint("LEFT", castbar, "LEFT", 4, 1)
 			castbar.Text:SetTextColor(0.84, 0.75, 0.65)
 			
@@ -1595,7 +1593,7 @@ local function Shared(self, unit)
 		FrameBorder:SetBackdropBorderColor(unpack(C["media"].altbordercolor))
 		FrameBorder:SetFrameLevel(2)
 		self.FrameBorder = FrameBorder
-		E.CreateShadow(self.FrameBorder)
+		self.FrameBorder:CreateShadow("Default")
 		self.FrameBorder.shadow:SetFrameLevel(0)
 		self.FrameBorder.shadow:SetFrameStrata("BACKGROUND")
 		
@@ -1616,7 +1614,7 @@ local function Shared(self, unit)
 		PowerFrame:SetTemplate("Default")
 		PowerFrame:SetBackdropBorderColor(unpack(C["media"].altbordercolor))	
 		if powerbar_offset ~= 0 then
-			E.CreateShadow(PowerFrame)
+			PowerFrame:CreateShadow("Default")
 		else
 			self.FrameBorder.shadow:SetPoint("BOTTOMLEFT", PowerFrame, "BOTTOMLEFT", E.Scale(-4), E.Scale(-4))
 		end
@@ -1649,21 +1647,23 @@ local function Shared(self, unit)
 		
 		--Health and Power
 		if (unit and unit:find('arena%d')) then
-			health.value = E.SetFontString(health, font1,C["unitframes"].fontsize, "OUTLINE")
+			health:FontString("value", font1,C["unitframes"].fontsize, "OUTLINE")
 			health.value:SetPoint("LEFT", E.Scale(2), E.Scale(1))
 			health.PostUpdate = E.PostUpdateHealth
 			
-			power.value = E.SetFontString(health, font1, C["unitframes"].fontsize, "OUTLINE")
+			power:FontString("value", font1, C["unitframes"].fontsize, "OUTLINE")
+			power.value:SetParent(health)
 			power.value:SetPoint("RIGHT", health, "RIGHT", E.Scale(-2), E.Scale(1))
 			power.PreUpdate = E.PreUpdatePower
 			power.PostUpdate = E.PostUpdatePower			
 		else
-			health.value = E.SetFontString(health, font1,C["unitframes"].fontsize, "OUTLINE")
+			health:FontString("value", font1,C["unitframes"].fontsize, "OUTLINE")
 			health.value:SetPoint("TOPLEFT", health, "TOPLEFT", E.Scale(2), E.Scale(-2))
 			health.PostUpdate = E.PostUpdateHealth
 			
-			power.value = E.SetFontString(health, font1, C["unitframes"].fontsize, "OUTLINE")
+			power:FontString("value", font1, C["unitframes"].fontsize, "OUTLINE")
 			power.value:SetPoint("BOTTOMLEFT", health, "BOTTOMLEFT", E.Scale(2), E.Scale(1))
+			power.value:SetParent(health)
 			power.value:SetJustifyH("LEFT")
 			power.PreUpdate = E.PreUpdatePower
 			power.PostUpdate = E.PostUpdatePower
@@ -1801,13 +1801,13 @@ local function Shared(self, unit)
 			castbar.bg:SetPoint("BOTTOMRIGHT", E.Scale(2), E.Scale(-2))
 			castbar.bg:SetFrameLevel(5)
 			
-			castbar.time = E.SetFontString(castbar, font1, C["unitframes"].fontsize, "THINOUTLINE")
+			castbar:FontString("time", font1, C["unitframes"].fontsize, "THINOUTLINE")
 			castbar.time:SetPoint("RIGHT", castbar, "RIGHT", E.Scale(-4), 0)
 			castbar.time:SetTextColor(0.84, 0.75, 0.65)
 			castbar.time:SetJustifyH("RIGHT")
 			castbar.CustomTimeText = E.CustomCastTimeText
 
-			castbar.Text = E.SetFontString(castbar, font1, C["unitframes"].fontsize, "THINOUTLINE")
+			castbar:FontString("Text", font1, C["unitframes"].fontsize, "THINOUTLINE")
 			castbar.Text:SetPoint("LEFT", castbar, "LEFT", 4, 0)
 			castbar.Text:SetTextColor(0.84, 0.75, 0.65)
 			
@@ -1887,7 +1887,7 @@ local function Shared(self, unit)
 		FrameBorder:SetBackdropBorderColor(unpack(C["media"].altbordercolor))
 		FrameBorder:SetFrameLevel(2)
 		self.FrameBorder = FrameBorder
-		E.CreateShadow(self.FrameBorder)
+		self.FrameBorder:CreateShadow("Default")
 		self.FrameBorder.shadow:SetFrameLevel(0)
 		self.FrameBorder.shadow:SetFrameStrata("BACKGROUND")
 		
@@ -2065,8 +2065,8 @@ if C["raidframes"].disableblizz == true then --seriosly lazy addon authors can s
 	blizzloader:RegisterEvent("ADDON_LOADED")
 	blizzloader:SetScript("OnEvent", function(self, event, addon)
 		if addon == "ElvUI_Dps_Layout" then 
-			E.Kill(CompactRaidFrameContainer)
-			E.Kill(CompactPartyFrame)
+			CompactRaidFrameContainer:Kill()
+			CompactPartyFrame:Kill()
 		end
 	end)
 end

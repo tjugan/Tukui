@@ -26,6 +26,19 @@ ALLOWED_GROUPS = {
 	["debug"]=1,
 }
 
+--List of "Options" that we do not want to show in the config
+local Filter = {
+	["font"]=1,
+	["uffont"]=1,
+	["dmgfont"]=1,
+	["normTex"]=1,
+	["glowTex"]=1,
+	["blank"]=1,
+	["raidicons"]=1,
+	["whisper"]=1,
+	["warning"]=1,
+}
+
 local function Local(o)
 	local E, C, L = unpack(ElvUI) -- Import Functions/Constants, Config, Locales
 	
@@ -308,7 +321,7 @@ local NewButton = function(text,parent)
 	
 	local result = CreateFrame("Button", nil, parent)
 	local label = result:CreateFontString(nil,"OVERLAY",nil)
-	label:SetFont(C.media.font,C["general"].fontscale,"OUTLINE")
+	label:SetFont(C.media.font,C["general"].fontscale)
 	label:SetText(text)
 	result:SetWidth(label:GetWidth())
 	result:SetHeight(label:GetHeight())
@@ -589,14 +602,14 @@ local function CreateElvuiConfigUI()
 				local o = "ElvuiConfigUI"..group..option
 				Local(o)
 				_G["ElvuiConfigUI"..group..option.."Text"]:SetText(E.option)
-				_G["ElvuiConfigUI"..group..option.."Text"]:SetFont(C.media.font, C["general"].fontscale, "OUTLINE")
+				_G["ElvuiConfigUI"..group..option.."Text"]:SetFont(C.media.font, C["general"].fontscale)
 				button:SetChecked(value)
 				button:SetScript("OnClick", function(self) SetValue(group,option,(self:GetChecked() and true or false)) end)
 				button:SetPoint("TOPLEFT", 5, -(offset))
 				offset = offset+25
-			elseif type(value) == "number" or type(value) == "string" then
+			elseif (type(value) == "number" or type(value) == "string") and not Filter[option] then
 				local label = frame:CreateFontString(nil,"OVERLAY",nil)
-				label:SetFont(C.media.font,C["general"].fontscale,"OUTLINE")
+				label:SetFont(C.media.font,C["general"].fontscale)
 				local o = "ElvuiConfigUI"..group..option
 				Local(o)
 				label:SetText(E.option)
@@ -627,7 +640,7 @@ local function CreateElvuiConfigUI()
 				okbutton:SetTemplate("Default")
 				okbutton:SetPoint("LEFT", editbox, "RIGHT", 2, 0)
 				local oktext = okbutton:CreateFontString(nil,"OVERLAY",nil)
-				oktext:SetFont(C.media.font,12,"OUTLINE")
+				oktext:SetFont(C.media.font,12)
 				oktext:SetText("OK")
 				oktext:SetPoint("CENTER")
 				oktext:SetJustifyH("CENTER")
@@ -648,7 +661,7 @@ local function CreateElvuiConfigUI()
 				offset = offset+45
 			elseif type(value) == "table" then
 				local label = frame:CreateFontString(nil,"OVERLAY",nil)
-				label:SetFont(C.media.font,C["general"].fontscale, "OUTLINE")
+				label:SetFont(C.media.font,C["general"].fontscale)
 				local o = "ElvuiConfigUI"..group..option
 				Local(o)
 				label:SetText(E.option)
@@ -665,7 +678,7 @@ local function CreateElvuiConfigUI()
 				colorbutton:SetBackdropBorderColor(unpack(value))
 				colorbutton:SetPoint("LEFT", label, "RIGHT", 2, 0)
 				local colortext = colorbutton:CreateFontString(nil,"OVERLAY",nil)
-				colortext:SetFont(C.media.font,C["general"].fontscale, "OUTLINE")
+				colortext:SetFont(C.media.font,C["general"].fontscale)
 				colortext:SetText("Set Color")
 				colortext:SetPoint("CENTER")
 				colortext:SetJustifyH("CENTER")
@@ -757,7 +770,7 @@ local function CreateElvuiConfigUI()
 		button:SetPoint("RIGHT", ElvuiConfigUITitleBox, "RIGHT",-3, 0)	
 		
 		local label = ElvuiConfigAllCharacters:CreateFontString(nil,"OVERLAY",nil)
-		label:SetFont(C.media.font,C["general"].fontscale,"OUTLINE")
+		label:SetFont(C.media.font,C["general"].fontscale)
 		
 		label:SetText(ElvuiL.option_setsavedsetttings)
 		label:SetPoint("RIGHT", button, "LEFT")

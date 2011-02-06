@@ -2,9 +2,6 @@
 
 local E, C, L = unpack(select(2, ...)) -- Import Functions/Constants, Config, Locales
 
-local myPlayerRealm = GetCVar("realmName")
-local myPlayerName  = UnitName("player")
-
 E.CreatedMovers = {}
 
 local print = function(...)
@@ -17,13 +14,13 @@ local function CreateMover(parent, name, text, overlay, postdrag)
 	if overlay == nil then overlay = true end
 	
 	if ElvuiData == nil then ElvuiData = {} end
-	if ElvuiData[myPlayerRealm] == nil then ElvuiData[myPlayerRealm] = {} end
-	if ElvuiData[myPlayerRealm][myPlayerName] == nil then ElvuiData[myPlayerRealm][myPlayerName] = {} end
-	if ElvuiData[myPlayerRealm][myPlayerName]["movers"] == nil then ElvuiData[myPlayerRealm][myPlayerName]["movers"] = {} end
-	if ElvuiData[myPlayerRealm][myPlayerName]["movers"][name] == nil then ElvuiData[myPlayerRealm][myPlayerName]["movers"][name] = {} end
+	if ElvuiData[E.myrealm] == nil then ElvuiData[E.myrealm] = {} end
+	if ElvuiData[E.myrealm][E.myname] == nil then ElvuiData[E.myrealm][E.myname] = {} end
+	if ElvuiData[E.myrealm][E.myname]["movers"] == nil then ElvuiData[E.myrealm][E.myname]["movers"] = {} end
+	if ElvuiData[E.myrealm][E.myname]["movers"][name] == nil then ElvuiData[E.myrealm][E.myname]["movers"][name] = {} end
 	ElvuiData["Movers"] = nil -- old
 	
-	E.Movers = ElvuiData[myPlayerRealm][myPlayerName]["movers"]
+	E.Movers = ElvuiData[E.myrealm][E.myname]["movers"]
 	
 	local p, p2, p3, p4, p5 = parent:GetPoint()
 	
@@ -52,7 +49,7 @@ local function CreateMover(parent, name, text, overlay, postdrag)
 		f2:SetFrameStrata("BACKGROUND")
 	end
 	f2:SetPoint("CENTER", f, "CENTER")
-	E.SetNormTexTemplate(f2)
+	f2:SetTemplate("Default", true)
 	f2:RegisterForDrag("LeftButton", "RightButton")
 	f2:SetScript("OnDragStart", function(self) 
 		if InCombatLockdown() then print(ERR_NOT_IN_COMBAT) return end
@@ -102,7 +99,7 @@ local function CreateMover(parent, name, text, overlay, postdrag)
 	end)
 	f2:SetScript("OnLeave", function(self)
 		self.text:SetTextColor(unpack(C["media"].valuecolor))
-		E.SetNormTexTemplate(self)
+		self:SetTemplate("Default", true)
 	end)
 	
 	f2:SetMovable(true)

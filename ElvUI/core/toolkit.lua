@@ -125,7 +125,7 @@ local function CreateShadow(f, t)
 	backdropr, backdropg, backdropb = 0, 0, 0
 	
 	if t == "ClassColor" then
-		local c = T.oUF_colors.class[class]
+		local c = E.colors.class[class]
 		borderr, borderg, borderb = c[1], c[2], c[3]
 		backdropr, backdropg, backdropb = unpack(C["media"].backdropcolor)
 	end
@@ -152,6 +152,22 @@ local function Kill(object)
 	end
 	object.Show = noop
 	object:Hide()
+end
+
+local function FontString(parent, name, fontName, fontHeight, fontStyle)
+	local fs = parent:CreateFontString(nil, "OVERLAY")
+	fs:SetFont(fontName, fontHeight, fontStyle)
+	fs:SetJustifyH("LEFT")
+	fs:SetShadowColor(0, 0, 0)
+	fs:SetShadowOffset(E.mult, -E.mult)
+	
+	if not name then
+		parent.text = fs
+	else
+		parent[name] = fs
+	end
+	
+	return fs
 end
 
 local function StyleButton(b, c) 
@@ -214,6 +230,7 @@ local function addapi(object)
 	mt.StyleButton = StyleButton
 	mt.Width = Width
 	mt.Height = Height
+	mt.FontString = FontString
 end
 
 local handled = {["Frame"] = true}

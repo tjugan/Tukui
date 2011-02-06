@@ -35,6 +35,7 @@ if C["datatext"].gold and C["datatext"].gold > 0 then
 	end
 
 	local function FormatTooltipMoney(money)
+		if not money then return end
 		local gold, silver, copper = abs(money / 10000), abs(mod(money / 100, 100)), abs(mod(money, 100))
 		local cash = ""
 		cash = format("%d"..L.goldabbrev.." %d"..L.silverabbrev.." %d"..L.copperabbrev, gold, silver, copper)		
@@ -58,13 +59,11 @@ if C["datatext"].gold and C["datatext"].gold > 0 then
 		Text:SetText(formatMoney(NewMoney))
 		-- Setup Money Tooltip
 		self:SetAllPoints(Text)
-
-		local myPlayerRealm = GetCVar("realmName");
-		local myPlayerName  = UnitName("player");				
+	
 		if (ElvuiData == nil) then ElvuiData = {}; end
-		if (ElvuiData[myPlayerRealm] == nil) then ElvuiData[myPlayerRealm] = {} end
-		if (ElvuiData[myPlayerRealm][myPlayerName] == nil) then ElvuiData[myPlayerRealm][myPlayerName] = {} end
-		if (ElvuiData[myPlayerRealm][myPlayerName]["gold"] == nil) then ElvuiData[myPlayerRealm][myPlayerName]["gold"] = GetMoney() end
+		if (ElvuiData[E.myrealm] == nil) then ElvuiData[E.myrealm] = {} end
+		if (ElvuiData[E.myrealm][E.myname] == nil) then ElvuiData[E.myrealm][E.myname] = {} end
+		ElvuiData[E.myrealm][E.myname]["gold"] = GetMoney()
 		ElvuiData.gold = nil -- old
 		
 		self:SetScript("OnEnter", function()
@@ -86,9 +85,9 @@ if C["datatext"].gold and C["datatext"].gold > 0 then
 				local totalGold = 0				
 				GameTooltip:AddLine(L.datatext_character)			
 
-				for k,_ in pairs(ElvuiData[myPlayerRealm]) do
-					GameTooltip:AddDoubleLine(k, FormatTooltipMoney(ElvuiData[myPlayerRealm][k].gold), 1, 1, 1, 1, 1, 1)
-					totalGold=totalGold+ElvuiData[myPlayerRealm][k].gold
+				for k,_ in pairs(ElvuiData[E.myrealm]) do
+					GameTooltip:AddDoubleLine(k, FormatTooltipMoney(ElvuiData[E.myrealm][k].gold), 1, 1, 1, 1, 1, 1)
+					totalGold=totalGold+ElvuiData[E.myrealm][k].gold
 				end 
 				GameTooltip:AddLine' '
 				GameTooltip:AddLine(L.datatext_server)
@@ -122,12 +121,9 @@ if C["datatext"].gold and C["datatext"].gold > 0 then
 	Stat:SetScript("OnEvent", OnEvent)
 	
 	-- reset gold data
-	local function RESETGOLD()
-		local myPlayerRealm = GetCVar("realmName");
-		local myPlayerName  = UnitName("player");
-		
-		for k,_ in pairs(ElvuiData[myPlayerRealm]) do
-			ElvuiData[myPlayerRealm][k].gold = nil
+	local function RESETGOLD()		
+		for k,_ in pairs(ElvuiData[E.myrealm]) do
+			ElvuiData[E.myrealm][k].gold = nil
 		end 
 	end
 	SLASH_RESETGOLD1 = "/resetgold"

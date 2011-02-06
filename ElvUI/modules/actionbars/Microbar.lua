@@ -71,7 +71,7 @@ for i, button in pairs(microbuttons) do
 	m.SetHighlightTexture = E.dummy
 
 	if i == 5 then
-		E.Kill(m)
+		m:Kill()
 	elseif i == 9 then
 		m:ClearAllPoints()
 		m:SetPoint("LEFT", LFDMicroButton, "RIGHT", -3, 0)
@@ -82,7 +82,7 @@ for i, button in pairs(microbuttons) do
 	f:SetFrameStrata("BACKGROUND")
 	f:SetPoint("BOTTOMLEFT", m, "BOTTOMLEFT", 2, 0)
 	f:SetPoint("TOPRIGHT", m, "TOPRIGHT", -2, -28)
-	E.SetNormTexTemplate(f)
+	f:SetTemplate("Default", true)
 	m.frame = f
 	
 	pushed:SetTexCoord(0.17, 0.87, 0.5, 0.908)
@@ -127,7 +127,7 @@ x:SetPoint("TOPLEFT", CharacterMicroButton.frame, "TOPLEFT")
 x:SetPoint("BOTTOMRIGHT", HelpMicroButton.frame, "BOTTOMRIGHT")
 x:EnableMouse(true)
 x.mouseover = false
-E.CreateShadow(x)
+x:CreateShadow("Default")
 x:SetScript("OnEnter", function(self) self.mouseover = true end)
 x:SetScript("OnLeave", function(self) self.mouseover = false end)
 

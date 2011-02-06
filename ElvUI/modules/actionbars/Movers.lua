@@ -3,9 +3,6 @@ local E, C, L = unpack(select(2, ...)) -- Import Functions/Constants, Config, Lo
 
 if not C["actionbar"].enable == true then return end
 
-local myPlayerRealm = GetCVar("realmName")
-local myPlayerName = E.myname
-
 local function Button_OnEnter(self)
 	self.Text:SetTextColor(1, 1, 1)
 	self:SetBackdropBorderColor(unpack(C["media"].valuecolor))
@@ -13,7 +10,7 @@ end
 
 local function Button_OnLeave(self)
 	self.Text:SetTextColor(unpack(C["media"].valuecolor))
-	E.SetNormTexTemplate(self)
+	self:SetTemplate("Default", true)
 end
 
 local function Button_OnEvent(self, event)
@@ -24,14 +21,14 @@ local btnnames = {}
 
 local function CreateMoverButton(name, text)
 	local b = CreateFrame("Button", name, UIParent)
-	E.SetNormTexTemplate(b)
+	b:SetTemplate("Default", true)
 	b:RegisterEvent("PLAYER_REGEN_DISABLED")
 	b:SetScript("OnEvent", Button_OnEvent)
 	b:SetScript("OnEnter", Button_OnEnter)
 	b:SetScript("OnLeave", Button_OnLeave)
 	b:EnableMouse(true)
 	b:Hide()
-	E.CreateShadow(b)
+	b:CreateShadow("Default")
 	tinsert(btnnames, tostring(name))
 	
 	local t = b:CreateFontString(nil, "OVERLAY", b)
@@ -63,7 +60,7 @@ function E.ToggleABLock()
 		if E.ABLock == false then
 			_G[btnnames]:EnableMouse(false)
 			_G[btnnames]:Hide()
-			ElvuiInfoLeftRButton.Text:SetTextColor(1,1,1)
+			ElvuiInfoLeftRButton.text:SetTextColor(1,1,1)
 		else
 			_G[btnnames]:EnableMouse(true)
 			if btnnames == "RightBarBig" and not (E["actionbar"].rightbars ~= 0 or (E["actionbar"].bottomrows == 3 and E["actionbar"].splitbar == true)) then
@@ -71,7 +68,7 @@ function E.ToggleABLock()
 			elseif btnnames ~= "RightBarBig" then
 				_G[btnnames]:Show()
 			end
-			ElvuiInfoLeftRButton.Text:SetTextColor(unpack(C["media"].valuecolor))
+			ElvuiInfoLeftRButton.text:SetTextColor(unpack(C["media"].valuecolor))
 		end
 	end
 end
@@ -93,11 +90,11 @@ barloader:SetScript("OnEvent", function(self)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	
 	if ElvuiData == nil then ElvuiData = {} end
-	if ElvuiData[myPlayerRealm] == nil then ElvuiData[myPlayerRealm] = {} end
-	if ElvuiData[myPlayerRealm][myPlayerName] == nil then ElvuiData[myPlayerRealm][myPlayerName] = {} end
-	if ElvuiData[myPlayerRealm][myPlayerName]["actionbar"] == nil then ElvuiData[myPlayerRealm][myPlayerName]["actionbar"] = {} end
+	if ElvuiData[E.myrealm] == nil then ElvuiData[E.myrealm] = {} end
+	if ElvuiData[E.myrealm][E.myname] == nil then ElvuiData[E.myrealm][E.myname] = {} end
+	if ElvuiData[E.myrealm][E.myname]["actionbar"] == nil then ElvuiData[E.myrealm][E.myname]["actionbar"] = {} end
 	
-	E["actionbar"] = ElvuiData[myPlayerRealm][myPlayerName]["actionbar"]
+	E["actionbar"] = ElvuiData[E.myrealm][E.myname]["actionbar"]
 	
 	--Default settings
 	if E["actionbar"].splitbar == nil then E["actionbar"].splitbar = true end
@@ -195,7 +192,7 @@ barloader:SetScript("OnEvent", function(self)
 	RightBarDec:SetPoint("BOTTOMLEFT", ElvuiActionBarBackgroundRight, "BOTTOM", E.Scale(2), E.Scale(-19))
 	
 	E.ABLock = false
-	ElvuiInfoLeftRButton.Text:SetTextColor(1,1,1)
+	ElvuiInfoLeftRButton.text:SetTextColor(1,1,1)
 	E.PositionAllBars()
 end)
 

@@ -21,6 +21,15 @@ StaticPopupDialogs["RELOAD_UI"] = {
 	whileDead = 1,
 }
 
+StaticPopupDialogs["RESET_UF"] = {
+	text = L.popup_resetuf,
+	button1 = YES,
+	button2 = NO,
+	OnAccept = function() E.ResetUF() ReloadUI() end,
+	timeout = 0,
+	whileDead = 1,
+}
+
 StaticPopupDialogs["INSTALL_UI"] = {
 	text = L.popup_install,
 	button1 = ACCEPT,
@@ -36,15 +45,6 @@ StaticPopupDialogs["DISABLE_RAID"] = {
 	button2 = "HEAL",
 	OnAccept = function() DisableAddOn("ElvUI_Heal_Layout") EnableAddOn("ElvUI_Dps_Layout") ReloadUI() end,
 	OnCancel = function() EnableAddOn("ElvUI_Heal_Layout") DisableAddOn("ElvUI_Dps_Layout") ReloadUI() end,
-	timeout = 0,
-	whileDead = 1,
-}
-
-StaticPopupDialogs["CHAT_WARN"] = {
-	text = L.popup_rightchatwarn,
-	button1 = ACCEPT,
-	button2 = CANCEL,
-	OnAccept = E.Install,
 	timeout = 0,
 	whileDead = 1,
 }

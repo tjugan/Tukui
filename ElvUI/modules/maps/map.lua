@@ -63,10 +63,10 @@ alds:SetFrameLevel(0)
 
 local SmallerMapSkin = function()
 	-- don't need this
-	E.Kill(WorldMapTrackQuest)
+	WorldMapTrackQuest:Kill()
 
 	-- map glow
-	E.CreateShadow(mapbg)
+	mapbg:CreateShadow("Default")
 	
 	-- map border and bg
 	mapbg:SetBackdropColor(unpack(C["media"].backdropcolor))
@@ -228,8 +228,8 @@ end)
 
 local coords = CreateFrame("Frame", "CoordsFrame", WorldMapFrame)
 local fontheight = select(2, WorldMapQuestShowObjectivesText:GetFont())*1.1
-coords.PlayerText = E.SetFontString(CoordsFrame, C["media"].font, fontheight, "THINOUTLINE")
-coords.MouseText = E.SetFontString(CoordsFrame, C["media"].font, fontheight, "THINOUTLINE")
+coords:FontString("PlayerText", C["media"].font, fontheight, "THINOUTLINE")
+coords:FontString("MouseText", C["media"].font, fontheight, "THINOUTLINE")
 coords.PlayerText:SetTextColor(WorldMapQuestShowObjectivesText:GetTextColor())
 coords.MouseText:SetTextColor(WorldMapQuestShowObjectivesText:GetTextColor())
 coords.PlayerText:SetPoint("TOPLEFT", WorldMapButton, "TOPLEFT", 5, -5)

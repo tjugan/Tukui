@@ -9,7 +9,7 @@ local E, C, L = unpack(select(2, ...)) -- Import Functions/Constants, Config, Lo
 local function skinFrame(self, frame)
 	--Unfortionatly theres not a prettier way of doing this
 	if frame:GetParent():GetName() == "Recount_ConfigWindow" then
-		E.SetTransparentTemplate(frame)
+		frame:SetTemplate("Transparent")
 		frame:SetFrameStrata("BACKGROUND")
 		frame.SetFrameStrata = E.dummy
 	elseif frame:GetName() == "OmenBarList" or 
@@ -19,7 +19,7 @@ local function skinFrame(self, frame)
 	frame:GetParent():GetName() == "Recount_MainWindow" or 
 	frame:GetParent():GetName() == "Recount_GraphWindow" or 
 	frame:GetParent():GetName() == "Recount_DetailWindow" then
-		E.SetTransparentTemplate(frame)
+		frame:SetTemplate("Transparent")
 		if frame:GetParent():GetName() ~= "Recount_GraphWindow" and frame:GetParent():GetName() ~= "Recount_DetailWindow" then
 			frame:SetFrameStrata("MEDIUM")
 		else
@@ -85,7 +85,8 @@ Mod_AddonSkins:SetScript("OnEvent",function(self, event, addon)
 			SkadaBarWindowSkada:ClearAllPoints()
 			SkadaBarWindowSkada:SetPoint("TOPRIGHT", ChatRBackground2, "TOPRIGHT", -2, -2)
 			local function AdjustSkadaFrameLevels()
-				SkadaBarWindowSkada:SetFrameLevel(ChatFrame3:GetFrameLevel() + 2)
+				if not E.RightChatWindowID then return end
+				SkadaBarWindowSkada:SetFrameLevel(_G[format("ChatFrame%s", E.RightChatWindowID)]:GetFrameLevel() or 0 + 2)
 				if SkadaBG then
 					SkadaBG:SetFrameStrata("MEDIUM")	
 					SkadaBG:ClearAllPoints()
@@ -110,7 +111,7 @@ Mod_AddonSkins:SetScript("OnEvent",function(self, event, addon)
 		end
 		if C["skin"].embedright == "Omen" and IsAddOnLoaded("Omen") then
 			Omen.UpdateTitleBar = function() end
-			E.Kill(OmenTitle)
+			OmenTitle:Kill()
 			if IsAddOnLoaded("Omen") then
 				OmenBarList:SetFrameStrata("HIGH")
 			end
@@ -118,7 +119,7 @@ Mod_AddonSkins:SetScript("OnEvent",function(self, event, addon)
 			OmenBarList:SetAllPoints(ChatRBackground2)
 		end
 		
-		if C["chat"].showbackdrop == true and IsAddOnLoaded("DXE") and DXEAlertsTopStackAnchor and C["skin"].hookdxeright == true and C["chat"].rightchat == true then
+		if C["chat"].showbackdrop == true and IsAddOnLoaded("DXE") and DXEAlertsTopStackAnchor and C["skin"].hookdxeright == true and E.RightChat == true then
 			DXEAlertsTopStackAnchor:ClearAllPoints()
 			DXEAlertsTopStackAnchor:SetPoint("BOTTOM", ChatRBackground2, "TOP", 13, 18)			
 		elseif IsAddOnLoaded("DXE") and DXEAlertsTopStackAnchor and C["skin"].hookdxeright == true then
