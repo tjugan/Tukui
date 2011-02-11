@@ -17,9 +17,9 @@ E.PP(C["datatext"].friends, Text)
 
 local menuFrame = CreateFrame("Frame", "ElvuiFriendRightClickMenu", UIParent, "UIDropDownMenuTemplate")
 local menuList = {
-	{ text = "Select an Option", isTitle = true,notCheckable=true},
-	{ text = "Invite", hasArrow = true,notCheckable=true, },
-	{ text = "Whisper", hasArrow = true,notCheckable=true, }
+	{ text = OPTIONS_MENU, isTitle = true,notCheckable=true},
+	{ text = INVITE, hasArrow = true,notCheckable=true, },
+	{ text = CHAT_MSG_WHISPER_INFORM, hasArrow = true,notCheckable=true, }
 }
 
 local function GetTableIndex(table, fieldIndex, value)
@@ -49,7 +49,7 @@ local totalOnlineString = L.datatext_online .. "%s/%s"
 local tthead, ttsubh, ttoff = {r=0.4, g=0.78, b=1}, {r=0.75, g=0.9, b=1}, {r=.3,g=1,b=.3}
 local activezone, inactivezone = {r=0.3, g=1.0, b=0.3}, {r=0.65, g=0.65, b=0.65}
 local displayString = string.join("", "%s: ", E.ValColor, "%d|r")
-local statusTable = { "[AFK]", "[DND]", "" }
+local statusTable = { L.chat_FLAG_AFK, L.chat_FLAG_DND, "" }
 local groupedTable = { "|cffaaaaaa*|r", "" } 
 local friendTable, BNTable = {}, {}
 local totalOnline, BNTotalOnline = 0, 0

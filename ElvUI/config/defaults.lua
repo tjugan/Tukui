@@ -21,7 +21,7 @@ C["media"] = {
 	-- sound
 	["whisper"] = [[Interface\AddOns\ElvUI\media\sounds\whisper.mp3]],
 	["warning"] = [[Interface\AddOns\ElvUI\media\sounds\warning.mp3]],
-	["glossyTexture"] = true,	-- Use a glossy texture for all frames
+	["glossyTexture"] = false,	-- Use a glossy texture for all frames
 }
 
 C["general"] = {
@@ -35,9 +35,9 @@ C["general"] = {
 C["skin"] = {	--Skin addons by Darth Android
 	["recount"] = true,
 	["skada"] = true,
-	["dxe"] = true,
 	["omen"] = true,
-	["hookdxeright"] = false,			--Force DXE's Top Bar anchor to be hooked to the right chat window
+	["kle"] = true,
+	["hookkleright"] = true,			-- force KLE's top bar anchor to be hooked onto the right chat window
 	["embedright"] = "NONE",				-- Addon to embed to the right frame ("Omen", "Recount", "Skada")
 }
 
@@ -261,3 +261,5 @@ C["debug"] = {--don't recommend turning this on
 	["enabled"] = false,				
 	["events"] = false,
 }
+
+C["media"].normTex2 = C["media"].normTex

@@ -37,6 +37,7 @@ local Filter = {
 	["raidicons"]=1,
 	["whisper"]=1,
 	["warning"]=1,
+	["normTex2"]=1,
 }
 
 local function Local(o)
@@ -74,11 +75,11 @@ local function Local(o)
 	
 	--Skin
 	if o =="ElvuiConfigUIskin" then o = ElvuiL.option_skin end
-	if o =="ElvuiConfigUIskindxe" then o = ElvuiL.option_skin_dxe end
+	if o =="ElvuiConfigUIskinkle" then o = ElvuiL.option_skin_kle end
 	if o =="ElvuiConfigUIskinomen" then o = ElvuiL.option_skin_omen end
 	if o =="ElvuiConfigUIskinrecount" then o = ElvuiL.option_skin_recount end
 	if o =="ElvuiConfigUIskinskada" then o = ElvuiL.option_skin_skada end
-	if o == "ElvuiConfigUIskinhookdxeright" then o = ElvuiL.option_hookdxeright end
+	if o == "ElvuiConfigUIskinhookkleright" then o = ElvuiL.option_hookkleright end
 	if o == "ElvuiConfigUIskinembedright" then o = ElvuiL.option_general_embedright end
 	
 	--Classtimers
