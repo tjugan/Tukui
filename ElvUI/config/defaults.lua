@@ -21,7 +21,7 @@ C["media"] = {
 	-- sound
 	["whisper"] = [[Interface\AddOns\ElvUI\media\sounds\whisper.mp3]],
 	["warning"] = [[Interface\AddOns\ElvUI\media\sounds\warning.mp3]],
-	["glossyTexture"] = false,	-- Use a glossy texture for all frames
+	["glossyTexture"] = true,	-- Use a glossy texture for all frames
 }
 
 C["general"] = {
@@ -210,7 +210,7 @@ C["datatext"] = {
 	["hps_text"] = 0,						-- show current hps
 	["haste"] = 0,							-- show current haste
 	["currency"] = 0,						-- show watched items in backpack
-	
+	["specswitch"] = 0,
 	["battleground"] = true,               -- enable 3 stats in battleground only that replace stat1,stat2,stat3.
 	["time24"] = false,                     -- set time to 24h format.
 	["localtime"] = true,                 -- set time to local time instead of server time.

@@ -72,6 +72,8 @@ local function SetChatStyle(frame)
 	
 	_G[chat.."TabText"]:SetTextColor(unpack(C["media"].valuecolor))
 	_G[chat.."TabText"]:SetFont(C.media.font,C["general"].fontscale,"THINOUTLINE")
+	_G[chat.."TabText"]:SetShadowColor(0, 0, 0, 0.4)
+	_G[chat.."TabText"]:SetShadowOffset(E.mult, -E.mult)
 	_G[chat.."TabText"].SetTextColor = E.dummy
 	local originalpoint = select(2, _G[chat.."TabText"]:GetPoint())
 	_G[chat.."TabText"]:SetPoint("LEFT", originalpoint, "RIGHT", 0, -E.mult*2)
@@ -512,6 +514,7 @@ function E.ChatCopyButtons(id)
 	local point = GetChatWindowSavedPosition(id)
 	local _, fontSize = FCF_GetChatWindowInfo(id)
 	local _, _, _, _, _, _, _, _, docked, _ = GetChatWindowInfo(id)
+	local button = _G[format("ButtonCF%d", id)]
 	
 	if not button then
 		local button = CreateFrame("Button", format("ButtonCF%d", id), cf)
@@ -523,21 +526,29 @@ function E.ChatCopyButtons(id)
 		button:CreateShadow("Default")
 		
 		local buttontext = button:CreateFontString(nil,"OVERLAY",nil)
-		buttontext:SetFont(C.media.font,C["general"].fontscale,"OUTLINE")
+		buttontext:SetFont(C.media.font,C["general"].fontscale,"THINOUTLINE")
+		buttontext:SetShadowColor(0, 0, 0, 0.4)
+		buttontext:SetShadowOffset(E.mult, -E.mult)
 		buttontext:SetText("C")
 		buttontext:SetPoint("CENTER", E.Scale(1), 0)
 		buttontext:SetJustifyH("CENTER")
 		buttontext:SetJustifyV("CENTER")
 		buttontext:SetTextColor(unpack(C["media"].valuecolor))
 		
-				
-		button:SetScript("OnMouseUp", function(self, btn)
-			if i == 1 and btn == "RightButton" then
-				ToggleFrame(ChatMenu)
-			else
+		
+		if id == 1 then
+			button:SetScript("OnMouseUp", function(self, btn)
+				if btn == "RightButton" then
+					ToggleFrame(ChatMenu)
+				else
+					Copy(cf)
+				end
+			end)
+		else
+			button:SetScript("OnMouseUp", function(self, btn)
 				Copy(cf)
-			end
-		end)
+			end)		
+		end
 		
 		button:SetScript("OnEnter", function() 
 			button:SetAlpha(1) 

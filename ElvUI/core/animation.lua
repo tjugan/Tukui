@@ -62,7 +62,15 @@ E.SlideIn = function(self)
     if IsAddOnLoaded("Skada") and self:GetName() == "ChatRBackground" then
         Skada:SetActive(false)
     end
-    -- New line for Skada
+	-- New line for Omen
+    if IsAddOnLoaded("Omen") and self:GetName() == "ChatRBackground" then
+        Omen:Toggle(false)
+    end
+	 -- New line for Recount
+    if IsAddOnLoaded("Recount") and self:GetName() == "ChatRBackground" then
+        Recount.MainWindow:Hide()
+    end
+    
 end
 
 E.SlideOut = function(self)
@@ -76,5 +84,13 @@ E.SlideOut = function(self)
 	if IsAddOnLoaded("Skada") and self:GetName() == "ChatRBackground" then
         Skada:SetActive(true)
     end
-    -- New line for Skada
+	-- New line for Omen
+	if IsAddOnLoaded("Omen") and self:GetName() == "ChatRBackground" then
+        Omen:Toggle(true)
+    end
+	-- New line for Recount
+	if IsAddOnLoaded("Recount") and self:GetName() == "ChatRBackground" then
+        Recount.MainWindow:Show()
+    end
+    
 end

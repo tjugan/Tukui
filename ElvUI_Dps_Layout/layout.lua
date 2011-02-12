@@ -871,11 +871,9 @@ local function Shared(self, unit)
 		AltPowerBar:SetHeight(4)
 		AltPowerBar:SetStatusBarTexture(C.media.normTex)
 		AltPowerBar:GetStatusBarTexture():SetHorizTile(false)
-		AltPowerBar:SetStatusBarColor(1, 0, 0)
 
-		AltPowerBar:SetPoint("LEFT")
-		AltPowerBar:SetPoint("RIGHT")
-		AltPowerBar:SetPoint("TOP", self.Health, "TOP")
+		AltPowerBar:Point("TOPLEFT", ElvuiInfoLeft, "TOPLEFT", 2, -2)
+		AltPowerBar:Point("BOTTOMRIGHT", ElvuiInfoLeft, "BOTTOMRIGHT", -2, 2)
 		
 		AltPowerBar:SetBackdrop({
 		  bgFile = C["media"].blank, 
@@ -886,7 +884,15 @@ local function Shared(self, unit)
 		AltPowerBar:SetBackdropColor(0, 0, 0, 0)
 		AltPowerBar:SetBackdropBorderColor(0, 0, 0, 0)
 		
+		AltPowerBar:FontString(nil, font1, C["unitframes"].fontsize, "THINOUTLINE")
+		AltPowerBar.text:SetPoint("CENTER")
+		AltPowerBar.text:SetJustifyH("CENTER")
+		
+		AltPowerBar:HookScript("OnShow", E.AltPowerBarOnToggle)
+		AltPowerBar:HookScript("OnHide", E.AltPowerBarOnToggle)
+
 		self.AltPowerBar = AltPowerBar		
+		self.AltPowerBar.PostUpdate = E.AltPowerBarPostUpdate
 	end
 	
 	------------------------------------------------------------------------
@@ -1059,7 +1065,7 @@ local function Shared(self, unit)
 		Name:SetPoint("LEFT", health, "LEFT", 0, E.Scale(1))
 		Name:SetJustifyH("LEFT")
 		Name:SetFont(font1, C["unitframes"].fontsize, "OUTLINE")
-		Name:SetShadowColor(0, 0, 0)
+		Name:SetShadowColor(0, 0, 0, 0.4)
 		Name:SetShadowOffset(1.25, -1.25)
 		self:Tag(Name, '[Elvui:getnamecolor][Elvui:namelong] [Elvui:diffcolor][level] [shortclassification]')
 		self.Name = Name
@@ -1233,7 +1239,6 @@ local function Shared(self, unit)
 		AltPowerBar:SetHeight(4)
 		AltPowerBar:SetStatusBarTexture(C.media.normTex)
 		AltPowerBar:GetStatusBarTexture():SetHorizTile(false)
-		AltPowerBar:SetStatusBarColor(1, 0, 0)
 
 		AltPowerBar:SetPoint("LEFT")
 		AltPowerBar:SetPoint("RIGHT")
@@ -1249,6 +1254,7 @@ local function Shared(self, unit)
 		AltPowerBar:SetBackdropBorderColor(0, 0, 0, 0)
 
 		self.AltPowerBar = AltPowerBar		
+		self.AltPowerBar.PostUpdate = E.AltPowerBarPostUpdate	
 	end
 	
 	------------------------------------------------------------------------
@@ -1390,7 +1396,7 @@ local function Shared(self, unit)
 		Name:SetPoint("CENTER", health, "CENTER", 0, E.Scale(1))
 		Name:SetFont(font1, C["unitframes"].fontsize, "THINOUTLINE")
 		Name:SetJustifyH("CENTER")
-		Name:SetShadowColor(0, 0, 0)
+		Name:SetShadowColor(0, 0, 0, 0.4)
 		Name:SetShadowOffset(1.25, -1.25)
 		
 		self:Tag(Name, '[Elvui:getnamecolor][Elvui:namemedium]')
@@ -1682,7 +1688,6 @@ local function Shared(self, unit)
 			apb_bg:SetFrameLevel(AltPowerBar:GetFrameLevel() - 1)
 			AltPowerBar:SetStatusBarTexture(C.media.normTex)
 			AltPowerBar:GetStatusBarTexture():SetHorizTile(false)
-			AltPowerBar:SetStatusBarColor(1, 0, 0)
 		
 			AltPowerBar:SetPoint("TOPLEFT", apb_bg, "TOPLEFT", E.Scale(2), E.Scale(-2))
 			AltPowerBar:SetPoint("BOTTOMRIGHT", apb_bg, "BOTTOMRIGHT", E.Scale(-2), E.Scale(2))
@@ -1699,6 +1704,7 @@ local function Shared(self, unit)
 			AltPowerBar:HookScript("OnHide", function(self) self:GetParent().FrameBorder.shadow:SetPoint("TOPLEFT", E.Scale(-4), E.Scale(4)) end)
 			AltPowerBar.FrameBackdrop = apb_bg			
 			self.AltPowerBar = AltPowerBar	
+			self.AltPowerBar.PostUpdate = E.AltPowerBarPostUpdate
 		end
 		
 		self.Power = power
@@ -1711,14 +1717,14 @@ local function Shared(self, unit)
 			Name:SetPoint("CENTER", health, "CENTER", 0, E.Scale(1))
 			Name:SetJustifyH("CENTER")
 			Name:SetFont(font1, C["unitframes"].fontsize, "OUTLINE")
-			Name:SetShadowColor(0, 0, 0)
+			Name:SetShadowColor(0, 0, 0, 0.4)
 			Name:SetShadowOffset(1.25, -1.25)
 		else
 			Name = health:CreateFontString(nil, "OVERLAY")
 			Name:SetPoint("RIGHT", health, "RIGHT", E.Scale(-2), E.Scale(1))
 			Name:SetJustifyH("RIGHT")
 			Name:SetFont(font1, C["unitframes"].fontsize, "OUTLINE")
-			Name:SetShadowColor(0, 0, 0)
+			Name:SetShadowColor(0, 0, 0, 0.4)
 			Name:SetShadowOffset(1.25, -1.25)	
 		end
 		
@@ -1898,7 +1904,7 @@ local function Shared(self, unit)
 		Name:SetPoint("CENTER", health, "CENTER", 0, E.Scale(1))
 		Name:SetJustifyH("CENTER")
 		Name:SetFont(font1, C["unitframes"].fontsize, "OUTLINE")
-		Name:SetShadowColor(0, 0, 0)
+		Name:SetShadowColor(0, 0, 0, 0.4)
 		Name:SetShadowOffset(1.25, -1.25)
 		
 		self:Tag(Name, '[Elvui:getnamecolor][Elvui:nameshort]')
