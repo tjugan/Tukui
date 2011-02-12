@@ -8,13 +8,13 @@ TRINKET_FILTER = {
 	CreateSpellEntry( 67671 ), -- Fury(Banner of Victory)
 	CreateSpellEntry( 54758 ), -- Hyperspeed Acceleration (Hyperspeed Accelerators)
 	CreateSpellEntry( 55637 ), -- Lightweave
-	CreateSpellEntry( 2825, true ), --Heroism
-	CreateSpellEntry( 32182, true ), -- Bloodlust
-	CreateSpellEntry( 90355, true ), -- Hunter Pet Bloodlust
-	CreateSpellEntry( 80353 ), -- Time Warp 
+	-- CreateSpellEntry( 2825, true ), --Heroism
+	-- CreateSpellEntry( 32182, true ), -- Bloodlust
+	-- CreateSpellEntry( 90355, true ), -- Hunter Pet Bloodlust
+	-- CreateSpellEntry( 80353 ), -- Time Warp 
 	CreateSpellEntry( 26297 ), -- Berserking (troll racial)
 	CreateSpellEntry( 33702 ), CreateSpellEntry( 33697 ), CreateSpellEntry( 20572 ), -- Blood Fury (orc racial)
-	CreateSpellEntry( 57933, true ), -- Tricks of Trade (15% dmg buff)
+	-- CreateSpellEntry( 57933, true ), -- Tricks of Trade (15% dmg buff)
 	CreateSpellEntry( 90992 ), -- Hymn of Power (H Anhuur's Hymnal)
 	CreateSpellEntry( 91149 ), -- Blessing of Isiset (H Blood of Isiset)
 	CreateSpellEntry( 91308 ), -- Egg Shell (H Corrupted Egg Shell)
@@ -58,18 +58,18 @@ TRINKET_FILTER = {
 	CreateSpellEntry( 92345 ), -- Rageheart (H Heart of Rage)
 	CreateSpellEntry( 67684 ), -- Hospitality (Talisman of Resurgence)
 	CreateSpellEntry( 71584 ), -- Revitalized (Purified Lunar Dust)
-	CreateSpellEntry( 92213 ), -- Memory of Invincibility
+	-- CreateSpellEntry( 92213 ), -- Memory of Invincibility
 	CreateSpellEntry( 59473 ), -- Twisted (Essence of the Cyclone)
 	CreateSpellEntry(81932), -- Gnomish X-Ray Scope
 	CreateSpellEntry(92123), -- Enigma (Unsolvable Riddle)
 	CreateSpellEntry( 73549 ), -- Demon Panther (Figurine: Demon Panther)
 	CreateSpellEntry( 73552 ), -- Dream Owl (Figurine: Dream Owl)
-	CreateSpellEntry( 73550 ), -- Earthen Guardian (Figurine: Earthen Guardian)
+	-- CreateSpellEntry( 73550 ), -- Earthen Guardian (Figurine: Earthen Guardian)
 	CreateSpellEntry( 73551 ), -- Jeweled Serpent (Figurine: Jeweled Serpent)
 	CreateSpellEntry( 73522 ), -- King of Boars (Figurine: King of Boars)
 	CreateSpellEntry( 91828 ), -- Thrill of Victory (Impatience of Youth)
 	CreateSpellEntry( 91192 ), -- Pattern of Light (Mandala of Stirring Patterns)
-	CreateSpellEntry( 92222 ), -- Image of Immortality (Mirror of Broken Images)
+	-- CreateSpellEntry( 92222 ), -- Image of Immortality (Mirror of Broken Images)
 	CreateSpellEntry( 92123 ), -- Enigma (Unsolvable Riddle)
 	CreateSpellEntry( 91007 ), -- Dire Magic (Bell of Enraging Resonance)
 	CreateSpellEntry( 92318 ), -- Dire Magic (H Bell of Enraging Resonance)
@@ -501,31 +501,31 @@ CLASS_FILTERS = {
 	},
 	WARRIOR = { 
 		target = {
-			CreateSpellEntry( 94009 ), -- Rend
+			-- CreateSpellEntry( 94009 ), -- Rend
 			CreateSpellEntry( 12294 ), -- Mortal Strike
-			CreateSpellEntry( 1160 ), -- Demoralizing Shout
+			-- CreateSpellEntry( 1160 ), -- Demoralizing Shout
 			CreateSpellEntry( 64382 ), -- Shattering Throw
-			CreateSpellEntry( 58567 ), -- Sunder Armor
-			CreateSpellEntry( 86346 ), -- Colossus Smash
+			-- CreateSpellEntry( 58567 ), -- Sunder Armor
+			-- CreateSpellEntry( 86346 ), -- Colossus Smash
 			CreateSpellEntry( 7922 ), -- Charge (stun)
-			CreateSpellEntry( 1715 ), -- Hamstring
+			-- CreateSpellEntry( 1715 ), -- Hamstring
 			CreateSpellEntry( 50725 ), -- Vigilance
 			CreateSpellEntry( 676 ), -- Disarm
 			CreateSpellEntry( 29703 ), -- Daze (Shield Bash)
 			CreateSpellEntry( 18498 ), -- Gag Order
 			CreateSpellEntry( 12809 ), -- Concussion Blow
-			CreateSpellEntry( 6343 ), -- Thunderclap
+			-- CreateSpellEntry( 6343 ), -- Thunderclap
 		},
 		player = {
 			CreateSpellEntry( 469 ), -- Commanding Shout
 			CreateSpellEntry( 6673 ), -- Battle Shout
 			CreateSpellEntry( 55694 ), -- Enraged Regeneration
 			CreateSpellEntry( 23920 ), -- Spell Reflection
-			CreateSpellEntry( 871 ), -- Shield Wall
+			-- CreateSpellEntry( 871 ), -- Shield Wall
 			CreateSpellEntry( 1719 ), -- Recklessness
 			CreateSpellEntry( 20230 ), -- Retaliation
 			CreateSpellEntry( 2565 ), -- Shield Block
-			CreateSpellEntry( 12976 ), -- Last Stand
+			-- CreateSpellEntry( 12976 ), -- Last Stand
 			CreateSpellEntry( 90806 ), -- Executioner
 			CreateSpellEntry( 85738 ), CreateSpellEntry( 85739 ), -- Meat Cleaver Rank 1 and 2
 			CreateSpellEntry( 86662 ), CreateSpellEntry( 86663 ), -- Rude interruption rank 1 and 2

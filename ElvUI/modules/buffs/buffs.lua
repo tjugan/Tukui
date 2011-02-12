@@ -55,8 +55,16 @@ local function StyleBuffs(buttonName, index, debuff)
 		icon:SetPoint("TOPLEFT", buff, E.Scale(2), E.Scale(-2))
 		icon:SetPoint("BOTTOMRIGHT", buff, E.Scale(-2), E.Scale(2))
 		
-		buff:SetHeight(E.Scale(30))
-		buff:SetWidth(E.Scale(30))
+		--buff:SetHeight(E.Scale(30))
+		--buff:SetWidth(E.Scale(30))
+		
+		if debuff then
+            buff:SetHeight(E.Scale(40)) -- debuff height
+            buff:SetWidth(E.Scale(40)) -- debuff width
+        else
+            buff:SetHeight(E.Scale(30)) -- buff height
+            buff:SetWidth(E.Scale(30)) -- buff width
+        end
 				
 		duration:ClearAllPoints()
 		duration:SetPoint("BOTTOM", 0, E.Scale(-13))
@@ -67,7 +75,12 @@ local function StyleBuffs(buttonName, index, debuff)
 		count:SetFont(C["media"].font, C["general"].fontscale, "OUTLINE")
 		
 		local panel = CreateFrame("Frame", buttonName..index.."Panel", buff)
-		panel:CreatePanel("Default", 30, 30, "CENTER", buff, "CENTER", 0, 0)
+		--panel:CreatePanel("Default", 30, 30, "CENTER", buff, "CENTER", 0, 0)
+		if debuff == false then
+            panel:CreatePanel("Default", 30, 30, "CENTER", buff, "CENTER", 0, 0)
+        else
+            panel:CreatePanel("Default", 40, 40, "CENTER", buff, "CENTER", 0, 0)
+        end
 		panel:SetFrameLevel(buff:GetFrameLevel() - 1)
 		panel:SetFrameStrata(buff:GetFrameStrata())
 
