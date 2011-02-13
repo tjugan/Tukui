@@ -36,6 +36,13 @@ E.remindbuffs = {
 		52127, -- water shield
 		324, -- lightning shield
 	},
+	 WARRIOR = {
+		469, -- Commanding Shout
+		-- 6673, -- Battle Shout
+        21562, -- Power Word: Fortitude
+        90364, -- Qiraji Fortitude, Silithid special ability
+        6307, -- Blood Pact
+    },
 }
 
 E.tankremindbuffs = {
