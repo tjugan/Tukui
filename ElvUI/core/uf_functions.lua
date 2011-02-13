@@ -980,6 +980,8 @@ E.LoadUFFunctions = function(layout)
 		
 		if self:IsShown() then
 			for _, text in pairs(E.LeftDatatexts) do text:Hide() end
+			local type = select(10, UnitAlternatePowerInfo(unit))
+			if self.text and type then self.text:SetText(type..": "..E.ValColor.."0%") end
 		else
 			for _, text in pairs(E.LeftDatatexts) do text:Show() end		
 		end
@@ -990,16 +992,22 @@ E.LoadUFFunctions = function(layout)
 		
 		if perc < 35 then
 			self:SetStatusBarColor(0, 1, 0)
-		elseif perc < 75 then
+		elseif perc < 70 then
 			self:SetStatusBarColor(1, 1, 0)
 		else
 			self:SetStatusBarColor(1, 0, 0)
 		end
 		
-		if self.text and perc ~= 0 then
-			self.text:SetText(format("%d%%", perc))
+		local unit = self:GetParent().unit or self:GetParent():GetParent().unit
+		
+		if unit == nil or unit ~= "player" then return end --Only want to see this on the players bar
+		
+		local type = select(10, UnitAlternatePowerInfo(unit))
+				
+		if self.text and perc > 0 then
+			self.text:SetText(type..": "..E.ValColor..format("%d%%", perc))
 		elseif self.text then
-			self.text:SetText("")
+			self.text:SetText(type..": "..E.ValColor.."0%")
 		end
 	end
 
