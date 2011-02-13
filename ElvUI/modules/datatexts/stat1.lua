@@ -23,7 +23,6 @@ local modifierString = string.join("", "%d (+", chanceString, ")")
 local manaRegenString = "%d / %d"
 local displayNumberString = string.join("", "%s", E.ValColor, "%d|r")
 local displayFloatString = string.join("", "%s", E.ValColor, "%.2f|r")
-local curAvoidance, curSpellpwr, curPwr
 local spellpwr, avoidance, pwr
 local haste, hasteBonus
 
@@ -77,10 +76,27 @@ local function ShowTooltip(self)
 		GameTooltip:AddDoubleLine(STAT_HASTE, format(modifierString, haste, hasteBonus), 1, 1, 1)
 	end
 	
-	if GetCombatRating(CR_MASTERY) ~= 0 then
-		local masteryName, _, _, _, _, _, _, _, _ = GetSpellInfo(GetTalentTreeMasterySpells(GetPrimaryTalentTree()))
-		GameTooltip:AddLine' '
-		GameTooltip:AddDoubleLine(masteryName, format(modifierString, GetCombatRating(CR_MASTERY), GetCombatRatingBonus(CR_MASTERY)), 1, 1, 1)
+	local masteryspell
+	if GetCombatRating(CR_MASTERY) ~= 0 and GetPrimaryTalentTree() then
+		if E.myclass == "DRUID" then
+			if E.Role == "Melee" then
+				masteryspell = select(2, GetTalentTreeMasterySpells(GetPrimaryTalentTree()))
+			elseif E.Role == "Tank" then
+				masteryspell = select(1, GetTalentTreeMasterySpells(GetPrimaryTalentTree()))
+			else
+				masteryspell = GetTalentTreeMasterySpells(GetPrimaryTalentTree())
+			end
+		else
+			masteryspell = GetTalentTreeMasterySpells(GetPrimaryTalentTree())
+		end
+		
+		if masterySpell ~= nil then
+			local masteryName, _, _, _, _, _, _, _, _ = GetSpellInfo(masteryspell)
+			if masteryName then
+				GameTooltip:AddLine' '
+				GameTooltip:AddDoubleLine(masteryName, format(modifierString, GetCombatRating(CR_MASTERY), GetCombatRatingBonus(CR_MASTERY)), 1, 1, 1)
+			end
+		end
 	end
 	
 	GameTooltip:Show()
@@ -116,10 +132,6 @@ local function UpdateTank(self)
 		avoidance = (dodge+parry+block+basemisschance)
 	end
 	
-	-- only update data when avoidance has actually changed
-	if (curAvoidance == avoidance) then return end
-	
-	curAvoidance = avoidance
 	Text:SetFormattedText(displayFloatString, L.datatext_playeravd, avoidance)
 	--Setup Tooltip
 	self:SetAllPoints(Text)
@@ -132,10 +144,6 @@ local function UpdateCaster(self)
 		spellpwr = GetSpellBonusDamage(7)
 	end
 	
-	-- only update data when spell power has actually changed
-	if spellpwr == curSpellpwr then return end
-	
-	curSpellpwr = spellpwr
 	Text:SetFormattedText(displayNumberString, L.datatext_playersp, spellpwr)
 	--Setup Tooltip
 	self:SetAllPoints(Text)
@@ -153,10 +161,6 @@ local function UpdateMelee(self)
 		pwr = effective
 	end
 	
-	-- only update data when armor piercing has actually changed
-	if pwr == curPwr then return end
-	
-	curPwr = pwr
 	Text:SetFormattedText(displayNumberString, L.datatext_playerap, pwr)      
 	--Setup Tooltip
 	self:SetAllPoints(Text)
@@ -166,7 +170,6 @@ local int = 1
 local function Update(self, t)
 	int = int - t
 	if int > 0 then return end
-	
 	if E.Role == "Tank" then 
 		UpdateTank(self)
 	elseif E.Role == "Caster" then
