@@ -22,7 +22,7 @@ local chanceString = "%.2f%%"
 local modifierString = string.join("", "%d (+", chanceString, ")")
 local manaRegenString = "%d / %d"
 local displayNumberString = string.join("", "%s", E.ValColor, "%d|r")
-local displayFloatString = string.join("", "%s", E.ValColor, "%.2f|r")
+local displayFloatString = string.join("", "%s", E.ValColor, "%.2f%%|r")
 local spellpwr, avoidance, pwr
 local haste, hasteBonus
 
@@ -90,12 +90,12 @@ local function ShowTooltip(self)
 			masteryspell = GetTalentTreeMasterySpells(GetPrimaryTalentTree())
 		end
 		
-		if masterySpell ~= nil then
-			local masteryName, _, _, _, _, _, _, _, _ = GetSpellInfo(masteryspell)
-			if masteryName then
-				GameTooltip:AddLine' '
-				GameTooltip:AddDoubleLine(masteryName, format(modifierString, GetCombatRating(CR_MASTERY), GetCombatRatingBonus(CR_MASTERY)), 1, 1, 1)
-			end
+
+
+		local masteryName, _, _, _, _, _, _, _, _ = GetSpellInfo(masteryspell)
+		if masteryName then
+			GameTooltip:AddLine' '
+			GameTooltip:AddDoubleLine(masteryName, format(modifierString, GetCombatRating(CR_MASTERY), GetCombatRatingBonus(CR_MASTERY)), 1, 1, 1)
 		end
 	end
 	
@@ -119,18 +119,23 @@ local function UpdateTank(self)
 		basemisschance = 5
 		leveldifference = 0
 	end
-
+	
+	if select(2, UnitRace("player")) == "NightElf" then basemisschance = basemisschance + 2 end
+	
 	if leveldifference >= 0 then
 		dodge = (GetDodgeChance()-leveldifference*.2)
 		parry = (GetParryChance()-leveldifference*.2)
 		block = (GetBlockChance()-leveldifference*.2)
-		avoidance = (dodge+parry+block+basemisschance)	
 	else
 		dodge = (GetDodgeChance()+abs(leveldifference*.2))
 		parry = (GetParryChance()+abs(leveldifference*.2))
 		block = (GetBlockChance()+abs(leveldifference*.2))
-		avoidance = (dodge+parry+block+basemisschance)
 	end
+	
+	if dodge <= 0 then dodge = 0 end
+	if parry <= 0 then parry = 0 end
+	if block <= 0 then block = 0 end
+	avoidance = (dodge+parry+block+basemisschance)
 	
 	Text:SetFormattedText(displayFloatString, L.datatext_playeravd, avoidance)
 	--Setup Tooltip
@@ -166,7 +171,8 @@ local function UpdateMelee(self)
 	self:SetAllPoints(Text)
 end
 
-local int = 1	
+-- initial delay for update (let the ui load)
+local int = 5	
 local function Update(self, t)
 	int = int - t
 	if int > 0 then return end
@@ -183,4 +189,3 @@ end
 Stat:SetScript("OnEnter", function() ShowTooltip(Stat) end)
 Stat:SetScript("OnLeave", function() GameTooltip:Hide() end)
 Stat:SetScript("OnUpdate", Update)
-Update(Stat, 10)

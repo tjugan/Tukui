@@ -75,15 +75,15 @@ E.LoadUFFunctions = function(layout)
 		icon.isStealable = isStealable
 		if header == "ElvuiHealR6R25" or (C["raidframes"].griddps == true and header == "ElvuiDPSR6R25") then 
 			if inInstance and (instanceType == "pvp" or instanceType == "arena") then
-				if DebuffWhiteList[name] or TargetPVPOnly[name] then
+				if E.DebuffWhiteList[name] or E.TargetPVPOnly[name] then
 					return true
 				else
 					return false
 				end
 			else
-				if header == "ElvuiHealR6R25" and DebuffHealerWhiteList[name] then
+				if header == "ElvuiHealR6R25" and E.DebuffHealerWhiteList[name] then
 					return true
-				elseif header == "ElvuiDPSR6R25" and DebuffDPSWhiteList[name] then
+				elseif header == "ElvuiDPSR6R25" and E.DebuffDPSWhiteList[name] then
 					return true
 				else
 					return false
@@ -91,13 +91,13 @@ E.LoadUFFunctions = function(layout)
 			end	
 		elseif (unit and unit:find("arena%d")) then --Arena frames
 			if dtype then
-				if DebuffWhiteList[name] then
+				if E.DebuffWhiteList[name] then
 					return true
 				else
 					return false
 				end			
 			else
-				if ArenaBuffWhiteList[name] then
+				if E.ArenaBuffWhiteList[name] then
 					return true
 				else
 					return false
@@ -118,7 +118,7 @@ E.LoadUFFunctions = function(layout)
 
 				if isPlayer then
 					return true
-				elseif DebuffWhiteList[name] or (inInstance and ((instanceType == "pvp" or instanceType == "arena") and TargetPVPOnly[name])) then
+				elseif E.DebuffWhiteList[name] or (inInstance and ((instanceType == "pvp" or instanceType == "arena") and E.TargetPVPOnly[name])) then
 					return true
 				else
 					return false
@@ -128,13 +128,13 @@ E.LoadUFFunctions = function(layout)
 			end
 		else --Everything else
 			if unit ~= "player" and unit ~= "targettarget" and unit ~= "focus" and C["auras"].arenadebuffs == true and inInstance and (instanceType == "pvp" or instanceType == "arena") then
-				if DebuffWhiteList[name] or TargetPVPOnly[name] then
+				if E.DebuffWhiteList[name] or E.TargetPVPOnly[name] then
 					return true
 				else
 					return false
 				end
 			else
-				if DebuffBlacklist[name] then
+				if E.DebuffBlacklist[name] then
 					return false
 				else
 					return true
@@ -456,8 +456,8 @@ E.LoadUFFunctions = function(layout)
 		self.Time:SetText(("%.1f |cffaf5050%s %.1f|r"):format(self.channeling and duration or self.max - duration, self.channeling and "- " or "+", self.delay))
 	end
 
-	local FormatTime = function(s)
-		local day, hour, minute = 86400, 3600, 60
+	local FormatTime = function(s, reverse)
+		local day, hour, minute, second = 86400, 3600, 60, 1
 		if s >= day then
 			return format("%dd", ceil(s / hour))
 		elseif s >= hour then
@@ -467,9 +467,15 @@ E.LoadUFFunctions = function(layout)
 		elseif s >= minute / 12 then
 			return floor(s)
 		end
-		return format("%.1f", s)
+		
+		if reverse and reverse == true and s >= second then
+			return floor(s)
+		else	
+			return format("%.1f", s)
+		end
 	end
-
+	
+	local abs = math.abs --faster
 	local CreateAuraTimer = function(self, elapsed)	
 		if self.timeLeft then
 			self.elapsed = (self.elapsed or 0) + elapsed
@@ -482,6 +488,7 @@ E.LoadUFFunctions = function(layout)
 				end
 				if self.timeLeft > 0 then
 					local time = FormatTime(self.timeLeft)
+					if self.reverse then time = FormatTime(abs(self.timeLeft - self.duration), true) end
 					self.text:SetText(time)
 					if self.timeLeft <= 5 then
 						self.text:SetTextColor(0.99, 0.31, 0.31)
@@ -579,10 +586,10 @@ E.LoadUFFunctions = function(layout)
 	end
 
 	function E.PostUpdateAura(icons, unit, icon, index, offset, filter, isDebuff, duration, timeLeft)
-		local name, _, _, _, dtype, duration, expirationTime, unitCaster, _ = UnitAura(unit, index, icon.filter)
+		local name, _, _, _, dtype, duration, expirationTime, unitCaster, _, _, spellID = UnitAura(unit, index, icon.filter)
 		
 		if(icon.debuff) then
-			if(not UnitIsFriend("player", unit) and icon.owner ~= "player" and icon.owner ~= "vehicle") and (not DebuffWhiteList[name]) then
+			if(not UnitIsFriend("player", unit) and icon.owner ~= "player" and icon.owner ~= "vehicle") and (not E.DebuffWhiteList[name]) then
 				icon:SetBackdropBorderColor(unpack(C["media"].bordercolor))
 				icon.icon:SetDesaturated(true)
 			else
@@ -620,6 +627,9 @@ E.LoadUFFunctions = function(layout)
 		icon.duration = duration
 		icon.timeLeft = expirationTime
 		icon.first = true
+		
+		
+		if E.ReverseTimerSpells and E.ReverseTimerSpells[spellID] then icon.reverse = true end
 		icon:SetScript("OnUpdate", CreateAuraTimer)
 	end
 

@@ -11,10 +11,11 @@ local europeDisplayFormat_nocolor = string.join("", "%02d", ":|r%02d")
 local ukDisplayFormat_nocolor = string.join("", "", "%d", ":|r%02d", " %s|r")
 local timerLongFormat = "%d:%02d:%02d"
 local timerShortFormat = "%d:%02d"
-local lockoutInfoFormat = "%s |cffaaaaaa(%s%s, %s/%s)"
+local lockoutInfoFormat = "|cffcccccc[%d%s]|r %s |cfff04000(%s/%s)|r"
 local formatBattleGroundInfo = "%s: "
-local lockoutColorExtended, lockoutColorNormal = { r=0.3,g=1,b=0.3 }, { r=1,g=1,b=1 }
+local lockoutColorExtended, lockoutColorNormal = { r=0.3,g=1,b=0.3 }, { r=.8,g=.8,b=.8 }
 local difficultyInfo = { "N", "N", "H", "H" }
+local lockoutFormatString = { "%dd %02dh %02dm", "%dd %dh %02dm", "%02dh %02dm", "%dh %02dm", "%dh %02dm", "%dm" }
 local curHr, curMin, curAmPm
 
 local Stat = CreateFrame("Frame")
@@ -35,9 +36,8 @@ fader:SetFrameStrata(fader:GetParent():GetFrameStrata())
 local APM = { TIMEMANAGER_PM, TIMEMANAGER_AM }
 
 local function CalculateTimeValues(tt)
-	if tt == nil then tt = false end
 	local Hr, Min, AmPm
-	if tt == true then
+	if tt and tt == true then
 		if C["datatext"].localtime == true then
 			Hr, Min = GetGameTime()
 			if C["datatext"].time24 == true then
@@ -100,12 +100,17 @@ local function CalculateTimeLeft(time)
 		return hour, min, sec
 end
 
-local function formatResetTime(sec,table)
-	local table = table or {}
+local function formatResetTime(sec)
 	local d,h,m,s = ChatFrame_TimeBreakDown(floor(sec))
-	local string = gsub(gsub(format(" %dd %dh %dm "..((d==0 and h==0) and "%ds" or ""),d,h,m,s)," 0[dhms]"," "),"%s+"," ")
-	local string = strtrim(gsub(string, "([dhms])", {d=table.days or "d",h=table.hours or "h",m=table.minutes or "m",s=table.seconds or "s"})," ")
-	return strmatch(string,"^%s*$") and "0"..(table.seconds or L"s") or string
+	if d > 0 then 
+		return format(lockoutFormatString[h>10 and 1 or 2], d, h, m)
+	end
+	if h > 0 then
+		return format(lockoutFormatString[h>10 and 3 or 4], h, m)
+	end
+	if m > 0 then 
+		return format(lockoutFormatString[m>10 and 5 or 6], m) 
+	end
 end
 
 local int = 1
@@ -114,7 +119,7 @@ local function Update(self, t)
 	int = int - t
 	if int > 0 then return end
 	
-	local Hr, Min, AmPm = CalculateTimeValues()
+	local Hr, Min, AmPm = CalculateTimeValues(false)
 	
 	if CalendarGetNumPendingInvites() > 0 then
 		E.Flash(TimeDataText, 0.53)
@@ -149,6 +154,7 @@ Stat:SetScript("OnEnter", function(self)
 	GameTooltip:SetOwner(panel, anchor, xoff, yoff)
 	GameTooltip:ClearLines()
 
+	GameTooltip:AddLine(VOICE_CHAT_BATTLEGROUND);
 	local localizedName, isActive, canQueue, startTime, canEnter
 	for i = 1, GetNumWorldPVPAreas() do
 		_, localizedName, isActive, canQueue, startTime, canEnter = GetWorldPVPAreaInfo(i)
@@ -165,20 +171,21 @@ Stat:SetScript("OnEnter", function(self)
 					startTime = string.format(timerShortFormat, min, sec)
 				end
 			end
-			GameTooltip:AddDoubleLine(format(formatBattleGroundInfo, localizedName), startTime)	
+			GameTooltip:AddDoubleLine(format(formatBattleGroundInfo, localizedName), startTime, 1, 1, 1, lockoutColorNormal.r, lockoutColorNormal.g, lockoutColorNormal.b)	
 		end
 	end	
 
 	local timeText
 	local Hr, Min, AmPm = CalculateTimeValues(true)
 
-	timeText = C["datatext"].localtime == true and TIMEMANAGER_TOOLTIP_LOCALTIME or TIMEMANAGER_TOOLTIP_REALMTIME
+	GameTooltip:AddLine(" ")
+	timeText = C["datatext"].localtime == true and TIMEMANAGER_TOOLTIP_REALMTIME or TIMEMANAGER_TOOLTIP_LOCALTIME
 	if AmPm == -1 then
-			GameTooltip:AddDoubleLine(timeText, string.format(europeDisplayFormat_nocolor, Hr, Min))
+			GameTooltip:AddDoubleLine(timeText, string.format(europeDisplayFormat_nocolor, Hr, Min), 1, 1, 1, lockoutColorNormal.r, lockoutColorNormal.g, lockoutColorNormal.b)
 	else
-			GameTooltip:AddDoubleLine(timeText, string.format(ukDisplayFormat_nocolor, Hr, Min, APM[AmPm]))
+			GameTooltip:AddDoubleLine(timeText, string.format(ukDisplayFormat_nocolor, Hr, Min, APM[AmPm]), 1, 1, 1, lockoutColorNormal.r, lockoutColorNormal.g, lockoutColorNormal.b)
 	end
-	
+
 	local oneraid, lockoutColor
 	for i = 1, GetNumSavedInstances() do
 		local name, _, reset, difficulty, locked, extended, _, isRaid, maxPlayers, _, numEncounters, encounterProgress  = GetSavedInstanceInfo(i)
@@ -190,16 +197,16 @@ Stat:SetScript("OnEnter", function(self)
 				oneraid = true
 			end
 			if extended then lockoutColor = lockoutColorExtended else lockoutColor = lockoutColorNormal end
-			GameTooltip:AddDoubleLine(format(lockoutInfoFormat, name, maxPlayers, difficultyInfo[difficulty],encounterProgress,numEncounters), formatResetTime(reset), 1,1,1, lockoutColor.r,lockoutColor.g,lockoutColor.b)
+			GameTooltip:AddDoubleLine(format(lockoutInfoFormat, maxPlayers, difficultyInfo[difficulty], name, encounterProgress, numEncounters), formatResetTime(reset), 1,1,1, lockoutColor.r,lockoutColor.g,lockoutColor.b)
 		end
 	end
 	GameTooltip:Show()
 end)
 
-Stat:SetScript("OnLeave", function() GameTooltip:Hide() end)
 Stat:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
 Stat:RegisterEvent("PLAYER_ENTERING_WORLD")
-Stat:SetScript("OnUpdate", Update)
 Stat:RegisterEvent("UPDATE_INSTANCE_INFO")
+
+Stat:SetScript("OnLeave", function() GameTooltip:Hide() end)
 Stat:SetScript("OnMouseDown", function() GameTimeFrame:Click() end)
-Update(Stat, 10)
+Stat:SetScript("OnUpdate", Update)

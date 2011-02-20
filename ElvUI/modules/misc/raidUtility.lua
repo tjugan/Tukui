@@ -10,14 +10,12 @@ local panel_height = ((E.Scale(5)*4) + (E.Scale(20)*4))
 --Create main frame
 local RaidUtilityPanel = CreateFrame("Frame", "RaidUtilityPanel", UIParent)
 RaidUtilityPanel:CreatePanel("Default", E.Scale(170), panel_height, "TOP", UIParent, "TOP", -300, panel_height + 15)
-local r,g,b,_ = C["media"].backdropcolor
-RaidUtilityPanel:SetBackdropColor(r,g,b,0.6)
 RaidUtilityPanel:CreateShadow("Default")
 
 --Check if We are Raid Leader or Raid Officer
 local function CheckRaidStatus()
 	local inInstance, instanceType = IsInInstance()
-	if (UnitIsRaidOfficer("player")) and not (inInstance and (instanceType == "pvp" or instanceType == "arena")) then
+	if ((GetNumPartyMembers() > 0 and not UnitInRaid("player")) or IsRaidLeader() or IsRaidOfficer()) and not (inInstance and (instanceType == "pvp" or instanceType == "arena")) then
 		return true
 	else
 		return false
@@ -175,4 +173,5 @@ end
 local LeadershipCheck = CreateFrame("Frame")
 LeadershipCheck:RegisterEvent("RAID_ROSTER_UPDATE")
 LeadershipCheck:RegisterEvent("PLAYER_ENTERING_WORLD")
+LeadershipCheck:RegisterEvent("PARTY_MEMBERS_CHANGED")
 LeadershipCheck:SetScript("OnEvent", ToggleRaidUtil)

@@ -24,7 +24,8 @@ local OnEnter = function(self)
 		GameTooltip:SetLootItem(slot)
 		CursorUpdate(self)
 	end
-
+	
+	LootFrame.selectedSlot = self:GetID()
 	self.drop:Show()
 	self.drop:SetVertexColor(1, 1, 0)
 end
@@ -36,7 +37,7 @@ local OnLeave = function(self)
 	else
 		self.drop:Hide()
 	end
-
+	
 	GameTooltip:Hide()
 	ResetCursor()
 end
@@ -154,7 +155,7 @@ addon:SetMovable(true)
 addon:RegisterForClicks"anyup"
 
 local x = CreateFrame("Frame", "LootFrameHolder", UIParent)
-x:SetPoint("TOPLEFT", E.Scale(68), E.Scale(-194))
+x:Point("TOPLEFT", 36, -195)
 x:SetWidth(150)
 x:SetHeight(22)
 
@@ -221,14 +222,14 @@ addon.LOOT_OPENED = function(self, event, autoloot)
 				item = item:gsub("\n", ", ")
 			end
 
-			if(quantity > 1) then
+			if quantity and (quantity > 1) then
 				slot.count:SetText(quantity)
 				slot.count:Show()
 			else
 				slot.count:Hide()
 			end
 
-			if(quality > 1) then
+			if quality and (quality > 1) then
 				slot.drop:SetVertexColor(color.r, color.g, color.b)
 				slot.drop:Show()
 			else

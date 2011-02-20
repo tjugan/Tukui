@@ -14,7 +14,7 @@ bottompanel:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", -E.mult, -E.mult)
 bottompanel:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", E.mult, -E.mult)
 
 local mini = CreateFrame("Frame", "ElvuiMinimap", Minimap)
-mini:CreatePanel("Default", E.Scale(144 + 4), E.Scale(144 + 4), "CENTER", Minimap, "CENTER", -0, 0)
+mini:CreatePanel("Default", E.Scale(164 + 4), E.Scale(164 + 4), "CENTER", Minimap, "CENTER", -0, 0)
 mini:ClearAllPoints()
 mini:SetPoint("TOPLEFT", E.Scale(-2), E.Scale(2))
 mini:SetPoint("BOTTOMRIGHT", E.Scale(2), E.Scale(-2))
@@ -55,12 +55,12 @@ end
 
 --SPLIT BAR PANELS
 local splitleft = CreateFrame("Frame", "ElvuiSplitActionBarLeftBackground", ElvuiActionBarBackground)
-splitleft:CreatePanel("Default", (E.buttonsize * 3) + (E.buttonspacing * 4), ElvuiActionBarBackground:GetHeight(), "RIGHT", ElvuiActionBarBackground, "LEFT", E.Scale(-4), 0)
+splitleft:CreatePanel("Default", (E.buttonsize * 6) + (E.buttonspacing * 7), ElvuiActionBarBackground:GetHeight(), "RIGHT", ElvuiActionBarBackground, "LEFT", E.Scale(-4), 0)
 splitleft:SetFrameLevel(ElvuiActionBarBackground:GetFrameLevel())
 splitleft:SetFrameStrata(ElvuiActionBarBackground:GetFrameStrata())
 
 local splitright = CreateFrame("Frame", "ElvuiSplitActionBarRightBackground", ElvuiActionBarBackground)
-splitright:CreatePanel("Default", (E.buttonsize * 3) + (E.buttonspacing * 4), ElvuiActionBarBackground:GetHeight(), "LEFT", ElvuiActionBarBackground, "RIGHT", E.Scale(4), 0)
+splitright:CreatePanel("Default", (E.buttonsize * 6) + (E.buttonspacing * 7), ElvuiActionBarBackground:GetHeight(), "LEFT", ElvuiActionBarBackground, "RIGHT", E.Scale(4), 0)
 splitright:SetFrameLevel(ElvuiActionBarBackground:GetFrameLevel())
 splitright:SetFrameStrata(ElvuiActionBarBackground:GetFrameStrata())
 
