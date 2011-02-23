@@ -215,12 +215,16 @@ ElvuiOnLogon:SetScript("OnEvent", function(self, event)
 		end
 	end
 	
-	if (IsAddOnLoaded("ElvUI_Dps_Layout") and IsAddOnLoaded("ElvUI_Heal_Layout")) then
+	if (IsAddOnLoaded("Elvui_RaidDPS") and IsAddOnLoaded("Elvui_RaidHeal")) then
 		StaticPopup_Show("DISABLE_RAID")
 	end
 		
 	if C["arena"].unitframes == true then
 		SetCVar("showArenaEnemyFrames", 0)
+	end
+	
+	if C["nameplate"].enable == true and C["nameplate"].enhancethreat == true then
+		SetCVar("threatWarning", 3)
 	end
 
 	E.ChatLIn = true

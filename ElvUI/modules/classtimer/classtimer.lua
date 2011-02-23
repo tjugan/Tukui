@@ -53,19 +53,9 @@ PLAYER_DEBUFF_COLOR = nil;
 SORT_DIRECTION = true;
 TENTHS_TRESHOLD = 1
 	
-local function OnUnitFramesLoad(self, event, addon)
-	if not (addon == "ElvUI_Dps_Layout" or addon == "ElvUI_Heal_Layout") then return end
-		
-	self:UnregisterEvent("ADDON_LOADED")
-	local Elv_player
-	local Elv_target
-	if addon == "ElvUI_Dps_Layout" then
-		Elv_player = ElvDPS_player
-		Elv_target = ElvDPS_target
-	else
-		Elv_player = ElvHeal_player
-		Elv_target = ElvHeal_target
-	end
+function E.LoadClassTimers(Elv_player, Elv_target)
+	assert(Elv_player, "Classtimers failed to load, you need to specify a player and target frame, E.LoadClassTimers([player], [target])")
+	assert(Elv_target, "Classtimers failed to load, you need to specify a player and target frame, E.LoadClassTimers([player], [target])")
 	
 	local CreateUnitAuraDataSource;
 	do
@@ -674,7 +664,11 @@ local function OnUnitFramesLoad(self, event, addon)
 				border:SetTemplate("Default")
 				border:SetPoint("TOPLEFT", E.Scale(-2), E.Scale(2))
 				border:SetPoint("BOTTOMRIGHT", E.Scale(2), E.Scale(-2))
-				border:SetFrameLevel(result:GetFrameLevel() - 1)
+				if result:GetFrameLevel() - 1 > -1 then 
+					border:SetFrameLevel(result:GetFrameLevel() - 1)
+				else
+					border:SetFrameLevel(0)
+				end
 				border:SetBackdropColor(unpack(C["media"].backdropfadecolor))
 			result.border = border;		
 			

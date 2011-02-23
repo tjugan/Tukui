@@ -11,43 +11,59 @@ local ElvuiBar4 = CreateFrame("Frame","ElvuiBar4",ElvuiActionBarBackground) -- b
 ElvuiBar4:SetAllPoints(ElvuiActionBarBackground)
 MultiBarRight:SetParent(ElvuiBar4)
 
-local ElvuiBar4Split = CreateFrame("Frame", nil, ElvuiBar4)
-
 function E.PositionBar4()
-	ElvuiBar4Split:Show()
 	for i= 1, 12 do
 		local b = _G["MultiBarRightButton"..i]
 		local b2 = _G["MultiBarRightButton"..i-1]
 		b:ClearAllPoints()
 		b:SetAlpha(1)
-		b:SetParent(MultiBarRight)
 		b:Show()
 		
 		if E.lowversion ~= true then
-			if E.actionbar.bottomrows == 1 then 
-				if i > 6 then b:SetParent(ElvuiBar4Split) end
-				ElvuiBar4Split:Hide()				
-			end
-			
-			if i == 1 then
-				b:SetPoint("BOTTOMLEFT", ElvuiSplitActionBarLeftBackground, "BOTTOMLEFT", E.buttonspacing, E.buttonspacing)
-			elseif i == 7 then
-				b:SetPoint("BOTTOM", MultiBarRightButton1, "TOP", 0, E.buttonspacing)
+			if E["actionbar"].splitbar == true then
+				if i == 1 then
+					b:SetPoint("BOTTOMLEFT", ElvuiSplitActionBarLeftBackground, "BOTTOMLEFT", E.buttonspacing, E.buttonspacing)
+				elseif i == 7 then
+					b:SetPoint("BOTTOMLEFT", ElvuiSplitActionBarRightBackground, "BOTTOMLEFT", E.buttonspacing, E.buttonspacing)
+				else
+					b:SetPoint("LEFT", b2, "RIGHT", E.buttonspacing, 0)
+				end
 			else
-				b:SetPoint("LEFT", b2, "RIGHT", E.buttonspacing, 0)
+				if i == 1 then
+					b:SetPoint("TOPLEFT", ElvuiActionBarBackgroundRight, "TOPLEFT", E.buttonspacing, -E.buttonspacing)
+				else
+					b:SetPoint("TOP", b2, "BOTTOM", 0, -E.buttonspacing)
+				end
+			
+				if C["actionbar"].rightbarmouseover == true then
+					b:SetAlpha(0)
+					b:HookScript("OnEnter", function() RightBarMouseOver(1) end)
+					b:HookScript("OnLeave", function() RightBarMouseOver(0) end)			
+				end			
 			end
 		else
-			b:SetParent(ElvuiActionBarBackgroundRight)
-			if i == 1 then
-				b:SetPoint("TOPRIGHT", ElvuiActionBarBackgroundRight, "TOPRIGHT", -E.buttonspacing, -E.buttonspacing)
+			if E["actionbar"].splitbar == true and E["actionbar"].bottomrows == 3 then
+				if i == 1 then
+					b:SetPoint("TOPLEFT", ElvuiSplitActionBarLeftBackground, "TOPLEFT", E.buttonspacing, -E.buttonspacing)
+				elseif (i > 1 and i < 5) or (i > 7 and i < 11) then
+					b:SetPoint("LEFT", b2, "RIGHT", E.buttonspacing, 0)
+				elseif i == 5 or i == 6 or i == 11 or i == 12 then
+					b:SetPoint("TOP", b2, "BOTTOM", 0, -E.buttonspacing)
+				elseif i == 7 then 
+					b:SetPoint("TOPLEFT", ElvuiSplitActionBarRightBackground, "TOPLEFT", E.buttonspacing, -E.buttonspacing)
+				end
 			else
-				b:SetPoint("TOP", b2, "BOTTOM", 0, -E.buttonspacing)
-			end
-			
-			if C["actionbar"].rightbarmouseover == true then
-				b:SetAlpha(0)
-				b:HookScript("OnEnter", function() RightBarMouseOver(1) end)
-				b:HookScript("OnLeave", function() RightBarMouseOver(0) end)			
+				if i == 1 then
+					b:SetPoint("TOPRIGHT", ElvuiActionBarBackgroundRight, "TOPRIGHT", -E.buttonspacing, -E.buttonspacing)
+				else
+					b:SetPoint("TOP", b2, "BOTTOM", 0, -E.buttonspacing)
+				end
+				
+				if C["actionbar"].rightbarmouseover == true then
+					b:SetAlpha(0)
+					b:HookScript("OnEnter", function() RightBarMouseOver(1) end)
+					b:HookScript("OnLeave", function() RightBarMouseOver(0) end)			
+				end
 			end
 		end
 
@@ -55,14 +71,13 @@ function E.PositionBar4()
 
 	-- hide it if needed
 	if E.lowversion ~= true then
-		if E["actionbar"].splitbar ~= true then
-			ElvuiBar4:Hide()
-		else
+		if E["actionbar"].splitbar == true or E["actionbar"].rightbars > 2 then
 			ElvuiBar4:Show()
+		else
+			ElvuiBar4:Hide()
 		end
 	else
-		ElvuiBar4:SetParent(ElvuiActionBarBackgroundRight)
-		if E["actionbar"].rightbars > 0 then
+		if (E["actionbar"].splitbar == true and E["actionbar"].bottomrows == 3) or E["actionbar"].rightbars > 0 then
 			ElvuiBar4:Show()
 		else
 			ElvuiBar4:Hide()

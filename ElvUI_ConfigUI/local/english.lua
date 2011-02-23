@@ -9,7 +9,8 @@ ElvuiL.option_general_embedright = "Addon to embed to right chat panel (Recount,
 ElvuiL.option_general_classtheme = "Class Color Theme"
 ElvuiL.option_general_autocustomlagtolerance = "Automatically update the Blizzard Custom Lag Tolerance option to your latency."
 ElvuiL.option_general_fontscale = "Master font scale"
-ElvuiL.option_general_override = "Force low resolution version of UI to use higher resolution version (Screen width less than 1440)"
+ElvuiL.option_general_override = "Force a certain resolution size (Low, High)"
+ElvuiL.option_general_layoutoverride = "Force load a unitframe layout, (Defaults: DPS, Heal)"
 
 --Media
 ElvuiL.option_media = "Media"
@@ -158,6 +159,7 @@ ElvuiL.option_unitframes_healthbackdropcolor = "Backdrop color of health on all 
 ElvuiL.option_unitframes_healthcolorbyvalue = "Color Healthbars by Health Remaining"
 ElvuiL.option_unitframes_combat = "Fade unitframes while not in-combat"
 ElvuiL.option_unitframes_pettarget = "Display your pet's target (DPS Only)"
+ElvuiL.option_unitframes_portraitonhealthbar = "Display character portrait overlaying healthbar (Portraits must be on)"
 
 -- frame sizes
 ElvuiL.option_framesizes = "UnitFrame Sizes"

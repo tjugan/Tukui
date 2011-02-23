@@ -46,12 +46,13 @@ local function Local(o)
 	-- general
 	if o == "ElvuiConfigUIgeneral" then o = ElvuiL.option_general end
 	if o == "ElvuiConfigUIgeneralautoscale" then o = ElvuiL.option_general_uiscale end
-	if o == "ElvuiConfigUIgeneraloverridelowtohigh" then o = ElvuiL.option_general_override end
+	if o == "ElvuiConfigUIgeneralresolutionoverride" then o = ElvuiL.option_general_override end
 	if o == "ElvuiConfigUIgeneralmultisampleprotect" then o = ElvuiL.option_general_multisample end
 	if o == "ElvuiConfigUIgeneraluiscale" then o = ElvuiL.option_general_customuiscale end
 	if o == "ElvuiConfigUIgeneralclasscolortheme" then o = ElvuiL.option_general_classtheme end
 	if o == "ElvuiConfigUIgeneralautocustomlagtolerance" then o = ElvuiL.option_general_autocustomlagtolerance end
 	if o == "ElvuiConfigUIgeneralfontscale" then o = ElvuiL.option_general_fontscale end 
+	if o == "ElvuiConfigUIgenerallayoutoverride" then o = ElvuiL.option_general_layoutoverride end
 	
 	--Media
 	if o =="ElvuiConfigUImedia" then o = ElvuiL.option_media end
@@ -191,6 +192,7 @@ local function Local(o)
 	if o == "ElvuiConfigUIunitframesplayeraggro" then o = ElvuiL.option_unitframes_playeraggro end
 	if o == "ElvuiConfigUIunitframesshowsmooth" then o = ElvuiL.option_unitframes_smooth end
 	if o == "ElvuiConfigUIunitframescharportrait" then o = ElvuiL.option_unitframes_portrait end
+	if o == "ElvuiConfigUIunitframesportraitonhealthbar" then o = ElvuiL.option_unitframes_portraitonhealthbar end
 	if o == "ElvuiConfigUIunitframesenable" then o = ElvuiL.option_unitframes_enable end
 	if o == "ElvuiConfigUIunitframestargetpowerplayeronly" then o = ElvuiL.option_unitframes_enemypower end
 	if o == "ElvuiConfigUIunitframesaggro" then o = ElvuiL.option_unitframes_raidaggro end

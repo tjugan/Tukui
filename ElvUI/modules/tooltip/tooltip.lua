@@ -61,7 +61,7 @@ end
 
 hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
 	if C["tooltip"].cursor == true then
-		if IsAddOnLoaded("ElvUI_Heal_Layout") and parent ~= UIParent then 
+		if IsAddOnLoaded("Elvui_RaidHeal") and parent ~= UIParent then 
 			self:SetOwner(parent, "ANCHOR_NONE")	
 		else
 			self:SetOwner(parent, "ANCHOR_CURSOR")
@@ -305,6 +305,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 		end
 
 		for i= offset, lines do
+			
 			if _G["GameTooltipTextLeft"..i] and _G["GameTooltipTextLeft"..i]:GetText() and (_G["GameTooltipTextLeft"..i]:GetText():find("^"..LEVEL)) then
 				_G["GameTooltipTextLeft"..i]:SetFormattedText("|cff%02x%02x%02x%s|r %s %s%s", r*255, g*255, b*255, level > 0 and level or "??", race, color, class.."|r")
 				break
@@ -313,7 +314,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 	else
 		for i = 2, lines do			
 			if _G["GameTooltipTextLeft"..i] and _G["GameTooltipTextLeft"..i]:GetText() and ((_G["GameTooltipTextLeft"..i]:GetText():find("^"..LEVEL)) or (crtype and _G["GameTooltipTextLeft"..i]:GetText():find("^"..crtype))) then
-				_G["GameTooltipTextLeft"..i]:SetFormattedText("|cff%02x%02x%02x%s|r%s %s", r*255, g*255, b*255, classif ~= "worldboss" and level > 0 and level or "??", classification[classif] or "", crtype or "")
+				_G["GameTooltipTextLeft"..i]:SetFormattedText("|cff%02x%02x%02x%s|r%s %s", r*255, g*255, b*255, classif ~= "worldboss" and level > 0 and level or "?? ", classification[classif] or "", crtype or "")
 				break
 			end
 		end

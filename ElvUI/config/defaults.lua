@@ -30,7 +30,8 @@ C["general"] = {
 	["multisampleprotect"] = true,         -- i don't recommend this because of shitty border but, voila!
 	["classcolortheme"] = false,			--class colored theme for panels
 	["fontscale"] = 12,					--Master font
-	["overridelowtohigh"] = false,		--override lowversion
+	["resolutionoverride"] = "NONE",		--override lowversion (Low, High)
+	["layoutoverride"] = "NONE",			--ovverride layout (DPS, Healer)
 }
 
 C["skin"] = {	--Skin addons by Darth Android
@@ -54,6 +55,7 @@ C["unitframes"] = {
 	["showsmooth"] = true,                 -- enable smooth bar
 	["showthreat"] = true,                 -- enable the threat bar anchored to info right panel.
 	["charportrait"] = false,              -- enable character portrait
+	["portraitonhealthbar"] = true,			-- portrait on healthbar
 	["classcolor"] = false,                  -- color unitframes by class
 	["healthcolor"] = C["media"].bordercolor, --color of the unitfram
 	["healthbackdropcolor"] = C["media"].backdropcolor, --backdropcolor of the unitframe
@@ -116,7 +118,7 @@ C["auras"] = {
 	["totdebuffs"] = true,                -- enable tot debuffs (high reso only)
 	["focusdebuffs"] = true,              -- enable focus debuffs 
 	["playtarbuffperrow"] = 8,				-- buffs/debuffs per row on player/target frames
-	["smallbuffperrow"] = 4,				-- debuffs per row on targettarget/focus frames
+	["smallbuffperrow"] = 5,				-- debuffs per row on targettarget/focus frames
 	["buffindicatorsize"] = 6,				-- size of the buff indicator on raid/party frames
 }
 
