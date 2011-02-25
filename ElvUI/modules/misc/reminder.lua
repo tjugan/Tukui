@@ -215,4 +215,14 @@ for i=1, #tab do
 	frame:RegisterEvent("UNIT_EXITING_VEHICLE")
 	frame:RegisterEvent("UNIT_EXITED_VEHICLE")
 	frame:SetScript("OnEvent", OnEvent)
+	frame:SetScript("OnUpdate", function(self, elapsed)
+		if not self.icon:GetTexture() then
+			self:Hide()
+		end
+	end)
+	frame:SetScript("OnShow", function(self)
+		if not self.icon:GetTexture() then
+			self:Hide()
+		end	
+	end)
 end

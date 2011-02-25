@@ -5,6 +5,7 @@ E.buttonsize = E.Scale(C["actionbar"].buttonsize)
 E.buttonspacing = E.Scale(C["actionbar"].buttonspacing)
 E.petbuttonsize = E.Scale(C["actionbar"].petbuttonsize)
 E.buttonspacing = E.Scale(C["actionbar"].buttonspacing)
+E.minimapsize = E.Scale(168)
 
 --BOTTOM DUMMY FRAME DOES NOTHING BUT HOLDS FRAME POSITIONS
 local bottompanel = CreateFrame("Frame", "ElvuiBottomPanel", UIParent)
@@ -14,7 +15,7 @@ bottompanel:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", -E.mult, -E.mult)
 bottompanel:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", E.mult, -E.mult)
 
 local mini = CreateFrame("Frame", "ElvuiMinimap", Minimap)
-mini:CreatePanel("Default", E.Scale(164 + 4), E.Scale(164 + 4), "CENTER", Minimap, "CENTER", -0, 0)
+mini:CreatePanel("Default", E.minimapsize, E.minimapsize, "CENTER", Minimap, "CENTER", -0, 0)
 mini:ClearAllPoints()
 mini:SetPoint("TOPLEFT", E.Scale(-2), E.Scale(2))
 mini:SetPoint("BOTTOMRIGHT", E.Scale(2), E.Scale(-2))
@@ -24,10 +25,10 @@ TukuiMinimap = ElvuiMinimap -- conversion
 -- MINIMAP STAT FRAMES
 if ElvuiMinimap then
 	local minimapstatsleft = CreateFrame("Frame", "ElvuiMinimapStatsLeft", ElvuiMinimap)
-	minimapstatsleft:CreatePanel("Default", (ElvuiMinimap:GetWidth() / 2) - 2, 19, "TOPLEFT", ElvuiMinimap, "BOTTOMLEFT", 0, E.Scale(-3))
+	minimapstatsleft:CreatePanel("Default", (E.minimapsize / 2) - 2, 19, "TOPLEFT", ElvuiMinimap, "BOTTOMLEFT", 0, E.Scale(-3))
 
 	local minimapstatsright = CreateFrame("Frame", "ElvuiMinimapStatsRight", ElvuiMinimap)
-	minimapstatsright:CreatePanel("Default", (ElvuiMinimap:GetWidth() / 2) -2, 19, "TOPRIGHT", ElvuiMinimap, "BOTTOMRIGHT", 0, E.Scale(-3))
+	minimapstatsright:CreatePanel("Default", (E.minimapsize / 2) - 2, 19, "TOPRIGHT", ElvuiMinimap, "BOTTOMRIGHT", 0, E.Scale(-3))
 	ElvuiMinimapStatsLeft:SetTemplate("Default", true)
 	ElvuiMinimapStatsRight:SetTemplate("Default", true)
 	ElvuiMinimapStatsLeft:CreateShadow("Default")
@@ -102,8 +103,8 @@ end
 if C["actionbar"].enable == true then
 	local vbarbg = CreateFrame("Frame", "ElvuiVehicleBarBackground", UIParent)
 	vbarbg:CreatePanel("Default", 1, 1, "BOTTOM", UIParent, "BOTTOM", 0, E.Scale(4))
-	vbarbg:SetWidth(((E.buttonsize * 11) + (E.buttonspacing * 12))*1.2)
-	vbarbg:SetHeight((E.buttonsize + (E.buttonspacing * 2))*1.2)
+	vbarbg:SetWidth((E.buttonsize * 12) + (E.buttonspacing * 13))
+	vbarbg:SetHeight(E.buttonsize + (E.buttonspacing * 2))
 	vbarbg:CreateShadow("Default")
 end
 
@@ -204,7 +205,7 @@ infoleft:SetPoint("BOTTOMRIGHT", chatlbgdummy2, "BOTTOMRIGHT", E.Scale(-17), E.S
 --INFO RIGHT
 local inforight = CreateFrame("Frame", "ElvuiInfoRight", UIParent)
 inforight:SetTemplate("Default", true)
-infoleft:SetFrameLevel(2)
+inforight:SetFrameLevel(2)
 inforight:CreateShadow("Default")
 inforight:SetPoint("TOPLEFT", chatrbgdummy2, "BOTTOMLEFT", E.Scale(17), E.Scale(-4))
 inforight:SetPoint("BOTTOMRIGHT", chatrbgdummy2, "BOTTOMRIGHT", E.Scale(-17), E.Scale(-26))

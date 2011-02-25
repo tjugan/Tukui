@@ -1,4 +1,4 @@
-local E, C, L = unpack(ElvUI) -- Import Functions/Constants, Config, Locales
+local E, C, L = unpack(select(2, ...)) -- Import Functions/Constants, Config, Locales
 
 if not C["unitframes"].enable == true then return end
 
@@ -89,6 +89,9 @@ local function Shared(self, unit)
 		end
 		health:SetStatusBarTexture(normTex)
 		self.health = health
+
+		--Strata Frame, creating texts from this
+		local TextOverlay = CreateFrame("Frame", nil, health)	
 		
 		-- Border for HealthBar
 		local FrameBorder = CreateFrame("Frame", nil, health)
@@ -107,6 +110,7 @@ local function Shared(self, unit)
 		healthBG:SetAllPoints()
 		health:FontString("value", font1, C["unitframes"].fontsize, "THINOUTLINE")
 		health.value:SetPoint("RIGHT", health, "RIGHT", E.Scale(-4), E.Scale(1))
+		health.value:SetParent(TextOverlay)
 		health.PostUpdate = E.PostUpdateHealth
 		self.Health = health
 		self.Health.bg = healthBG
@@ -167,7 +171,7 @@ local function Shared(self, unit)
 		powerBG:SetTexture(normTex)
 		powerBG.multiplier = 0.3
 		power:FontString("value", font1, C["unitframes"].fontsize, "THINOUTLINE")
-		power.value:SetParent(health)
+		power.value:SetParent(TextOverlay)
 		power.value:SetPoint("LEFT", health, "LEFT", E.Scale(4), E.Scale(1))
 		power.PreUpdate = E.PreUpdatePower
 		power.PostUpdate = E.PostUpdatePower
@@ -233,7 +237,7 @@ local function Shared(self, unit)
 				portrait:SetFrameLevel(2)
 				
 				--dont ask me why but the playerframe looks completely fucked when i set it how it should be..
-				portrait:SetPoint('BOTTOMLEFT', PFrame, 'BOTTOMLEFT', E.Scale(1), E.Scale(2))		
+				portrait:SetPoint('BOTTOMLEFT', PFrame, 'BOTTOMLEFT', E.Scale(2), E.Scale(2))		
 				portrait:SetPoint('TOPRIGHT', PFrame, 'TOPRIGHT', E.Scale(-2), E.Scale(-2))	
 				table.insert(self.__elements, E.HidePortrait)		
 				self.Portrait = portrait
@@ -248,15 +252,15 @@ local function Shared(self, unit)
 		end
 			
 		-- combat icon
-		local Combat = health:CreateTexture(nil, "OVERLAY")
+		local Combat = TextOverlay:CreateTexture(nil, "OVERLAY")
 		Combat:SetHeight(E.Scale(19))
 		Combat:SetWidth(E.Scale(19))
-		Combat:SetPoint("CENTER",0,7)
+		Combat:SetPoint("CENTER", health, "CENTER",0,7)
 		Combat:SetVertexColor(0.69, 0.31, 0.31)
 		self.Combat = Combat
 
 		-- custom info (low mana warning)
-		FlashInfo = CreateFrame("Frame", "FlashInfo", self)
+		FlashInfo = CreateFrame("Frame", "FlashInfo", health)
 		FlashInfo:SetScript("OnUpdate", E.UpdateManaLevel)
 		FlashInfo.parent = self
 		FlashInfo:SetToplevel(true)
@@ -265,7 +269,7 @@ local function Shared(self, unit)
 		FlashInfo.ManaLevel:SetPoint("CENTER", health, "CENTER", 0, E.Scale(-5))
 		self.FlashInfo = FlashInfo
 		
-		local PvP = health:CreateFontString(nil, "OVERLAY")
+		local PvP = TextOverlay:CreateFontString(nil, "OVERLAY")
 		PvP:SetFont(font1, C["unitframes"].fontsize, "THINOUTLINE")
 		PvP:SetPoint("CENTER", health, "CENTER", 0, E.Scale(-5))
 		PvP:SetTextColor(0.69, 0.31, 0.31)
@@ -441,7 +445,7 @@ local function Shared(self, unit)
 
 				eclipseBar:FontString("Text", font1, C["unitframes"].fontsize, "THINOUTLINE")
 				eclipseBar.Text:SetPoint("CENTER", self.Health, "CENTER", E.Scale(1), E.Scale(-5))
-			
+				eclipseBar.Text:SetParent(TextOverlay)
 
 				self.EclipseBar = eclipseBar
 				
@@ -711,7 +715,7 @@ local function Shared(self, unit)
 			castbar.CustomTimeText = E.CustomCastTimeText
  
 			castbar:FontString("Text", font1, C["unitframes"].fontsize, "THINOUTLINE")
-			castbar.Text:SetPoint("LEFT", castbar, "LEFT", 4, 1)
+			castbar.Text:SetPoint("LEFT", castbar, "LEFT", 4, 0)
 			castbar.Text:SetTextColor(0.84, 0.75, 0.65)
  
 			castbar.CustomDelayText = E.CustomCastDelayText
@@ -876,6 +880,9 @@ local function Shared(self, unit)
 		end
 		health:SetStatusBarTexture(normTex)
 		self.health = health
+	
+		--Strata Frame, creating texts from this
+		local TextOverlay = CreateFrame("Frame", nil, health)	
 		
 		-- Border for HealthBar
 		local FrameBorder = CreateFrame("Frame", nil, health)
@@ -894,6 +901,7 @@ local function Shared(self, unit)
 		healthBG:SetAllPoints()
 		health:FontString("value", font1, C["unitframes"].fontsize, "THINOUTLINE")
 		health.value:SetPoint("RIGHT", health, "RIGHT", E.Scale(-4), E.Scale(1))
+		health.value:SetParent(TextOverlay)
 		health.PostUpdate = E.PostUpdateHealth
 		self.Health = health
 		self.Health.bg = healthBG
@@ -954,7 +962,7 @@ local function Shared(self, unit)
 		powerBG:SetTexture(normTex)
 		powerBG.multiplier = 0.3
 		power:FontString("value", font1, C["unitframes"].fontsize, "THINOUTLINE")
-		power.value:SetParent(health)
+		power.value:SetParent(TextOverlay)
 		power.value:SetPoint("LEFT", health, "LEFT", E.Scale(4), E.Scale(1))
 		power.PreUpdate = E.PreUpdatePower
 		power.PostUpdate = E.PostUpdatePower
@@ -1033,7 +1041,7 @@ local function Shared(self, unit)
 		end
 						
 		-- Unit name on target
-		local Name = health:CreateFontString(nil, "OVERLAY")
+		local Name = TextOverlay:CreateFontString(nil, "OVERLAY")
 		Name:SetPoint("LEFT", health, "LEFT", 0, E.Scale(1))
 		Name:SetJustifyH("LEFT")
 		Name:SetFont(font1, C["unitframes"].fontsize, "OUTLINE")
@@ -1105,7 +1113,7 @@ local function Shared(self, unit)
 			castbar.CustomTimeText = E.CustomCastTimeText
  
 			castbar:FontString("Text", font1, C["unitframes"].fontsize, "THINOUTLINE")
-			castbar.Text:SetPoint("LEFT", castbar, "LEFT", 4, 1)
+			castbar.Text:SetPoint("LEFT", castbar, "LEFT", 4, 0)
 			castbar.Text:SetTextColor(0.84, 0.75, 0.65)
  
 			castbar.CustomDelayText = E.CustomCastDelayText
@@ -1278,6 +1286,9 @@ local function Shared(self, unit)
 		health:SetWidth(original_width)
 		health:SetHeight(original_height)
 		health:SetStatusBarTexture(normTex)
+
+		--Strata Frame, creating texts from this
+		local TextOverlay = CreateFrame("Frame", nil, health)	
 		
 		local healthBG = health:CreateTexture(nil, 'BORDER')
 		healthBG:SetAllPoints()
@@ -1387,7 +1398,7 @@ local function Shared(self, unit)
 		power.colorDisconnected = true
 		
 		-- Unit name
-		local Name = health:CreateFontString(nil, "OVERLAY")
+		local Name = TextOverlay:CreateFontString(nil, "OVERLAY")
 		Name:SetPoint("CENTER", health, "CENTER", 0, E.Scale(1))
 		Name:SetFont(font1, C["unitframes"].fontsize, "THINOUTLINE")
 		Name:SetJustifyH("CENTER")
@@ -1485,7 +1496,7 @@ local function Shared(self, unit)
 			castbar.CustomTimeText = E.CustomCastTimeText
 
 			castbar:FontString("Text", font1, C["unitframes"].fontsize)
-			castbar.Text:SetPoint("LEFT", castbar, "LEFT", 4, 1)
+			castbar.Text:SetPoint("LEFT", castbar, "LEFT", 4, 0)
 			castbar.Text:SetTextColor(0.84, 0.75, 0.65)
 			
 			castbar.CustomDelayText = E.CustomCastDelayText
