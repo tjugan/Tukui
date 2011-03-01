@@ -149,7 +149,7 @@ KLE_Skin:SetScript("OnEvent", function(self, event)
 		KLE.Pane.timer.right:SetFont(C["media"].font, 12)
 		
 		for i=1, #movers do
-			_G[movers[i]]:SetTemplate("Default")
+			_G[movers[i]]:SetTemplate("Transparent")
 		end
 
 		if C["chat"].showbackdrop == true and C["skin"].hookkleright == true and E.RightChat == true then

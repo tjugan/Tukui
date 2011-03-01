@@ -4,7 +4,7 @@ if C["unitframes"].enable ~= true and C["raidframes"].enable ~= true then return
 
 local function SpellName(id)
 	local name, _, _, _, _, _, _, _, _ = GetSpellInfo(id) 	
-	return name	
+	return name
 end
 
 --[[
@@ -154,6 +154,9 @@ E.DebuffBlacklist = {
 
 --RAID DEBUFFS
 E.RaidDebuffs = {
+	--Test
+	--SpellName(25771), --Forbearance
+	
 -- Other debuff
 	SpellName(67479), -- Impale
 
