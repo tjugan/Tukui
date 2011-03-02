@@ -75,6 +75,7 @@ local function Local(o)
 	
 	--Skin
 	if o =="ElvuiConfigUIskin" then o = ElvuiL.option_skin end
+	if o =="ElvuiConfigUIskindbm" then o = ElvuiL.option_skin_dbm end
 	if o =="ElvuiConfigUIskinkle" then o = ElvuiL.option_skin_kle end
 	if o =="ElvuiConfigUIskinomen" then o = ElvuiL.option_skin_omen end
 	if o =="ElvuiConfigUIskinrecount" then o = ElvuiL.option_skin_recount end
@@ -154,7 +155,8 @@ local function Local(o)
 	if o == "ElvuiConfigUIcastbarunitcastbar" then o = ElvuiL.option_castbar_castbar end
 	if o == "ElvuiConfigUIcastbarcblatency" then o = ElvuiL.option_castbar_latency end
 	if o == "ElvuiConfigUIcastbarcbicons" then o = ElvuiL.option_castbar_icon end
-	if o == "ElvuiConfigUIcastbarwidth" then o = ElvuiL.option_castbar_width end
+	if o == "ElvuiConfigUIcastbarplayerwidth" then o = ElvuiL.option_castbar_playerwidth end
+	if o == "ElvuiConfigUIcastbartargetwidth" then o = ElvuiL.option_castbar_targetwidth end
 	if o == "ElvuiConfigUIcastbarclasscolor" then o = ElvuiL.option_castbar_classcolor end
 	
 	--raidframes
@@ -191,7 +193,7 @@ local function Local(o)
 	if o == "ElvuiConfigUIunitframesplayeraggro" then o = ElvuiL.option_unitframes_playeraggro end
 	if o == "ElvuiConfigUIunitframesshowsmooth" then o = ElvuiL.option_unitframes_smooth end
 	if o == "ElvuiConfigUIunitframescharportrait" then o = ElvuiL.option_unitframes_portrait end
-	if o == "ElvuiConfigUIunitframesportraitonhealthbar" then o = ElvuiL.option_unitframes_portraitonhealthbar end
+	if o == "ElvuiConfigUIunitframescharportraithealth" then o = ElvuiL.option_unitframes_portraitonhealthbar end
 	if o == "ElvuiConfigUIunitframesenable" then o = ElvuiL.option_unitframes_enable end
 	if o == "ElvuiConfigUIunitframestargetpowerplayeronly" then o = ElvuiL.option_unitframes_enemypower end
 	if o == "ElvuiConfigUIunitframesaggro" then o = ElvuiL.option_unitframes_raidaggro end
@@ -205,6 +207,7 @@ local function Local(o)
 	if o == "ElvuiConfigUIunitframesmendpet" then o = ElvuiL.option_unitframes_mendpet end
 	if o == "ElvuiConfigUIunitframespoweroffset" then o = ElvuiL.option_unitframes_unitframes_poweroffset end
 	if o == "ElvuiConfigUIunitframesclassbar" then o = ElvuiL.option_unitframes_classbar end
+	if o == "ElvuiConfigUIunitframeshealthbackdrop" then o = ElvuiL.option_unitframes_healthbackdrop end
 	if o == "ElvuiConfigUIunitframeshealthbackdropcolor" then o = ElvuiL.option_unitframes_healthbackdropcolor end
 	if o == "ElvuiConfigUIunitframeshealthcolorbyvalue" then o = ElvuiL.option_unitframes_healthcolorbyvalue end
 	if o == "ElvuiConfigUIunitframescombat" then o = ElvuiL.option_unitframes_combat end

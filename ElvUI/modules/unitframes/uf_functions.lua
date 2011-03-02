@@ -13,6 +13,7 @@ E.LoadUFFunctions = function(layout)
 		health:SetStatusBarTexture(C["media"].normTex)
 		health:SetFrameStrata("LOW")
 		health.frequentUpdates = 0.2
+		health.PostUpdate = E.PostUpdateHealth
 		
 		if C["unitframes"].showsmooth == true then
 			health.Smooth = true
@@ -22,13 +23,17 @@ E.LoadUFFunctions = function(layout)
 			health.bg = health:CreateTexture(nil, 'BORDER')
 			health.bg:SetAllPoints()
 			health.bg:SetTexture(C["media"].blank)
-			health.bg.multiplier = 0.3
+			
+			if C["unitframes"].healthbackdrop ~= true then
+				health.bg.multiplier = 0.2
+			else
+				health.bg:SetTexture(unpack(C["unitframes"].healthbackdropcolor))
+			end
 		end
 		
 		if text then
 			health:FontString("value", C["media"].uffont, C["unitframes"].fontsize, "THINOUTLINE")
 			health.value:SetParent(self)
-			health.PostUpdate = E.PostUpdateHealth
 		end
 		
 		if C["unitframes"].classcolor ~= true then
@@ -48,6 +53,12 @@ E.LoadUFFunctions = function(layout)
 		end
 		health.colorDisconnected = true
 		
+		health.backdrop = CreateFrame('Frame', nil, health)
+		health.backdrop:SetTemplate("Default")
+		health.backdrop:Point("TOPRIGHT", health, "TOPRIGHT", 2, 2)
+		health.backdrop:Point("BOTTOMLEFT", health, "BOTTOMLEFT", -2, -2)
+		health.backdrop:SetFrameLevel(health:GetFrameLevel() - 1)		
+		
 		return health
 	end
 
@@ -55,7 +66,8 @@ E.LoadUFFunctions = function(layout)
 		local power = CreateFrame('StatusBar', nil, self)
 		power:SetStatusBarTexture(C["media"].normTex)
 		power.frequentUpdates = 0.2
-
+		power.PostUpdate = E.PostUpdatePower
+		
 		if C["unitframes"].showsmooth == true then
 			power.Smooth = true
 		end	
@@ -64,13 +76,12 @@ E.LoadUFFunctions = function(layout)
 			power.bg = power:CreateTexture(nil, 'BORDER')
 			power.bg:SetAllPoints()
 			power.bg:SetTexture(C["media"].blank)
-			power.bg.multiplier = 0.3
+			power.bg.multiplier = 0.2
 		end
 		
 		if text then
 			power:FontString("value", C["media"].uffont, C["unitframes"].fontsize, "THINOUTLINE")
 			power.value:SetParent(self)
-			power.PostUpdate = E.PostUpdatePower
 		end
 		
 		power.colorDisconnected = true
@@ -82,9 +93,65 @@ E.LoadUFFunctions = function(layout)
 		power.backdrop:Point("TOPRIGHT", power, "TOPRIGHT", 2, 2)
 		power.backdrop:Point("BOTTOMLEFT", power, "BOTTOMLEFT", -2, -2)
 		power.backdrop:SetFrameLevel(power:GetFrameLevel() - 1)
-		
+	
 		return power
 	end	
+		
+	function E.ConstructCastBar(self, width, height, direction)
+		local castbar = CreateFrame("StatusBar", nil, self)
+		castbar:SetStatusBarTexture(C["media"].normTex)
+		castbar:Height(height)
+		castbar:Width(width - 4)
+		castbar.CustomDelayText = E.CustomCastDelayText
+		castbar.PostCastStart = E.PostCastStart
+		castbar.PostChannelStart = E.PostCastStart		
+				
+		castbar.bg = CreateFrame("Frame", nil, castbar)
+		castbar.bg:SetTemplate("Default")
+		castbar.bg:SetBackdropBorderColor(unpack(C["media"].altbordercolor))
+		castbar.bg:Point("TOPLEFT", -2, 2)
+		castbar.bg:Point("BOTTOMRIGHT", 2, -2)
+		castbar.bg:SetFrameLevel(castbar:GetFrameLevel() - 1)
+		
+		castbar:FontString("Time", C["media"].uffont, C["unitframes"].fontsize, "THINOUTLINE")
+		castbar.Time:Point("RIGHT", castbar, "RIGHT", -4, 0)
+		castbar.Time:SetTextColor(0.84, 0.75, 0.65)
+		castbar.Time:SetJustifyH("RIGHT")
+		castbar.CustomTimeText = E.CustomCastTimeText
+
+		castbar:FontString("Text", C["media"].uffont, C["unitframes"].fontsize, "THINOUTLINE")
+		castbar.Text:SetPoint("LEFT", castbar, "LEFT", 4, 0)
+		castbar.Text:SetTextColor(0.84, 0.75, 0.65)
+
+		-- cast bar latency on player
+		if C["castbar"].cblatency == true and self.unit == "player" then
+			castbar.SafeZone = castbar:CreateTexture(nil, "OVERLAY")
+			castbar.SafeZone:SetTexture(C["media"].normTex)
+			castbar.SafeZone:SetVertexColor(0.69, 0.31, 0.31, 0.75)
+		end			
+
+		if C["castbar"].cbicons == true then
+			local button = CreateFrame("Frame", nil, castbar)
+			button:Height(height + 4)
+			button:Width(height + 4)
+			button:SetTemplate("Default")
+			button:SetBackdropBorderColor(unpack(C["media"].altbordercolor))
+			if direction == "LEFT" then
+				button:Point("RIGHT", castbar, "LEFT", -4, 0)
+			else
+				button:Point("LEFT", castbar, "RIGHT", 4, 0)
+			end
+			
+			castbar.Icon = button:CreateTexture(nil, "ARTWORK")
+			castbar.Icon:Point("TOPLEFT", button, 2, -2)
+			castbar.Icon:Point("BOTTOMRIGHT", button, -2, 2)
+			castbar.Icon:SetTexCoord(0.08, 0.92, 0.08, .92)
+			
+			castbar:Width(width - button:GetWidth() - 6)
+		end
+	
+		return castbar
+	end
 	
 	function E.SpawnMenu(self)
 		local unit = self.unit:gsub("(.)", string.upper, 1)
@@ -167,7 +234,7 @@ E.LoadUFFunctions = function(layout)
 					return false
 				end		
 			end
-		elseif unit == "target" or (unit and unit:find("boss%d") and dtype) then --Target/Boss Only
+		elseif unit == "target" or (unit and unit:find("boss%d")) then --Target/Boss Only
 			if C["auras"].playerdebuffsonly == true then
 				-- Show all debuffs on friendly targets
 				if UnitIsFriend("player", "target") then return true end
@@ -208,6 +275,24 @@ E.LoadUFFunctions = function(layout)
 	end
 
 	E.PostUpdateHealth = function(health, unit, min, max)
+		local r, g, b = health:GetStatusBarColor()
+		
+		if C["general"].classcolortheme == true then
+			health.backdrop:SetBackdropBorderColor(r, g, b)
+		end
+		
+		if C["unitframes"].classcolor == true and C["unitframes"].healthcolorbyvalue == true and not (UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit)) then
+			local newr, newg, newb = ElvUF.ColorGradient(min / max, 1, 0, 0, 1, 1, 0, r, g, b)
+	
+			health:SetStatusBarColor(newr, newg, newb)
+			if health.bg and health.bg.multiplier then
+				local mu = health.bg.multiplier
+				health.bg:SetVertexColor(newr * mu, newg * mu, newb * mu)
+			end
+		end
+		
+		if not health.value then return end
+		
 		local header = health:GetParent():GetParent():GetName()
 		if header == "ElvuiHealParty" or header == "ElvuiDPSParty" or header == "ElvuiHealR6R25" or header == "ElvuiDPSR6R25" or header == "ElvuiHealR26R40" or header == "ElvuiDPSR26R40" then --Raid/Party Layouts
 			if not UnitIsConnected(unit) or UnitIsDead(unit) or UnitIsGhost(unit) then
@@ -283,6 +368,12 @@ E.LoadUFFunctions = function(layout)
 		local self = power:GetParent()
 		local pType, pToken, altR, altG, altB = UnitPowerType(unit)
 		local color = E.oUF_colors.power[pToken]
+		
+		if C["general"].classcolortheme == true then
+			power.backdrop:SetBackdropBorderColor(power:GetParent().Health:GetStatusBarColor())
+		end
+		
+		if not power.value then return end		
 	
 		if color then
 			power.value:SetTextColor(color[1], color[2], color[3])
@@ -458,7 +549,7 @@ E.LoadUFFunctions = function(layout)
 					self:SetScript("OnUpdate", nil)
 				end
 				if (not self.debuff) and C["general"].classcolortheme == true then
-					local r, g, b = self:GetParent():GetParent().FrameBorder:GetBackdropBorderColor()
+					local r, g, b = self:GetParent():GetParent().Health.backdrop:GetBackdropBorderColor()
 					self:SetBackdropBorderColor(r, g, b)
 				end
 				self.elapsed = 0
@@ -558,7 +649,7 @@ E.LoadUFFunctions = function(layout)
 				icon:SetBackdropBorderColor(237/255, 234/255, 142/255)
 			else
 				if C["general"].classcolortheme == true then
-					local r, g, b = icon:GetParent():GetParent().FrameBorder:GetBackdropBorderColor()
+					local r, g, b = icon:GetParent():GetParent().backdrop:GetBackdropBorderColor()
 					icon:SetBackdropBorderColor(r, g, b)
 				else
 					icon:SetBackdropBorderColor(unpack(C["media"].bordercolor))
@@ -583,16 +674,6 @@ E.LoadUFFunctions = function(layout)
 		
 		if E.ReverseTimerSpells and E.ReverseTimerSpells[spellID] then icon.reverse = true end
 		icon:SetScript("OnUpdate", CreateAuraTimer)
-	end
-
-	E.HidePortrait = function(self, event)
-		if self.unit == "target" then
-			if not UnitExists(self.unit) or not UnitIsConnected(self.unit) or not UnitIsVisible(self.unit) then
-				self.PFrame:SetAlpha(0)
-			else
-				self.PFrame:SetAlpha(1)
-			end
-		end
 	end
 
 	E.PostCastStart = function(self, unit, name, rank, castid)
@@ -689,26 +770,25 @@ E.LoadUFFunctions = function(layout)
 	end
 
 	function E.UpdateThreat(self, event, unit)
-		if (self.unit ~= unit) or (unit ~= "player" or unit == "vehicle") then return end
-		if not unit then return end
+		if (self.unit ~= unit) or not unit then return end
 		
 		local threat = UnitThreatSituation(unit)
 		if threat and threat > 1 then
 			local r, g, b = GetThreatStatusColor(threat)			
-			if self.backdrop and self.backdrop.shadow then
-				self.backdrop.shadow:SetBackdropBorderColor(r, g, b)
-			elseif self.backdrop then
-				self.backdrop:SetBackdropBorderColor(r, g, b)
+			if self.shadow then
+				self.shadow:SetBackdropBorderColor(r, g, b)
+			elseif self.Health.backdrop then
+				self.Health.backdrop:SetBackdropBorderColor(r, g, b)
 				
 				if self.Power and self.Power.backdrop then
 					self.Power.backdrop:SetBackdropBorderColor(r, g, b)
 				end
 			end
 		else		
-			if self.backdrop and self.backdrop.shadow then
-				self.backdrop.shadow:SetBackdropBorderColor(0, 0, 0)
-			elseif self.backdrop then
-				self.backdrop:SetTemplate("Default")
+			if self.shadow then
+				self.shadow:SetBackdropBorderColor(0, 0, 0)
+			elseif self.Health.backdrop then
+				self.Health.backdrop:SetTemplate("Default")
 				
 				if self.Power and self.Power.backdrop then
 					self.Power.backdrop:SetTemplate("Default")
