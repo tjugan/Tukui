@@ -23,7 +23,6 @@ ALLOWED_GROUPS = {
 	["raidframes"]=1,
 	["auras"]=1,
 	["framesizes"]=1,
-	["debug"]=1,
 }
 
 --List of "Options" that we do not want to show in the config
@@ -77,10 +76,12 @@ local function Local(o)
 	if o =="ElvuiConfigUIskin" then o = ElvuiL.option_skin end
 	if o =="ElvuiConfigUIskindbm" then o = ElvuiL.option_skin_dbm end
 	if o =="ElvuiConfigUIskinkle" then o = ElvuiL.option_skin_kle end
+	if o =="ElvuiConfigUIskinbigwigs" then o = ElvuiL.option_skin_bigwigs end
 	if o =="ElvuiConfigUIskinomen" then o = ElvuiL.option_skin_omen end
 	if o =="ElvuiConfigUIskinrecount" then o = ElvuiL.option_skin_recount end
 	if o =="ElvuiConfigUIskinskada" then o = ElvuiL.option_skin_skada end
 	if o == "ElvuiConfigUIskinhookkleright" then o = ElvuiL.option_hookkleright end
+	if o == "ElvuiConfigUIskinhookbwright" then o = ElvuiL.option_hookbwright end
 	if o == "ElvuiConfigUIskinembedright" then o = ElvuiL.option_general_embedright end
 	
 	--Classtimers
@@ -157,6 +158,7 @@ local function Local(o)
 	if o == "ElvuiConfigUIcastbarcbicons" then o = ElvuiL.option_castbar_icon end
 	if o == "ElvuiConfigUIcastbarplayerwidth" then o = ElvuiL.option_castbar_playerwidth end
 	if o == "ElvuiConfigUIcastbartargetwidth" then o = ElvuiL.option_castbar_targetwidth end
+	if o == "ElvuiConfigUIcastbarfocuswidth" then o = ElvuiL.option_castbar_focuswidth end
 	if o == "ElvuiConfigUIcastbarclasscolor" then o = ElvuiL.option_castbar_classcolor end
 	
 	--raidframes
@@ -311,12 +313,6 @@ local function Local(o)
 	if o == "ElvuiConfigUIchatsticky" then o = ElvuiL.option_chat_sticky end
 	if o == "ElvuiConfigUIchatrightchat" then o = ElvuiL.option_chat_rightchat end
 	if o == "ElvuiConfigUIchatcombathide" then o = ElvuiL.option_chat_combathide end
-	
-	--debug
-	if o == "ElvuiConfigUIdebug" then o = ElvuiL.option_debug end
-	if o == "ElvuiConfigUIdebugenabled" then o = ElvuiL.option_debug_enabled end
-	if o == "ElvuiConfigUIdebugevents" then o = ElvuiL.option_debug_events end
-	
 	
 	E.option = o
 end

@@ -357,9 +357,7 @@ hooksecurefunc("MultiCastFlyoutFrame_ToggleFlyout",function(self) StyleTotemFlyo
 local function StyleTotemOpenButton(button, parent)
 	button:GetHighlightTexture():SetAlpha(0)
 	button:GetNormalTexture():SetAlpha(0)
-	button:GetNormalTexture():Hide()
-	button:GetNormalTexture().Show = button:GetNormalTexture().Hide
-	button:GetNormalTexture().SetAlpha = E.dummy
+
 	button:Height(20)
 	button:ClearAllPoints()
 	button:Point("BOTTOMLEFT", parent, "TOPLEFT", 0, -3)
@@ -433,6 +431,13 @@ local function StyleTotemActionButton(button, index)
 	end	
 end
 hooksecurefunc("MultiCastActionButton_Update",function(actionButton, actionId, actionIndex, slot) StyleTotemActionButton(actionButton,actionIndex) end)
+
+local function FixBackdrop(button)
+	if button:GetName() and button:GetName():find("MultiCast") and button:GetNormalTexture() then
+		button:GetNormalTexture():SetAlpha(0)
+	end
+end
+hooksecurefunc("ActionButton_ShowGrid", FixBackdrop)
 
 -- Skin the summon and recall buttons
 local function StyleTotemSpellButton(button, index)

@@ -11,13 +11,8 @@ local font2 = C["media"].font
 local normTex = C["media"].normTex
 local glowTex = C["media"].glowTex
 
-local backdrop = {
-	bgFile = C["media"].blank,
-	insets = {top = -E.mult, left = -E.mult, bottom = -E.mult, right = -E.mult},
-}
-
 local resscale = 1
-if E.lowversion == true then resscale = 0.88 end
+if E.lowversion == true then resscale = 0.9 end
 
 --Constants
 local PLAYER_WIDTH = C["framesizes"].playtarwidth*resscale
@@ -113,10 +108,11 @@ local function Shared(self, unit)
 				health.bg:SetParent(overlay)
 			else
 				--Reposition Health
-				health:Point("TOPLEFT", portrait_width+BORDER, 0)
+				health:Point("TOPLEFT", portrait_width+BORDER, -BORDER)
 				
 				
-				local portrait = CreateFrame("PlayerModel", nil, self)	
+				local portrait = CreateFrame("PlayerModel", nil, self)
+				portrait:SetFrameStrata("LOW")
 				portrait.backdrop = CreateFrame("Frame", nil, portrait)
 				portrait.backdrop:SetTemplate("Default")
 				portrait.backdrop:SetPoint("TOPLEFT", self, "TOPLEFT")
@@ -172,16 +168,16 @@ local function Shared(self, unit)
 			self.Castbar = castbar
 		end
 		
-		-- Debuff Highlight (Overlays Health Bar)
+		-- Debuff Highlight
 		if C["unitframes"].debuffhighlight == true then
-			local dbh = health:CreateTexture(nil, "OVERLAY")
+			local dbh = self:CreateTexture(nil, "OVERLAY")
 			dbh:SetAllPoints()
 			dbh:SetTexture(C["media"].blank)
 			dbh:SetBlendMode("ADD")
 			dbh:SetVertexColor(0,0,0,0)
 			self.DebuffHighlight = dbh
 			self.DebuffHighlightFilter = true
-			self.DebuffHighlightAlpha = 0.4		
+			self.DebuffHighlightAlpha = 0.35
 		end
 
 		--Combat Feedback
@@ -332,6 +328,7 @@ local function Shared(self, unit)
 			--Soul Shard / Holy Power Bar
 			if E.myclass == "PALADIN" or E.myclass == "WARLOCK" then
 				local bars = CreateFrame("Frame", nil, self)
+				bars:SetFrameStrata("LOW")
 				bars:Point("BOTTOMLEFT", health.backdrop, "TOPLEFT", BORDER, BORDER+1)
 				bars:Width(POWERBAR_WIDTH)
 				bars:Height(POWERBAR_HEIGHT - (BORDER*2))
@@ -373,7 +370,6 @@ local function Shared(self, unit)
 				bars.backdrop:Point("BOTTOMRIGHT", BORDER, -BORDER)
 				bars.backdrop:SetFrameLevel(bars:GetFrameLevel() - 1)
 				
-				--Reposition the Aggro glow
 				bars:SetScript("OnShow", function()
 					health:Point("TOPRIGHT", self, "TOPRIGHT", -BORDER, -(BORDER+POWERBAR_HEIGHT+1))
 					health:Point("TOPLEFT", self, "TOPLEFT", portrait_width+BORDER, -(BORDER+POWERBAR_HEIGHT+1))
@@ -396,6 +392,7 @@ local function Shared(self, unit)
 			if E.myclass == "DEATHKNIGHT" then
 				local runes = CreateFrame("Frame", nil, self)
 				runes:Point("BOTTOMLEFT", health.backdrop, "TOPLEFT", BORDER, BORDER+1)
+				runes:SetFrameStrata("LOW")
 				runes:Width(POWERBAR_WIDTH)
 				runes:Height(POWERBAR_HEIGHT - (BORDER*2))
 
@@ -420,7 +417,6 @@ local function Shared(self, unit)
 				runes.backdrop:Point("BOTTOMRIGHT", BORDER, -BORDER)
 				runes.backdrop:SetFrameLevel(runes:GetFrameLevel() - 1)
 
-				--Reposition the Aggro glow
 				runes:HookScript("OnShow", function()
 					health:Point("TOPRIGHT", self, "TOPRIGHT", -BORDER, -(BORDER+POWERBAR_HEIGHT+1))
 					health:Point("TOPLEFT", self, "TOPLEFT", portrait_width+BORDER, -(BORDER+POWERBAR_HEIGHT+1))
@@ -437,6 +433,7 @@ local function Shared(self, unit)
 			if E.myclass == "SHAMAN" then
 				local totems = CreateFrame("Frame", nil, self)
 				totems:Point("BOTTOMLEFT", health.backdrop, "TOPLEFT", BORDER, BORDER+1)
+				totems:SetFrameStrata("LOW")
 				totems:Width(POWERBAR_WIDTH)
 				totems:Height(POWERBAR_HEIGHT - (BORDER*2))
 				totems.Destroy = true
@@ -444,6 +441,8 @@ local function Shared(self, unit)
 				for i = 1, 4 do
 					totems[i] = CreateFrame("StatusBar", nil, totems)
 					totems[i]:SetHeight(totems:GetHeight())
+					totems[i]:SetFrameStrata(self:GetFrameStrata())
+					totems[i]:SetFrameLevel(self:GetFrameLevel())
 					totems[i]:SetWidth(E.Scale(totems:GetWidth() - 3) / 4)
 
 					if (i == 1) then
@@ -468,7 +467,6 @@ local function Shared(self, unit)
 				totems.backdrop:SetPoint("BOTTOMRIGHT", BORDER, -BORDER)
 				totems.backdrop:SetFrameLevel(totems:GetFrameLevel() - 1)
 				
-				--Reposition the Aggro glow
 				totems:HookScript("OnShow", function()
 					health:Point("TOPRIGHT", self, "TOPRIGHT", -BORDER, -(BORDER+POWERBAR_HEIGHT+1))
 					health:Point("TOPLEFT", self, "TOPLEFT", portrait_width+BORDER, -(BORDER+POWERBAR_HEIGHT+1))
@@ -485,6 +483,7 @@ local function Shared(self, unit)
 			if E.myclass == "DRUID" then
 				local eclipseBar = CreateFrame('Frame', nil, self)
 				eclipseBar:Point("BOTTOMLEFT", health.backdrop, "TOPLEFT", BORDER, BORDER+1)
+				eclipseBar:SetFrameStrata("LOW")
 				eclipseBar:Width(POWERBAR_WIDTH)
 				eclipseBar:Height(POWERBAR_HEIGHT - (BORDER*2))
 
@@ -512,8 +511,7 @@ local function Shared(self, unit)
 				eclipseBar.backdrop:Point("TOPLEFT", eclipseBar, "TOPLEFT", -BORDER, BORDER)
 				eclipseBar.backdrop:Point("BOTTOMRIGHT", lunarBar, "BOTTOMRIGHT", BORDER, -BORDER)
 				eclipseBar.backdrop:SetFrameLevel(eclipseBar:GetFrameLevel() - 1)
-				
-				--Reposition the Aggro glow
+
 				eclipseBar:HookScript("OnShow", function()
 					health:Point("TOPRIGHT", self, "TOPRIGHT", -BORDER, -(BORDER+POWERBAR_HEIGHT+1))
 					health:Point("TOPLEFT", self, "TOPLEFT", portrait_width+BORDER, -(BORDER+POWERBAR_HEIGHT+1))
@@ -610,10 +608,10 @@ local function Shared(self, unit)
 				health.bg:SetParent(overlay)
 			else
 				--Reposition Health
-				health:Point("TOPRIGHT", -(portrait_width+BORDER), 0)
+				health:Point("TOPRIGHT", -(portrait_width+BORDER), -BORDER)
 				
 				local portrait = CreateFrame("PlayerModel", nil, self)
-				
+				portrait:SetFrameStrata("LOW")
 				portrait.backdrop = CreateFrame("Frame", nil, portrait)
 				portrait.backdrop:SetTemplate("Default")
 				portrait.backdrop:SetPoint("TOPRIGHT", self, "TOPRIGHT")
@@ -667,16 +665,16 @@ local function Shared(self, unit)
 			self.Castbar = castbar
 		end
 		
-		-- Debuff Highlight (Overlays Health Bar)
+		-- Debuff Highlight
 		if C["unitframes"].debuffhighlight == true then
-			local dbh = health:CreateTexture(nil, "OVERLAY")
+			local dbh = self:CreateTexture(nil, "OVERLAY")
 			dbh:SetAllPoints()
 			dbh:SetTexture(C["media"].blank)
 			dbh:SetBlendMode("ADD")
 			dbh:SetVertexColor(0,0,0,0)
 			self.DebuffHighlight = dbh
 			self.DebuffHighlightFilter = true
-			self.DebuffHighlightAlpha = 0.4		
+			self.DebuffHighlightAlpha = 0.35	
 		end
 
 		--Combat Feedback
@@ -705,6 +703,7 @@ local function Shared(self, unit)
 		--Combo Bar
 		local combo = CreateFrame("Frame", nil, self)
 		combo:Point("BOTTOMLEFT", health.backdrop, "TOPLEFT", BORDER, BORDER+1)
+		combo:SetFrameStrata("LOW")
 		combo:Width(POWERBAR_WIDTH)
 		combo:Height(POWERBAR_HEIGHT - (BORDER*2))
 
@@ -735,8 +734,6 @@ local function Shared(self, unit)
 		combo.backdrop:Point("TOPLEFT", -2, 2)
 		combo.backdrop:Point("BOTTOMRIGHT", 2, -2)
 		combo.backdrop:SetFrameLevel(combo:GetFrameLevel() - 1)
-
-		--Reposition the Aggro glow	
 		
 		--[[This is a little differant than everything else because we have to take into account 
 		the combobar is movable with the /moveele command, this should make it work correctly only 
@@ -765,7 +762,8 @@ local function Shared(self, unit)
 	if (unit == "targettarget" or unit == "pet" or unit == "pettarget" or unit == "focustarget" or unit == "focus") then
 		local POWERBAR_WIDTH = SMALL_WIDTH - (BORDER*2)
 		local POWERBAR_HEIGHT = 8
-
+		local CASTBAR_WIDTH = C["castbar"].focuswidth*resscale
+		
 		--Health Bar
 		local health = E.ContructHealthBar(self, true, nil)
 		health:Point("TOPRIGHT", self, "TOPRIGHT", -BORDER, -BORDER)
@@ -806,16 +804,16 @@ local function Shared(self, unit)
 			self.Debuffs = debuffs
 		end
 	
-		-- Debuff Highlight (Overlays Health Bar)
+		-- Debuff Highlight
 		if C["unitframes"].debuffhighlight == true then
-			local dbh = health:CreateTexture(nil, "OVERLAY")
+			local dbh = self:CreateTexture(nil, "OVERLAY")
 			dbh:SetAllPoints()
 			dbh:SetTexture(C["media"].blank)
 			dbh:SetBlendMode("ADD")
 			dbh:SetVertexColor(0,0,0,0)
 			self.DebuffHighlight = dbh
 			self.DebuffHighlightFilter = true
-			self.DebuffHighlightAlpha = 0.4		
+			self.DebuffHighlightAlpha = 0.35
 		end
 		
 		if unit == "pet" then
@@ -835,6 +833,12 @@ local function Shared(self, unit)
 				self:HookScript("OnEnter", function(self) E.Fader(self, true) end)
 				self:HookScript("OnLeave", function(self) E.Fader(self, false) end)
 			end
+		elseif unit == "focus" and C["castbar"].unitcastbar == true	then
+			--Cast Bar
+			local castbar = E.ConstructCastBar(self, CASTBAR_WIDTH, 20, "LEFT")
+			castbar:Point("TOP", UIParent, "TOP", 0, -150)
+			
+			self.Castbar = castbar
 		end
 	end
 	
@@ -981,7 +985,7 @@ local function Shared(self, unit)
 	
 		--Name
 		self:FontString("Name", font1, C["unitframes"].fontsize, "THINOUTLINE")
-		self.Name:Point("CENTER", health, "CENTER", 0, 2)
+		self.Name:SetPoint("CENTER", health, "CENTER")
 		self.Name.frequentUpdates = 0.5
 		self:Tag(self.Name, '[Elvui:getnamecolor][Elvui:namemedium]')			
 	end
@@ -990,16 +994,10 @@ local function Shared(self, unit)
 	--	All Units
 	------------------------------------------------------------------------
 	if unit ~= "party" then
-		local InvFrame = CreateFrame("Frame", nil, self)
-		InvFrame:SetFrameLevel(self:GetFrameLevel() - 1)
-		InvFrame:SetAllPoints(self.Health)
-		
-		-- symbols, now put the symbol on the frame we created above.
-		local RaidIcon = InvFrame:CreateTexture(nil, "OVERLAY")
+		local RaidIcon = self:CreateTexture(nil, "OVERLAY")
 		RaidIcon:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\raidicons.blp") 
-		RaidIcon:Size(30, 30)
-		RaidIcon:SetAlpha(0.3)
-		RaidIcon:SetPoint("CENTER")
+		RaidIcon:Size(18, 18)
+		RaidIcon:Point("CENTER", self.Health, "TOP", 0, BORDER)
 		self.RaidIcon = RaidIcon
 	end
 		
@@ -1019,51 +1017,43 @@ local function LoadDPSLayout()
 
 	-- Player
 	local player = oUF:Spawn('player', "ElvDPS_player")
-	if C["unitframes"].charportrait == true and not C["unitframes"].portraitonhealthbar == true and E.lowversion == true then
-		player:SetPoint("BOTTOM", ElvuiActionBarBackground, "TOPLEFT", E.Scale(-22),E.Scale(35))
-	else
-		player:SetPoint("BOTTOMLEFT", ElvuiActionBarBackground, "TOPLEFT", -ElvuiSplitActionBarRightBackground:GetWidth() + E.Scale(-2),E.Scale(35))
-	end
-	player:SetSize(PLAYER_WIDTH, PLAYER_HEIGHT)
+	player:Point("BOTTOMLEFT", ElvuiSplitActionBarLeftBackground, "TOPLEFT", 0, 35)
+	player:Size(PLAYER_WIDTH, PLAYER_HEIGHT)
 
 	-- Target
 	local target = oUF:Spawn('target', "ElvDPS_target")
-	if C["unitframes"].charportrait == true and not C["unitframes"].portraitonhealthbar == true and E.lowversion == true then
-		target:SetPoint("BOTTOM", ElvuiActionBarBackground, "TOPRIGHT", E.Scale(22),E.Scale(35))
-	else
-		target:SetPoint("BOTTOMRIGHT", ElvuiActionBarBackground, "TOPRIGHT", ElvuiSplitActionBarRightBackground:GetWidth() + E.Scale(2),E.Scale(35))
-	end
-	target:SetSize(TARGET_WIDTH, TARGET_HEIGHT)
+	target:Point("BOTTOMRIGHT", ElvuiSplitActionBarRightBackground, "TOPRIGHT", 0, 35)
+	target:Size(TARGET_WIDTH, TARGET_HEIGHT)
 
 	-- Focus
 	local focus = oUF:Spawn('focus', "ElvDPS_focus")
-	focus:SetPoint("BOTTOMLEFT", ElvDPS_target, "TOPRIGHT", E.Scale(-35),E.Scale(120))
-	focus:SetSize(SMALL_WIDTH, SMALL_HEIGHT)
+	focus:Point("BOTTOMLEFT", ElvDPS_target, "TOPRIGHT", -35, 120)
+	focus:Size(SMALL_WIDTH, SMALL_HEIGHT)
 
 	-- Target's Target
 	local tot = oUF:Spawn('targettarget', "ElvDPS_targettarget")
-	tot:SetPoint("BOTTOM", ElvuiActionBarBackground, "TOP", 0,E.Scale(35))
-	tot:SetSize(SMALL_WIDTH, SMALL_HEIGHT)
+	tot:Point("BOTTOM", ElvuiActionBarBackground, "TOP", 0, 35)
+	tot:Size(SMALL_WIDTH, SMALL_HEIGHT)
 
 	-- Player's Pet
 	local pet = oUF:Spawn('pet', "ElvDPS_pet")
-	pet:SetPoint("BOTTOM", ElvDPS_targettarget, "TOP", 0,E.Scale(15))
-	pet:SetSize(SMALL_WIDTH, SMALL_HEIGHT)
+	pet:Point("BOTTOM", ElvDPS_targettarget, "TOP", 0, 15)
+	pet:Size(SMALL_WIDTH, SMALL_HEIGHT)
 	pet:SetParent(player)
 
 	-- Player's Pet's Target
 	if C["unitframes"].pettarget == true then
 		local pettarget = oUF:Spawn('pettarget', "ElvDPS_pettarget")
-		pettarget:SetPoint("BOTTOM", ElvDPS_pet, "TOP", 0,E.Scale(8))
-		pettarget:SetSize(SMALL_WIDTH, SMALL_HEIGHT*0.8)
+		pettarget:Point("BOTTOM", ElvDPS_pet, "TOP", 0, 8)
+		pettarget:Size(SMALL_WIDTH, SMALL_HEIGHT*0.8)
 		pettarget:SetParent(pet)
 	end
 
 	-- Focus's target
 	if C["unitframes"].showfocustarget == true then
 		local focustarget = oUF:Spawn('focustarget', "ElvDPS_focustarget")
-		focustarget:SetPoint("BOTTOM", ElvDPS_focus, "TOP", 0,E.Scale(15))
-		focustarget:SetSize(SMALL_WIDTH, SMALL_HEIGHT)
+		focustarget:Point("BOTTOM", ElvDPS_focus, "TOP", 0, 15)
+		focustarget:Size(SMALL_WIDTH, SMALL_HEIGHT)
 	end
 
 	if C.arena.unitframes then
@@ -1071,11 +1061,11 @@ local function LoadDPSLayout()
 		for i = 1, 5 do
 			arena[i] = oUF:Spawn("arena"..i, "ElvDPSArena"..i)
 			if i == 1 then
-				arena[i]:SetPoint("BOTTOMLEFT", ChatRBackground2, "TOPLEFT", -80, 185)
+				arena[i]:Point("BOTTOMLEFT", ChatRBackground2, "TOPLEFT", -80, 185)
 			else
-				arena[i]:SetPoint("BOTTOM", arena[i-1], "TOP", 0, 25)
+				arena[i]:Point("BOTTOM", arena[i-1], "TOP", 0, 25)
 			end
-			arena[i]:SetSize(BOSS_WIDTH, BOSS_HEIGHT)
+			arena[i]:Size(BOSS_WIDTH, BOSS_HEIGHT)
 		end
 	end
 
@@ -1084,11 +1074,11 @@ local function LoadDPSLayout()
 		for i = 1, MAX_BOSS_FRAMES do
 			boss[i] = oUF:Spawn("boss"..i, "ElvDPSBoss"..i)
 			if i == 1 then
-				boss[i]:SetPoint("BOTTOMLEFT", ChatRBackground2, "TOPLEFT", -80, 185)
+				boss[i]:Point("BOTTOMLEFT", ChatRBackground2, "TOPLEFT", -80, 185)
 			else
-				boss[i]:SetPoint('BOTTOM', boss[i-1], 'TOP', 0, 25)             
+				boss[i]:Point('BOTTOM', boss[i-1], 'TOP', 0, 25)             
 			end
-			boss[i]:SetSize(BOSS_WIDTH, BOSS_HEIGHT)
+			boss[i]:Size(BOSS_WIDTH, BOSS_HEIGHT)
 		end
 	end
 	

@@ -53,7 +53,9 @@ ElvuiL.option_skin_omen = "Omen"
 ElvuiL.option_skin_recount = "Recount"
 ElvuiL.option_skin_skada = "Skada"
 ElvuiL.option_hookkleright = "Force KLE's top bar anchor to be positioned above right chat frame"
- 
+ElvuiL.option_hookbwright = "Force BigWig's bar anchor to be positioned above the right chat frame"
+ElvuiL.option_skin_bigwigs = "BigWigs"
+
 -- classtimer
 ElvuiL.option_classtimer = "Class Timer"
 ElvuiL.option_classtimer_enable = "Enable Classtimer"
@@ -132,6 +134,7 @@ ElvuiL.option_castbar_latency = "Show cast bar latency"
 ElvuiL.option_castbar_icon = "Show icons on cast bar"
 ElvuiL.option_castbar_playerwidth = "Width of the player castbar"
 ElvuiL.option_castbar_targetwidth = "Width of the target castbar"
+ElvuiL.option_castbar_focuswidth = "Width of the focus castbar"
 ElvuiL.option_castbar_classcolor = "Color castbar by classcolor"
 
 -- unit frames
@@ -257,11 +260,6 @@ ElvuiL.option_chat_fadeoutofuse = "Fade chat text when not in use"
 ElvuiL.option_chat_sticky = "Sticky some chat channels when opening new chat edit"
 ElvuiL.option_chat_rightchat = "Display right chat window"
 ElvuiL.option_chat_combathide = "Slide chatframe out during combat ('Left', 'Right', 'Both', or 'NONE')"
-
---Debug
-ElvuiL.option_debug = "Debug Mode"
-ElvuiL.option_debug_enabled = "Enable debug mode, not recommended!"
-ElvuiL.option_debug_events = "Print events to chat window"
 
 -- buttons
 ElvuiL.option_button_reset = "Reset UI"

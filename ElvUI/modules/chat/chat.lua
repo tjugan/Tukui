@@ -59,7 +59,7 @@ local function SetChatStyle(frame)
 	local id = frame:GetID()
 	local chat = frame:GetName()
 	local tab = _G[chat.."Tab"]
-	
+	frame.skinned = true
 	tab:SetAlpha(1)
 	tab.SetAlpha = UIFrameFadeRemoveFrame	
 	
@@ -399,6 +399,11 @@ end)
 -- Setup temp chat (BN, WHISPER) when needed.
 local function SetupTempChat()
 	local frame = FCF_GetCurrentChatFrame()
+	
+	-- do a check if we already did a skinning earlier for this temp chat frame
+	if frame.skinned then return end
+
+	-- style it
 	SetChatStyle(frame)
 end
 hooksecurefunc("FCF_OpenTemporaryWindow", SetupTempChat)
@@ -510,7 +515,6 @@ local function Copy(cf)
 end
 
 function E.ChatCopyButtons(id)
-	
 	local cf = _G[format("ChatFrame%d",  id)]
 	local tab = _G[format("ChatFrame%dTab", id)]
 	local name = FCF_GetChatWindowInfo(id)
