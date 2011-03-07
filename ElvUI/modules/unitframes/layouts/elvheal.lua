@@ -53,10 +53,6 @@ local function Shared(self, unit)
 	backdrop:SetFrameStrata("BACKGROUND")
 	self.backdrop = backdrop
 	
-	--Threat Glow
-	self:CreateShadow("Default")
-	self.shadow:SetFrameStrata("BACKGROUND")
-	
 	------------------------------------------------------------------------
 	--	Player
 	------------------------------------------------------------------------
@@ -66,6 +62,14 @@ local function Shared(self, unit)
 		local CASTBAR_HEIGHT = 20
 		local CASTBAR_WIDTH = C["castbar"].playerwidth*resscale
 		local portrait_width = 45
+
+		--Threat Glow
+		self:CreateShadow("Default")
+		self.shadow:SetFrameStrata("BACKGROUND")
+		self.shadow:Point("TOPLEFT", -4, 4)
+		self.shadow:Point("BOTTOMLEFT", -4, -4)
+		self.shadow:Point("TOPRIGHT", 4, 4)
+		self.shadow:Point("BOTTOMRIGHT", 4, -4)
 		
 		if C["unitframes"].charportraithealth == true or C["unitframes"].charportrait == false then
 			portrait_width = 0
@@ -939,8 +943,7 @@ local function Shared(self, unit)
 			trinket.bg:SetTemplate("Default")
 			trinket.bg:SetBackdropBorderColor(unpack(C["media"].altbordercolor))
 			trinket.bg:SetFrameLevel(trinket:GetFrameLevel() - 1)
-			trinket.bg:CreateShadow("Default")
-			
+
 			trinket:Point("TOPLEFT", trinket.bg, 2, -2)
 			trinket:Point("BOTTOMRIGHT", trinket.bg, -2, 2)
 			
@@ -1078,12 +1081,12 @@ local function LoadHealLayout()
 	
 	-- Focus
 	local focus = oUF:Spawn('focus', "ElvHeal_focus")
-	focus:Point("TOPLEFT", ElvHeal_targettarget, "BOTTOMLEFT", 0, -32)
+	focus:Point("TOPLEFT", ElvHeal_player, "BOTTOMLEFT", 0, -42)
 	focus:Size(SMALL_WIDTH, SMALL_HEIGHT)
 
 	-- Player's Pet
 	local pet = oUF:Spawn('pet', "ElvHeal_pet")
-	pet:Point("TOPLEFT", ElvHeal_player, "BOTTOMLEFT", 0, -42)
+	pet:Point("TOPRIGHT", ElvHeal_player, "BOTTOMRIGHT", 0, -42)
 	pet:Size(SMALL_WIDTH, SMALL_HEIGHT)
 	pet:SetParent(player)
 

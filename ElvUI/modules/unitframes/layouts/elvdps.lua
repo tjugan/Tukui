@@ -53,10 +53,6 @@ local function Shared(self, unit)
 	backdrop:SetFrameStrata("BACKGROUND")
 	self.backdrop = backdrop
 	
-	--Threat Glow
-	self:CreateShadow("Default")
-	self.shadow:SetFrameStrata("BACKGROUND")
-	
 	------------------------------------------------------------------------
 	--	Player
 	------------------------------------------------------------------------
@@ -67,6 +63,15 @@ local function Shared(self, unit)
 		local CASTBAR_WIDTH = C["castbar"].playerwidth*resscale
 		local portrait_width = 45
 		
+		--Threat Glow
+		self:CreateShadow("Default")
+		self.shadow:SetFrameStrata("BACKGROUND")
+		self.shadow:SetBackdropBorderColor(0, 0, 0, 0)
+		self.shadow:Point("TOPLEFT", -4, 4)
+		self.shadow:Point("BOTTOMLEFT", -4, -4)
+		self.shadow:Point("TOPRIGHT", 4, 4)
+		self.shadow:Point("BOTTOMRIGHT", 4, -4)
+	
 		if C["unitframes"].charportraithealth == true or C["unitframes"].charportrait == false then
 			portrait_width = 0
 		elseif C["unitframes"].charportrait == true then
@@ -892,7 +897,6 @@ local function Shared(self, unit)
 			trinket.bg:SetTemplate("Default")
 			trinket.bg:SetBackdropBorderColor(unpack(C["media"].altbordercolor))
 			trinket.bg:SetFrameLevel(trinket:GetFrameLevel() - 1)
-			trinket.bg:CreateShadow("Default")
 			
 			trinket:Point("TOPLEFT", trinket.bg, 2, -2)
 			trinket:Point("BOTTOMRIGHT", trinket.bg, -2, 2)
