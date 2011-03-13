@@ -28,11 +28,12 @@ E.LoadUFFunctions = function(layout)
 				health.bg.multiplier = 0.25
 			else
 				health.bg:SetTexture(unpack(C["unitframes"].healthbackdropcolor))
+				health.bg.SetVertexColor = E.dummy
 			end
 		end
 		
 		if text then
-			health:FontString("value", C["media"].uffont, C["unitframes"].fontsize, "THINOUTLINE")
+			health:FontString("value", C["media"].uffont, C["unitframes"].fontsize*E.ResScale, "THINOUTLINE")
 			health.value:SetParent(self)
 		end
 		
@@ -53,8 +54,8 @@ E.LoadUFFunctions = function(layout)
 		
 		health.backdrop = CreateFrame('Frame', nil, health)
 		health.backdrop:SetTemplate("Default")
-		health.backdrop:Point("TOPRIGHT", health, "TOPRIGHT", 2, 2)
-		health.backdrop:Point("BOTTOMLEFT", health, "BOTTOMLEFT", -2, -2)
+		health.backdrop:Point("TOPRIGHT", health, "TOPRIGHT", 2*E.ResScale, 2*E.ResScale)
+		health.backdrop:Point("BOTTOMLEFT", health, "BOTTOMLEFT", -2*E.ResScale, -2*E.ResScale)
 		health.backdrop:SetFrameLevel(health:GetFrameLevel() - 1)		
 		
 		return health
@@ -79,7 +80,7 @@ E.LoadUFFunctions = function(layout)
 		end
 		
 		if text then
-			power:FontString("value", C["media"].uffont, C["unitframes"].fontsize, "THINOUTLINE")
+			power:FontString("value", C["media"].uffont, C["unitframes"].fontsize*E.ResScale, "THINOUTLINE")
 			power.value:SetParent(self)
 		end
 		
@@ -89,8 +90,8 @@ E.LoadUFFunctions = function(layout)
 		
 		power.backdrop = CreateFrame('Frame', nil, power)
 		power.backdrop:SetTemplate("Default")
-		power.backdrop:Point("TOPRIGHT", power, "TOPRIGHT", 2, 2)
-		power.backdrop:Point("BOTTOMLEFT", power, "BOTTOMLEFT", -2, -2)
+		power.backdrop:Point("TOPRIGHT", power, "TOPRIGHT", 2*E.ResScale, 2*E.ResScale)
+		power.backdrop:Point("BOTTOMLEFT", power, "BOTTOMLEFT", -2*E.ResScale, -2*E.ResScale)
 		power.backdrop:SetFrameLevel(power:GetFrameLevel() - 1)
 	
 		return power
@@ -100,7 +101,7 @@ E.LoadUFFunctions = function(layout)
 		local castbar = CreateFrame("StatusBar", nil, self)
 		castbar:SetStatusBarTexture(C["media"].normTex)
 		castbar:Height(height)
-		castbar:Width(width - 4)
+		castbar:Width(width - 4*E.ResScale)
 		castbar.CustomDelayText = E.CustomCastDelayText
 		castbar.PostCastStart = E.PostCastStart
 		castbar.PostChannelStart = E.PostCastStart		
@@ -108,17 +109,17 @@ E.LoadUFFunctions = function(layout)
 		castbar.bg = CreateFrame("Frame", nil, castbar)
 		castbar.bg:SetTemplate("Default")
 		castbar.bg:SetBackdropBorderColor(unpack(C["media"].altbordercolor))
-		castbar.bg:Point("TOPLEFT", -2, 2)
-		castbar.bg:Point("BOTTOMRIGHT", 2, -2)
+		castbar.bg:Point("TOPLEFT", -2*E.ResScale, 2*E.ResScale)
+		castbar.bg:Point("BOTTOMRIGHT", 2*E.ResScale, -2*E.ResScale)
 		castbar.bg:SetFrameLevel(castbar:GetFrameLevel() - 1)
 		
-		castbar:FontString("Time", C["media"].uffont, C["unitframes"].fontsize, "THINOUTLINE")
+		castbar:FontString("Time", C["media"].uffont, C["unitframes"].fontsize*E.ResScale, "THINOUTLINE")
 		castbar.Time:Point("RIGHT", castbar, "RIGHT", -4, 0)
 		castbar.Time:SetTextColor(0.84, 0.75, 0.65)
 		castbar.Time:SetJustifyH("RIGHT")
 		castbar.CustomTimeText = E.CustomCastTimeText
 
-		castbar:FontString("Text", C["media"].uffont, C["unitframes"].fontsize, "THINOUTLINE")
+		castbar:FontString("Text", C["media"].uffont, C["unitframes"].fontsize*E.ResScale, "THINOUTLINE")
 		castbar.Text:SetPoint("LEFT", castbar, "LEFT", 4, 0)
 		castbar.Text:SetTextColor(0.84, 0.75, 0.65)
 
@@ -131,19 +132,19 @@ E.LoadUFFunctions = function(layout)
 
 		if C["castbar"].cbicons == true then
 			local button = CreateFrame("Frame", nil, castbar)
-			button:Height(height + 4)
-			button:Width(height + 4)
+			button:Height(height + 4*E.ResScale)
+			button:Width(height + 4*E.ResScale)
 			button:SetTemplate("Default")
 			button:SetBackdropBorderColor(unpack(C["media"].altbordercolor))
 			if direction == "LEFT" then
-				button:Point("RIGHT", castbar, "LEFT", -4, 0)
+				button:Point("RIGHT", castbar, "LEFT", -4*E.ResScale, 0)
 			else
-				button:Point("LEFT", castbar, "RIGHT", 4, 0)
+				button:Point("LEFT", castbar, "RIGHT", 4*E.ResScale, 0)
 			end
 			
 			castbar.Icon = button:CreateTexture(nil, "ARTWORK")
-			castbar.Icon:Point("TOPLEFT", button, 2, -2)
-			castbar.Icon:Point("BOTTOMRIGHT", button, -2, 2)
+			castbar.Icon:Point("TOPLEFT", button, 2*E.ResScale, -2*E.ResScale)
+			castbar.Icon:Point("BOTTOMRIGHT", button, -2*E.ResScale, 2*E.ResScale)
 			castbar.Icon:SetTexCoord(0.08, 0.92, 0.08, .92)
 			
 			castbar:Width(width - button:GetWidth() - 6)
@@ -278,6 +279,9 @@ E.LoadUFFunctions = function(layout)
 		
 		if C["general"].classcolortheme == true then
 			health.backdrop:SetBackdropBorderColor(r, g, b)
+			if health:GetParent().Portrait and health:GetParent().Portrait.backdrop then
+				health:GetParent().Portrait.backdrop:SetBackdropBorderColor(r, g, b)
+			end
 		end
 		
 		if C["unitframes"].classcolor == true and C["unitframes"].healthcolorbyvalue == true and not (UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit)) then
@@ -369,7 +373,7 @@ E.LoadUFFunctions = function(layout)
 		local color = E.oUF_colors.power[pToken]
 		
 		if C["general"].classcolortheme == true then
-			power.backdrop:SetBackdropBorderColor(power:GetParent().Health:GetStatusBarColor())
+			power.backdrop:SetBackdropBorderColor(power:GetParent().Health.backdrop:GetBackdropBorderColor())
 		end
 		
 		if not power.value then return end		
@@ -381,7 +385,7 @@ E.LoadUFFunctions = function(layout)
 		end	
 			
 		if min == 0 then 
-			power.value:SetText("") 
+			power.value:SetText() 
 		else
 			if (not UnitIsPlayer(unit) and not UnitPlayerControlled(unit) or not UnitIsConnected(unit)) and not (unit and unit:find("boss%d")) then
 				power.value:SetText()
@@ -405,11 +409,7 @@ E.LoadUFFunctions = function(layout)
 						elseif (unit and unit:find("arena%d")) then
 							power.value:SetText(E.ShortValue(min))
 						elseif (unit and unit:find("boss%d")) then
-							if C["unitframes"].showtotalhpmp == true then
-								power.value:SetFormattedText("%s |cffD7BEA5|||r %s", E.ShortValue(max), E.ShortValue(max - (max - min)))
-							else
-								power.value:SetFormattedText("%s |cffD7BEA5-|r %d%%", E.ShortValue(max - (max - min)), floor(min / max * 100))
-							end						
+							power.value:SetFormattedText("%d%%", floor(min / max * 100))					
 						else
 							if C["unitframes"].showtotalhpmp == true then
 								power.value:SetFormattedText("%s |cffD7BEA5|||r %s", E.ShortValue(max - (max - min)), E.ShortValue(max))
@@ -648,7 +648,7 @@ E.LoadUFFunctions = function(layout)
 				icon:SetBackdropBorderColor(237/255, 234/255, 142/255)
 			else
 				if C["general"].classcolortheme == true then
-					local r, g, b = icon:GetParent():GetParent().backdrop:GetBackdropBorderColor()
+					local r, g, b = icon:GetParent():GetParent().Health.backdrop:GetBackdropBorderColor()
 					icon:SetBackdropBorderColor(r, g, b)
 				else
 					icon:SetBackdropBorderColor(unpack(C["media"].bordercolor))
@@ -681,7 +681,7 @@ E.LoadUFFunctions = function(layout)
 		if name == "Opening" then
 			self.Text:SetText(OPENING)
 		else
-			self.Text:SetText(string.sub(name, 0, 25))
+			self.Text:SetText(string.sub(name, 0, math.floor((((32/245) * self:GetWidth()) / C["unitframes"].fontsize) * 12)))
 		end
 		
 		if self.interrupt and unit ~= "player" then
@@ -804,7 +804,7 @@ E.LoadUFFunctions = function(layout)
 		if self:IsShown() then
 			for _, text in pairs(E.LeftDatatexts) do text:Hide() end
 			local type = select(10, UnitAlternatePowerInfo(unit))
-			if self.text and type then self.text:SetText(type..": "..E.ValColor.."0%") end
+			if self.text and type then self.text:SetText(type..": 0%") end
 		else
 			for _, text in pairs(E.LeftDatatexts) do text:Show() end		
 		end
@@ -823,14 +823,21 @@ E.LoadUFFunctions = function(layout)
 		
 		local unit = self:GetParent().unit or self:GetParent():GetParent().unit
 		
-		if unit == nil or unit ~= "player" then return end --Only want to see this on the players bar
-		
-		local type = select(10, UnitAlternatePowerInfo(unit))
-				
-		if self.text and perc > 0 then
-			self.text:SetText(type..": "..E.ValColor..format("%d%%", perc))
-		elseif self.text then
-			self.text:SetText(type..": "..E.ValColor.."0%")
+		if unit == "player" and self.text then 
+			local type = select(10, UnitAlternatePowerInfo(unit))
+					
+			if perc > 0 then
+				self.text:SetText(type..": "..format("%d%%", perc))
+			else
+				self.text:SetText(type..": 0%")
+			end
+		elseif unit and unit:find("boss%d") and self.text then
+			self.text:SetTextColor(self:GetStatusBarColor())
+			if perc > 0 then
+				self.text:SetText("|cffD7BEA5[|r"..format("%d%%", perc).."|cffD7BEA5]|r")
+			else
+				self.text:SetText(nil)
+			end
 		end
 	end
 
@@ -921,6 +928,12 @@ E.LoadUFFunctions = function(layout)
 				else
 					tex:SetVertexColor(0.8, 0.8, 0.8)
 				end
+				
+				local border = icon:CreateTexture(nil, "ARTWORK")
+				border:Point("TOPLEFT", -E.mult, E.mult)
+				border:Point("BOTTOMRIGHT", E.mult, -E.mult)
+				border:SetTexture(C["media"].blank)
+				border:SetVertexColor(0, 0, 0)
 
 				local count = icon:CreateFontString(nil, "OVERLAY")
 				count:SetFont(C["media"].uffont, 8, "THINOUTLINE")

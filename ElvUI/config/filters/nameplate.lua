@@ -35,8 +35,12 @@ E.PlateBlacklist = {
 
 	--Test
 	--["Unbound Seer"] = true,
-}
+	}
 
 if select(1, UnitName("player")) == "Elv" then
+	E.PlateBlacklist["Lava Parasite"] = true --Fucking magmaw nameplates make it hard to see other adds
+end
+
+if select(1, UnitName("player")) == "Nomiss" then
 	E.PlateBlacklist["Lava Parasite"] = true --Fucking magmaw nameplates make it hard to see other adds
 end

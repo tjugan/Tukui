@@ -8,27 +8,27 @@ C["media"] = {
 	["dmgfont"] = [[Interface\AddOns\ElvUI\media\fonts\Action_Man.ttf]], -- general font of dmg / sct
 	
 	-- fonts (DEUTSCH)
-	["de_font"] = [=[Interface\Addons\Tukui\media\fonts\PT_Sans_Narrow.ttf]=], -- general font of tukui
-	["de_uffont"] = [[Interface\AddOns\Tukui\media\fonts\PT_Sans_Narrow.ttf]], -- general font of unitframes
-	["de_dmgfont"] = [[Interface\AddOns\Tukui\media\fonts\Action_Man.ttf]], -- general font of dmg / sct
+	["de_font"] = [=[Interface\Addons\ElvUI\media\fonts\PT_Sans_Narrow.ttf]=], -- general font of ElvUI
+	["de_uffont"] = [[Interface\AddOns\ElvUI\media\fonts\PT_Sans_Narrow.ttf]], -- general font of unitframes
+	["de_dmgfont"] = [[Interface\AddOns\ElvUI\media\fonts\Action_Man.ttf]], -- general font of dmg / sct
 	
 	-- fonts (FRENCH)
-	["fr_font"] = [=[Interface\Addons\Tukui\media\fonts\PT_Sans_Narrow.ttf]=], -- general font of tukui
-	["fr_uffont"] = [[Interface\AddOns\Tukui\media\fonts\PT_Sans_Narrow.ttf]], -- general font of unitframes
-	["fr_dmgfont"] = [=[Interface\AddOns\Tukui\media\fonts\Action_Man.ttf]=], -- general font of dmg / sct
+	["fr_font"] = [=[Interface\Addons\ElvUI\media\fonts\PT_Sans_Narrow.ttf]=], -- general font of ElvUI
+	["fr_uffont"] = [[Interface\AddOns\ElvUI\media\fonts\PT_Sans_Narrow.ttf]], -- general font of unitframes
+	["fr_dmgfont"] = [=[Interface\AddOns\ElvUI\media\fonts\Action_Man.ttf]=], -- general font of dmg / sct
 	
 	-- fonts (RUSSIAN)
-	["ru_font"] = [=[Interface\Addons\Tukui\media\fonts\PT_Sans_Narrow.ttf]=], -- general font of tukui
-	["ru_uffont"] = [[Fonts\ARIALN.TTF]], -- general font of unitframes
+	["ru_font"] = [=[Interface\Addons\ElvUI\media\fonts\PT_Sans_Narrow.ttf]=], -- general font of ElvUI
+	["ru_uffont"] = [=[Interface\Addons\ElvUI\media\fonts\PT_Sans_Narrow.ttf]=], -- general font of unitframes
 	["ru_dmgfont"] = [[Fonts\ARIALN.TTF]], -- general font of dmg / sct
 	
 	-- fonts (TAIWAN ONLY)
-	["tw_font"] = [=[Fonts\bLEI00D.ttf]=], -- general font of tukui
+	["tw_font"] = [[Fonts\bLEI00D.ttf]], -- general font of tukui
 	["tw_uffont"] = [[Fonts\bLEI00D.ttf]], -- general font of unitframes
 	["tw_dmgfont"] = [[Fonts\bLEI00D.ttf]], -- general font of dmg / sct
 	
 	-- fonts (KOREAN ONLY)
-	["kr_font"] = [=[Fonts\2002.TTF]=], -- general font of tukui
+	["kr_font"] = [[Fonts\2002.TTF]], -- general font of tukui
 	["kr_uffont"] = [[Fonts\2002.TTF]], -- general font of unitframes
 	["kr_dmgfont"] = [[Fonts\2002.TTF]], -- general font of dmg / sct	
 	
@@ -92,6 +92,7 @@ C["unitframes"] = {
 	["debuffhighlight"] = true,				--highlight frame with the debuff color if the frame is dispellable
 	["classbar"] = true,                    -- enable runebar/totembar/holypowerbar/soulshardbar/eclipsebar
 	["combat"] = false,						-- only show main unitframes when in combat/havetarget/or mouseover
+	["mini_powerbar"] = false,
 }
 
 C["framesizes"] = {
@@ -99,8 +100,8 @@ C["framesizes"] = {
 	["playtarheight"] = 55,					--height of player/target frame
 	["smallwidth"] = 130,					--Width of TargetTarget, Focus, FocusTarget, Player's Pet frames
 	["smallheight"] = 35,					--Height of TargetTarget, Focus, FocusTarget, Player's Pet frames
-	["arenabosswidth"] = 200,				--Width of Arena/Boss Frames
-	["arenabossheight"] = 40,				--Height of Arena/Boss Frames
+	["arenabosswidth"] = 212,				--Width of Arena/Boss Frames
+	["arenabossheight"] = 43,				--Height of Arena/Boss Frames
 	["assisttankwidth"] = 120,				--Width of MainTank/MainAssist frames
 	["assisttankheight"] = 27,				--Height of MainTank/MainAssist frames
 }
