@@ -2,15 +2,15 @@
 
 DB["media"] = {
 	-- fonts
-	["font"] = "ElvUI Font", -- general font of Elvui
-	["uffont"] = "ElvUI Font", -- general font of unitframes
-	["dmgfont"] = "ElvUI Combat", -- general font of dmg / sct
+	["font_"] = "ElvUI Font", -- general font of Elvui
+	["uffont_"] = "ElvUI Font", -- general font of unitframes
+	["dmgfont_"] = "ElvUI Combat", -- general font of dmg / sct
 		
 	-- textures
-	["normTex"] = "ElvUI Norm", -- texture used for Elvui healthbar/powerbar/etc
-	["glossTex"] = "ElvUI Gloss",
-	["glowTex"] = "ElvUI GlowBorder",
-	["blank"] = "ElvUI Blank",
+	["normTex_"] = "ElvUI Norm", -- texture used for Elvui healthbar/powerbar/etc
+	["glossTex_"] = "ElvUI Gloss",
+	["glowTex_"] = "ElvUI GlowBorder",
+	["blank_"] = "ElvUI Blank",
 	["bordercolor"] = { .23,.23,.23 }, -- border color of Elvui panels
 	["backdropcolor"] = { .07,.07,.07 }, -- background color of Elvui panels
 	["backdropfadecolor"] = { .07,.07,.07,0.9 }, --this is always the same as the backdrop color with an alpha of 0.8, see colors.lua
@@ -18,8 +18,8 @@ DB["media"] = {
 	["raidicons"] = [[Interface\AddOns\ElvUI\media\textures\raidicons.blp]], -- new raid icon textures by hankthetank
 	
 	-- sound
-	["whisper"] = "ElvUI Whisper",
-	["warning"] = "ElvUI Warning",
+	["whisper_"] = "ElvUI Whisper",
+	["warning_"] = "ElvUI Warning",
 	["glossyTexture"] = false,	-- Use a glossy texture for all frames
 }
 
@@ -227,21 +227,22 @@ DB["tooltip"] = {
 
 DB["others"] = {
 	["pvpautorelease"] = false,            -- enable auto-release in bg or wintergrasp.
-	["sellgrays"] = true,                  -- automaticly sell grays?
-	["autorepair"] = true,                 -- automaticly repair?
 	["errorenable"] = true,                     -- true to enable this mod, false to disable
 	["autoacceptinv"] = true,                 -- auto-accept invite from guildmate and friends.
 	["enablemap"] = true,                     -- reskin the map to fit Elvui
 	["enablebag"] = true,                     -- enable an all in one bag mod that fit Elvui perfectly
-	["announceinterrupt"] = true,			-- announce in party/raid when you interrupt
-	["showthreat"] = true,                 -- enable the threat bar anchored to info right panel.
-	["minimapauras"] = true,				-- enable minimap auras	
 	
+
 	["lootframe"] = true,                  -- reskin the loot frame to fit Elvui
 	["rolllootframe"] = true,              -- reskin the roll frame to fit Elvui
 	["autogreed"] = true,                  -- auto-dez or auto-greed item at max level.	
+	["sellgrays"] = true,                  -- automaticly sell grays?
+	["autorepair"] = true,                 -- automaticly repair?
 	
 	["buffreminder"] = true,                     -- this is now the new innerfire warning script for all armor/aspect class.
-	["sound"] = true,                      -- enable warning sound notification for reminder.
+	["remindersound"] = true,                      -- enable warning sound notification for reminder.
 	["raidbuffreminder"] = true,			-- buffbar below the minimap, important missing buffs	
+	["announceinterrupt"] = true,			-- announce in party/raid when you interrupt
+	["showthreat"] = true,                 -- enable the threat bar anchored to info right panel.
+	["minimapauras"] = true,				-- enable minimap auras		
 }

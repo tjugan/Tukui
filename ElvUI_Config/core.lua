@@ -17,6 +17,10 @@ function ElvuiConfig:LoadDefaults()
 			raidframes = DB["raidframes"],
 			classtimer = DB["classtimer"],
 			actionbar = DB["actionbar"],
+			datatext = DB["datatext"],
+			chat = DB["chat"],
+			tooltip = DB["tooltip"],
+			others = DB["others"],
 		},
 	}
 end	
@@ -49,7 +53,7 @@ function ElvuiConfig:PLAYER_LOGIN()
 end
 
 function ElvuiConfig:OnProfileChanged(event, database, newProfileKey)
-	StaticPopup_Show("RELOAD_UI")
+	StaticPopup_Show("CFG_RELOAD")
 end
 
 function ElvuiConfig:SetupOptions()
@@ -69,7 +73,11 @@ function ElvuiConfig:SetupOptions()
 	self.optionsFrames.Raidframes = ACD3:AddToBlizOptions("ElvuiConfig", L["Raid Frames"], "ElvUI", "raidframes")
 	self.optionsFrames.Classtimer = ACD3:AddToBlizOptions("ElvuiConfig", L["Class Timers"], "ElvUI", "classtimer")
 	self.optionsFrames.Actionbar = ACD3:AddToBlizOptions("ElvuiConfig", L["Action Bars"], "ElvUI", "actionbar")
+	self.optionsFrames.Datatext = ACD3:AddToBlizOptions("ElvuiConfig", L["Data Texts"], "ElvUI", "datatext")
+	self.optionsFrames.Chat = ACD3:AddToBlizOptions("ElvuiConfig", L["Chat"], "ElvUI", "chat")
+	self.optionsFrames.Tooltip = ACD3:AddToBlizOptions("ElvuiConfig", L["Tooltip"], "ElvUI", "tooltip")
 	self.optionsFrames.Skins = ACD3:AddToBlizOptions("ElvuiConfig", L["Addon Skins"], "ElvUI", "skin")
+	self.optionsFrames.Others = ACD3:AddToBlizOptions("ElvuiConfig", L["Misc"], "ElvUI", "others")
 	self.optionsFrames.Profiles = ACD3:AddToBlizOptions("ElvProfiles", L["Profiles"], "ElvUI")
 	self.SetupOptions = nil
 end
@@ -86,6 +94,15 @@ end
 
 function ElvuiConfig.GenerateOptionsInternal()
 	local E, C, _, DB = unpack(ElvUI)
+
+	StaticPopupDialogs["CFG_RELOAD"] = {
+		text = L["CFG_RELOAD"],
+		button1 = ACCEPT,
+		button2 = CANCEL,
+		OnAccept = function() ReloadUI() end,
+		timeout = 0,
+		whileDead = 1,
+	}
 	
 	ElvuiConfig.Options = {
 		type = "group",
@@ -97,7 +114,7 @@ function ElvuiConfig.GenerateOptionsInternal()
 				name = L["General Settings"],
 				desc = L["General Settings"],
 				get = function(info) return db.general[ info[#info] ] end,
-				set = function(info, value) db.general[ info[#info] ] = value; StaticPopup_Show("RELOAD_UI") end,
+				set = function(info, value) db.general[ info[#info] ] = value; StaticPopup_Show("CFG_RELOAD") end,
 				args = {
 					intro = {
 						order = 1,
@@ -168,7 +185,7 @@ function ElvuiConfig.GenerateOptionsInternal()
 				name = L["Media"],
 				desc = L["MEDIA_DESC"],
 				get = function(info) return db.media[ info[#info] ] end,
-				set = function(info, value) db.media[ info[#info] ] = value; StaticPopup_Show("RELOAD_UI") end,
+				set = function(info, value) db.media[ info[#info] ] = value; StaticPopup_Show("CFG_RELOAD") end,
 				args = {
 					intro = {
 						order = 1,
@@ -181,21 +198,21 @@ function ElvuiConfig.GenerateOptionsInternal()
 						name = L["Fonts"],
 						guiInline = true,
 						args = {
-							font = {
+							font_ = {
 								type = "select", dialogControl = 'LSM30_Font',
 								order = 1,
 								name = L["Font"],
 								desc = L["The font that the core of the UI will use"],
 								values = AceGUIWidgetLSMlists.font,	
 							},
-							uffont = {
+							uffont_ = {
 								type = "select", dialogControl = 'LSM30_Font',
 								order = 2,
 								name = L["UnitFrame Font"],
 								desc = L["The font that unitframes will use"],
 								values = AceGUIWidgetLSMlists.font,	
 							},
-							dmgfont = {
+							dmgfont_ = {
 								type = "select", dialogControl = 'LSM30_Font',
 								order = 3,
 								name = L["Combat Text Font"],
@@ -210,28 +227,28 @@ function ElvuiConfig.GenerateOptionsInternal()
 						name = L["Textures"],
 						guiInline = true,
 						args = {
-							normTex = {
+							normTex_ = {
 								type = "select", dialogControl = 'LSM30_Statusbar',
 								order = 1,
 								name = L["StatusBar Texture"],
 								desc = L["Texture that gets used on all StatusBars"],
 								values = AceGUIWidgetLSMlists.statusbar,								
 							},
-							glossTex = {
+							glossTex_ = {
 								type = "select", dialogControl = 'LSM30_Statusbar',
 								order = 2,
 								name = L["Gloss Texture"],
 								desc = L["This gets used by some objects, unless gloss mode is on."],
 								values = AceGUIWidgetLSMlists.statusbar,								
 							},		
-							glowTex = {
+							glowTex_ = {
 								type = "select", dialogControl = 'LSM30_Border',
 								order = 3,
 								name = L["Glow Border"],
 								desc = L["Shadow Effect"],
 								values = AceGUIWidgetLSMlists.border,								
 							},
-							blank = {
+							blank_ = {
 								type = "select", dialogControl = 'LSM30_Background',
 								order = 4,
 								name = L["Backdrop Texture"],
@@ -263,7 +280,7 @@ function ElvuiConfig.GenerateOptionsInternal()
 									return r, g, b
 								end,
 								set = function(info, r, g, b)
-									StaticPopup_Show("RELOAD_UI")
+									StaticPopup_Show("CFG_RELOAD")
 									db.media[ info[#info] ] = {r, g, b}
 								end,					
 							},
@@ -278,7 +295,7 @@ function ElvuiConfig.GenerateOptionsInternal()
 									return r, g, b
 								end,
 								set = function(info, r, g, b)
-									StaticPopup_Show("RELOAD_UI")
+									StaticPopup_Show("CFG_RELOAD")
 									db.media[ info[#info] ] = {r, g, b}
 								end,						
 							},
@@ -293,7 +310,7 @@ function ElvuiConfig.GenerateOptionsInternal()
 									return r, g, b, a
 								end,
 								set = function(info, r, g, b, a)
-									StaticPopup_Show("RELOAD_UI")
+									StaticPopup_Show("CFG_RELOAD")
 									db.media[ info[#info] ] = {r, g, b, a}
 								end,						
 							},
@@ -308,7 +325,7 @@ function ElvuiConfig.GenerateOptionsInternal()
 									return r, g, b
 								end,
 								set = function(info, r, g, b)
-									StaticPopup_Show("RELOAD_UI")
+									StaticPopup_Show("CFG_RELOAD")
 									db.media[ info[#info] ] = {r, g, b}
 								end,						
 							},
@@ -320,14 +337,14 @@ function ElvuiConfig.GenerateOptionsInternal()
 						name = L["Sounds"],
 						guiInline = true,					
 						args = {
-							whisper = {
+							whisper_ = {
 								type = "select", dialogControl = 'LSM30_Sound',
 								order = 1,
 								name = L["Whisper Sound"],
 								desc = L["Sound that is played when recieving a whisper"],
 								values = AceGUIWidgetLSMlists.sound,								
 							},			
-							warning = {
+							warning_ = {
 								type = "select", dialogControl = 'LSM30_Sound',
 								order = 2,
 								name = L["Warning Sound"],
@@ -344,7 +361,7 @@ function ElvuiConfig.GenerateOptionsInternal()
 				name = L["Nameplates"],
 				desc = L["NAMEPLATE_DESC"],
 				get = function(info) return db.nameplate[ info[#info] ] end,
-				set = function(info, value) db.nameplate[ info[#info] ] = value; StaticPopup_Show("RELOAD_UI") end,
+				set = function(info, value) db.nameplate[ info[#info] ] = value; StaticPopup_Show("CFG_RELOAD") end,
 				args = {
 					intro = {
 						order = 1,
@@ -358,7 +375,7 @@ function ElvuiConfig.GenerateOptionsInternal()
 						desc = L["Enable/Disable Nameplates"],
 						set = function(info, value)
 							db.nameplate[ info[#info] ] = value; 
-							StaticPopup_Show("RELOAD_UI")
+							StaticPopup_Show("CFG_RELOAD")
 						end,
 					},
 					Nameplates = {
@@ -409,7 +426,7 @@ function ElvuiConfig.GenerateOptionsInternal()
 								end,
 								set = function(info, r, g, b)
 									db.nameplate[ info[#info] ] = {r, g, b}
-									StaticPopup_Show("RELOAD_UI")
+									StaticPopup_Show("CFG_RELOAD")
 								end,
 								disabled = function() return (not db.nameplate.enhancethreat or not db.nameplate.enable) end,								
 								args = {
@@ -446,7 +463,7 @@ function ElvuiConfig.GenerateOptionsInternal()
 				name = L["Unit Frames"],
 				desc = L["UF_DESC"],
 				get = function(info) return db.unitframes[ info[#info] ] end,
-				set = function(info, value) db.unitframes[ info[#info] ] = value; StaticPopup_Show("RELOAD_UI") end,
+				set = function(info, value) db.unitframes[ info[#info] ] = value; StaticPopup_Show("CFG_RELOAD") end,
 				args = {
 					intro = {
 						order = 1,
@@ -545,7 +562,7 @@ function ElvuiConfig.GenerateOptionsInternal()
 								end,
 								set = function(info, r, g, b)
 									db.unitframes[ info[#info] ] = {r, g, b}
-									StaticPopup_Show("RELOAD_UI")
+									StaticPopup_Show("CFG_RELOAD")
 								end,								
 							},
 							healthcolorbyvalue = {
@@ -573,7 +590,7 @@ function ElvuiConfig.GenerateOptionsInternal()
 								end,
 								set = function(info, r, g, b)
 									db.unitframes[ info[#info] ] = {r, g, b}
-									StaticPopup_Show("RELOAD_UI")
+									StaticPopup_Show("CFG_RELOAD")
 								end,								
 							},
 							combatfeedback = {
@@ -631,7 +648,7 @@ function ElvuiConfig.GenerateOptionsInternal()
 								name = L["Player/Target Width"],
 								desc = L["Controls the size of the frame"],
 								type = "range",
-								min = 235, max = 320, step = 1,								
+								min = 185, max = 320, step = 1,								
 							},
 							playtarheight = {
 								type = "range",
@@ -647,7 +664,7 @@ function ElvuiConfig.GenerateOptionsInternal()
 								name = L["TargetTarget, Focus, FocusTarget, Pet Width"],
 								desc = L["Controls the size of the frame"],
 								type = "range",
-								min = 100, max = 175, step = 1,								
+								min = 80, max = 175, step = 1,								
 							},
 							smallheight = {
 								type = "range",
@@ -837,7 +854,7 @@ function ElvuiConfig.GenerateOptionsInternal()
 								end,
 								set = function(info, r, g, b)
 									db.unitframes[ info[#info] ] = {r, g, b}
-									StaticPopup_Show("RELOAD_UI")
+									StaticPopup_Show("CFG_RELOAD")
 								end,							
 							},
 							nointerruptcolor = {
@@ -852,7 +869,7 @@ function ElvuiConfig.GenerateOptionsInternal()
 								end,
 								set = function(info, r, g, b)
 									db.unitframes[ info[#info] ] = {r, g, b}
-									StaticPopup_Show("RELOAD_UI")
+									StaticPopup_Show("CFG_RELOAD")
 								end,								
 							},
 						},
@@ -865,7 +882,7 @@ function ElvuiConfig.GenerateOptionsInternal()
 				name = L["Raid Frames"],
 				desc = L["RF_DESC"],
 				get = function(info) return db.raidframes[ info[#info] ] end,
-				set = function(info, value) db.raidframes[ info[#info] ] = value; StaticPopup_Show("RELOAD_UI") end,				
+				set = function(info, value) db.raidframes[ info[#info] ] = value; StaticPopup_Show("CFG_RELOAD") end,				
 				args = {
 					intro = {
 						order = 1,
@@ -1017,7 +1034,7 @@ function ElvuiConfig.GenerateOptionsInternal()
 				name = L["Class Timers"],
 				desc = L["CLASSTIMER_DESC"],
 				get = function(info) return db.classtimer[ info[#info] ] end,
-				set = function(info, value) db.classtimer[ info[#info] ] = value; StaticPopup_Show("RELOAD_UI") end,
+				set = function(info, value) db.classtimer[ info[#info] ] = value; StaticPopup_Show("CFG_RELOAD") end,
 				args = {
 					intro = {
 						order = 1,
@@ -1097,7 +1114,7 @@ function ElvuiConfig.GenerateOptionsInternal()
 								end,
 								set = function(info, r, g, b)
 									db.classtimer[ info[#info] ] = {r, g, b}
-									StaticPopup_Show("RELOAD_UI")
+									StaticPopup_Show("CFG_RELOAD")
 								end,									
 								args = {
 									buffcolor = {
@@ -1130,7 +1147,7 @@ function ElvuiConfig.GenerateOptionsInternal()
 				name = L["Action Bars"],
 				desc = L["AB_DESC"],
 				get = function(info) return db.actionbar[ info[#info] ] end,
-				set = function(info, value) db.actionbar[ info[#info] ] = value; StaticPopup_Show("RELOAD_UI") end,
+				set = function(info, value) db.actionbar[ info[#info] ] = value; StaticPopup_Show("CFG_RELOAD") end,
 				args = {
 					intro = {
 						order = 1,
@@ -1272,7 +1289,7 @@ function ElvuiConfig.GenerateOptionsInternal()
 								end,
 								set = function(info, r, g, b)
 									db.actionbar[ info[#info] ] = {r, g, b}
-									StaticPopup_Show("RELOAD_UI")
+									StaticPopup_Show("CFG_RELOAD")
 								end,									
 								args = {
 									expiringcolor = {
@@ -1312,13 +1329,317 @@ function ElvuiConfig.GenerateOptionsInternal()
 					},
 				},
 			},
-			skin = {
+			datatext = {
 				order = 8,
+				type = "group",
+				name = L["Data Texts"],
+				desc = L["DATATEXT_DESC"],
+				get = function(info) return db.datatext[ info[#info] ] end,
+				set = function(info, value) db.datatext[ info[#info] ] = value; StaticPopup_Show("CFG_RELOAD") end,		
+				args = {
+					intro = {
+						order = 1,
+						type = "description",
+						name = L["DATATEXT_DESC"],
+					},
+					battleground = {
+						order = 2,
+						type = "toggle",
+						name = L["BG Text"],
+						desc = L["Display special datatexts when inside a battleground"],
+					},
+					fontsize = {
+						order = 3,
+						name = L["Font Scale"],
+						desc = L["Font size for datatexts"],
+						type = "range",
+						min = 9, max = 15, step = 1,					
+					},
+					time24 = {
+						order = 4,
+						type = "toggle",
+						name = L["24-Hour Time"],
+						desc = L["Display time datatext on a 24 hour time scale"],	
+						disabled = function() return db.datatext.wowtime == 0 end,
+					},
+					localtime = {
+						order = 5,
+						type = "toggle",
+						name = L["Local Time"],
+						desc = L["Display local time instead of server time"],	
+						disabled = function() return db.datatext.wowtime == 0 end,					
+					},
+					DataGroup = {
+						order = 6,
+						type = "group",
+						name = L["Text Positions"],
+						guiInline = true,
+						args = {
+							stat1 = {
+								order = 1,
+								type = "range",
+								name = L["Stat #1"],
+								desc = L["Display stat based on your role (Avoidance-Tank, AP-Melee, SP/HP-Caster)"]..L["DATATEXT_POS"],
+								min = 0, max = 8, step = 1,
+							},
+							dur = {
+								order = 2,
+								type = "range",
+								name = L["Durability"],
+								desc = L["Display your current durability"]..L["DATATEXT_POS"],
+								min = 0, max = 8, step = 1,							
+							},
+							stat2 = {
+								order = 3,
+								type = "range",
+								name = L["Stat #2"],
+								desc = L["Display stat based on your role (Armor-Tank, Crit-Melee, Crit-Caster)"]..L["DATATEXT_POS"],
+								min = 0, max = 8, step = 1,							
+							},
+							system = {
+								order = 4,
+								type = "range",
+								name = L["System"],
+								desc = L["Display FPS and Latency"]..L["DATATEXT_POS"],
+								min = 0, max = 8, step = 1,								
+							},
+							wowtime = {
+								order = 5,
+								type = "range",
+								name = L["Time"],
+								desc = L["Display current time"]..L["DATATEXT_POS"],
+								min = 0, max = 8, step = 1,									
+							},
+							gold = {
+								order = 6,
+								type = "range",
+								name = L["Gold"],
+								desc = L["Display current gold"]..L["DATATEXT_POS"],
+								min = 0, max = 8, step = 1,								
+							},
+							guild = {
+								order = 7,
+								type = "range",
+								name = L["Guild"],
+								desc = L["Display current online people in guild"]..L["DATATEXT_POS"],
+								min = 0, max = 8, step = 1,								
+							},
+							friends = {
+								order = 8,
+								type = "range",
+								name = L["Friends"],
+								desc = L["Display current online friends"]..L["DATATEXT_POS"],
+								min = 0, max = 8, step = 1,								
+							},
+							bags = {
+								order = 9,
+								type = "range",
+								name = L["Bags"],
+								desc = L["Display ammount of bag space"]..L["DATATEXT_POS"],
+								min = 0, max = 8, step = 1,								
+							},
+							dps_text = {
+								order = 10,
+								type = "range",
+								name = L["DPS"],
+								desc = L["Display ammount of DPS"]..L["DATATEXT_POS"],
+								min = 0, max = 8, step = 1,								
+							},
+							hps_text = {
+								order = 11,
+								type = "range",
+								name = L["HPS"],
+								desc = L["Display ammount of HPS"]..L["DATATEXT_POS"],
+								min = 0, max = 8, step = 1,								
+							},
+							currency = {
+								order = 12,
+								type = "range",
+								name = L["Currency"],
+								desc = L["Display current watched items in backpack"]..L["DATATEXT_POS"],
+								min = 0, max = 8, step = 1,								
+							},
+							specswitch = {
+								order = 13,
+								type = "range",
+								name = L["Talent Spec"],
+								desc = L["Display current spec"]..L["DATATEXT_POS"],
+								min = 0, max = 8, step = 1,								
+							},
+						},
+					},
+				},
+			},
+			chat = {
+				order = 9,
+				type = "group",
+				name = L["Chat"],
+				desc = L["CHAT_DESC"],
+				get = function(info) return db.chat[ info[#info] ] end,
+				set = function(info, value) db.chat[ info[#info] ] = value; StaticPopup_Show("CFG_RELOAD") end,		
+				args = {
+					intro = {
+						order = 1,
+						type = "description",
+						name = L["CHAT_DESC"],
+					},
+					enable = {
+						order = 2,
+						type = "toggle",
+						name = ENABLE,
+					},
+					ChatGroup = {
+						order = 3,
+						type = "group",
+						name = L["General Settings"],
+						guiInline = true,
+						disabled = function() return not db.chat.enable end,	
+						args = {
+							whispersound = {
+								type = "toggle",
+								order = 1,
+								name = L["Whisper Sound"],
+								desc = L["Play a sound when receiving a whisper, this can be set in media section"],
+							},
+							showbackdrop = {
+								type = "toggle",
+								order = 2,
+								name = L["Chat Backdrop"],
+								desc = L["Display backdrop panels behind chat window"],							
+							},
+							chatwidth = {
+								type = "range",
+								order = 3,
+								name = L["Chat Width"],
+								desc = L["Width of chatframe"],
+								min = 200, max = 400, step = 1,
+							},
+							chatheight = {
+								type = "range",
+								order = 4,
+								name = L["Chat Height"],
+								desc = L["Height of chatframe"],
+								min = 75, max = 250, step = 1,
+							},
+							fadeoutofuse = {
+								type = "toggle",
+								order = 5,
+								name = L["Fade Windows"],
+								desc = L["Fade chat windows after a long period of no activity"],								
+							},
+							sticky = {
+								type = "toggle",
+								order = 6,
+								name = L["Sticky Editbox"],
+								desc = L["When pressing enter to open the chat editbox, display the last known channel"],								
+							},
+							combathide = {
+								type = "select",
+								order = 7,
+								name = L["Animate Chat In Combat"],
+								desc = L["When you enter combat, the selected window will animate out of view"],
+								values = {
+									["NONE"] = L["None"],
+									["Left"] = L["Left"],
+									["Right"] = L["Right"],
+									["Both"] = L["Both"],
+								},
+							},
+							bubbles = {
+								type = "toggle",
+								order = 8,
+								name = L["Chat Bubbles"],
+								desc = L["Skin Blizzard's Chat Bubbles"],							
+							},
+						},
+					},
+				},
+			},
+			tooltip = {
+				order = 9,
+				type = "group",
+				name = L["Tooltip"],
+				desc = L["TT_DESC"],
+				get = function(info) return db.tooltip[ info[#info] ] end,
+				set = function(info, value) db.tooltip[ info[#info] ] = value; StaticPopup_Show("CFG_RELOAD") end,		
+				args = {
+					intro = {
+						order = 1,
+						type = "description",
+						name = L["TT_DESC"],
+					},
+					enable = {
+						order = 2,
+						type = "toggle",
+						name = ENABLE,
+					},
+					TTGroup = {
+						order = 3,
+						type = "group",
+						name = L["General Settings"],
+						guiInline = true,
+						disabled = function() return not db.tooltip.enable end,	
+						args = {
+							hidecombat = {
+								order = 1,
+								type = "toggle",
+								name = L["Hide Combat"],
+								desc = L["Hide tooltip when entering combat"],
+							},
+							hidecombatraid = {
+								order = 2,
+								type = "toggle",
+								name = L["Hide Combat in Raid"],
+								desc = L["Hide tooltip when entering combat only inside a raid instance"],	
+								disabled = function() return not db.tooltip.enable or not db.tooltip.hidecombat end,
+							},
+							hidebuttons = {
+								order = 3,
+								type = "toggle",
+								name = L["Hide Buttons"],
+								desc = L["Hide tooltip when mousing over action buttons"],								
+							},
+							hideuf = {
+								order = 4,
+								type = "toggle",
+								name = L["Hide Unit Frames"],
+								desc = L["Hide tooltip when mousing over unit frames"],								
+							},
+							cursor = {
+								order = 5,
+								type = "toggle",
+								name = L["Cursor"],
+								desc = L["Tooltip anchored to cursor"],								
+							},
+							colorreaction = {
+								order = 6,
+								type = "toggle",
+								name = L["Color Reaction"],
+								desc = L["Always color border of tooltip by unit reaction"],									
+							},
+							itemid = {
+								order = 7,
+								type = "toggle",
+								name = L["ItemID"],
+								desc = L["Display itemid on item tooltips"],							
+							},
+							whotargetting = {
+								order = 8,
+								type = "toggle",
+								name = L["Who's Targetting?"],
+								desc = L["Display if anyone in your party/raid is targetting the tooltip unit"],								
+							},
+						},
+					},
+				},
+			},
+			skin = {
+				order = 10,
 				type = "group",
 				name = L["Addon Skins"],
 				desc = L["ADDON_DESC"],
 				get = function(info) return db.skin[ info[#info] ] end,
-				set = function(info, value) db.skin[ info[#info] ] = value; StaticPopup_Show("RELOAD_UI") end,
+				set = function(info, value) db.skin[ info[#info] ] = value; StaticPopup_Show("CFG_RELOAD") end,
 				args = {
 					intro = {
 						order = 1,
@@ -1429,6 +1750,127 @@ function ElvuiConfig.GenerateOptionsInternal()
 					},						
 				},
 			},			
+			others = {
+				order = 9,
+				type = "group",
+				name = L["Misc"],
+				desc = L["MISC_DESC"],
+				get = function(info) return db.others[ info[#info] ] end,
+				set = function(info, value) db.others[ info[#info] ] = value; StaticPopup_Show("CFG_RELOAD") end,		
+				args = {
+					intro = {
+						order = 1,
+						type = "description",
+						name = L["MISC_DESC"],
+					},
+					GenGroup = {
+						order = 2,
+						type = "group",
+						name = L["General"],	
+						args = {
+							pvpautorelease = {
+								type = "toggle",
+								order = 1,
+								name = L["PVP Autorelease"],
+								desc = L["Automatically release body when dead inside a bg"],
+								disabled = function() return E.myclass == "SHAMAN" end,
+							},
+							errorenable = {
+								type = "toggle",
+								order = 2,
+								name = L["Hide Error Text"],
+								desc = L["Hide annoying red error text on center of screen"],							
+							},
+							autoacceptinv = {
+								type = "toggle",
+								order = 3,
+								name = L["Auto Accept Invite"],
+								desc = L["Automatically accept invite when invited by a friend/guildie"],							
+							},
+						},
+					},
+					LootGroup = {
+						order = 3,
+						type = "group",
+						name = L["Loot"],	
+						args = {
+							lootframe = {
+								type = "toggle",
+								order = 1,
+								name = L["Loot Frame"],
+								desc = L["Skin loot window"],							
+							},
+							rolllootframe = {
+								type = "toggle",
+								order = 2,
+								name = L["Loot Roll Frame"],
+								desc = L["Skin loot roll window"],								
+							},
+							autogreed = {
+								type = "toggle",
+								order = 3,
+								name = L["Auto Greed/DE"],
+								desc = L["Automatically roll greed or Disenchant on green quality items"],								
+							},
+							sellgrays = {
+								type = "toggle",
+								order = 4,
+								name = L["Sell Grays"],
+								desc = L["Automatically sell gray items when visiting a vendor"],								
+							},
+							autorepair = {
+								type = "toggle",
+								order = 4,
+								name = L["Auto Repair"],
+								desc = L["Automatically repair when visiting a vendor"],							
+							},
+						},
+					},
+					AurasGroup = {
+						order = 3,
+						type = "group",
+						name = L["Combat"],	
+						args = {
+							buffreminder = {
+								type = "toggle",
+								order = 1,
+								name = L["Buff Reminder"],
+								desc = L["Icon at center of screen when you are missing a buff, or you have a buff you shouldn't have"],									
+							},
+							remindersound = {
+								type = "toggle",
+								order = 2,
+								name = L["Buff Reminder Sound"],
+								desc = L["Play sound when icon is displayed"],							
+							},
+							raidbuffreminder = {
+								type = "toggle",
+								order = 3,
+								name = L["Raid Buffs Reminder"],
+								desc = L["Icons below minimap, displayed inside instances"],								
+							},
+							announceinterrupt = {
+								type = "toggle",
+								order = 4,
+								name = L["Interrupt Announce"],
+								desc = L["Announce when you interrupt a spell"],								
+							},
+							showthreat = {
+								type = "toggle",
+								order = 5,
+								name = L["Threat Display"],
+								desc = L["Display threat in the bottomright panel"],							
+							},
+							minimapauras = {
+								type = "toggle",
+								order = 6,
+								name = L["Minimap Auras"],
+								desc = L["Display blizzard skinned auras by the minimap"],							
+							},
+						},
+					},
+				},		
+			},
 		},
 	}
 end
