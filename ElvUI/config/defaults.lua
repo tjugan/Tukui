@@ -1,51 +1,25 @@
-﻿local E, C, L = unpack(select(2, ...)) -- Import Functions/Constants, Config, Locales
-
+﻿local E, C, L, DB = unpack(select(2, ...)) -- Import Functions/Constants, Config, Locales
 
 C["media"] = {
 	-- fonts
-	["font"] = [=[Interface\Addons\ElvUI\media\fonts\PT_Sans_Narrow.ttf]=], -- general font of Elvui
-	["uffont"] = [[Interface\AddOns\ElvUI\media\fonts\PT_Sans_Narrow.ttf]], -- general font of unitframes
-	["dmgfont"] = [[Interface\AddOns\ElvUI\media\fonts\Action_Man.ttf]], -- general font of dmg / sct
-	
-	-- fonts (DEUTSCH)
-	["de_font"] = [=[Interface\Addons\ElvUI\media\fonts\PT_Sans_Narrow.ttf]=], -- general font of ElvUI
-	["de_uffont"] = [[Interface\AddOns\ElvUI\media\fonts\PT_Sans_Narrow.ttf]], -- general font of unitframes
-	["de_dmgfont"] = [[Interface\AddOns\ElvUI\media\fonts\Action_Man.ttf]], -- general font of dmg / sct
-	
-	-- fonts (FRENCH)
-	["fr_font"] = [=[Interface\Addons\ElvUI\media\fonts\PT_Sans_Narrow.ttf]=], -- general font of ElvUI
-	["fr_uffont"] = [[Interface\AddOns\ElvUI\media\fonts\PT_Sans_Narrow.ttf]], -- general font of unitframes
-	["fr_dmgfont"] = [=[Interface\AddOns\ElvUI\media\fonts\Action_Man.ttf]=], -- general font of dmg / sct
-	
-	-- fonts (RUSSIAN)
-	["ru_font"] = [=[Interface\Addons\ElvUI\media\fonts\PT_Sans_Narrow.ttf]=], -- general font of ElvUI
-	["ru_uffont"] = [=[Interface\Addons\ElvUI\media\fonts\PT_Sans_Narrow.ttf]=], -- general font of unitframes
-	["ru_dmgfont"] = [[Fonts\ARIALN.TTF]], -- general font of dmg / sct
-	
-	-- fonts (TAIWAN ONLY)
-	["tw_font"] = [[Fonts\bLEI00D.ttf]], -- general font of tukui
-	["tw_uffont"] = [[Fonts\bLEI00D.ttf]], -- general font of unitframes
-	["tw_dmgfont"] = [[Fonts\bLEI00D.ttf]], -- general font of dmg / sct
-	
-	-- fonts (KOREAN ONLY)
-	["kr_font"] = [[Fonts\2002.TTF]], -- general font of tukui
-	["kr_uffont"] = [[Fonts\2002.TTF]], -- general font of unitframes
-	["kr_dmgfont"] = [[Fonts\2002.TTF]], -- general font of dmg / sct	
-	
+	["font"] = "ElvUI Font", -- general font of Elvui
+	["uffont"] = "ElvUI Font", -- general font of unitframes
+	["dmgfont"] = "ElvUI Combat", -- general font of dmg / sct
+		
 	-- textures
-	["normTex"] = [[Interface\AddOns\ElvUI\media\textures\normTex]], -- texture used for Elvui healthbar/powerbar/etc
-	["glowTex"] = [[Interface\AddOns\ElvUI\media\textures\glowTex]], -- the glow text around some frame.
-	["blank"] = [[Interface\BUTTONS\WHITE8X8]], -- the main texture for all borders/panels
+	["normTex"] = "ElvUI Norm", -- texture used for Elvui healthbar/powerbar/etc
+	["glossTex"] = "ElvUI Gloss",
+	["glowTex"] = "ElvUI GlowBorder",
+	["blank"] = "ElvUI Blank",
 	["bordercolor"] = { .23,.23,.23 }, -- border color of Elvui panels
-	["altbordercolor"] = { .23,.23,.23 }, -- alternative border color, mainly for unitframes text panels.
 	["backdropcolor"] = { .07,.07,.07 }, -- background color of Elvui panels
 	["backdropfadecolor"] = { .07,.07,.07,0.9 }, --this is always the same as the backdrop color with an alpha of 0.8, see colors.lua
 	["valuecolor"] = {23/255,132/255,209/255}, -- color for values of datatexts
 	["raidicons"] = [[Interface\AddOns\ElvUI\media\textures\raidicons.blp]], -- new raid icon textures by hankthetank
 	
 	-- sound
-	["whisper"] = [[Interface\AddOns\ElvUI\media\sounds\whisper.mp3]],
-	["warning"] = [[Interface\AddOns\ElvUI\media\sounds\warning.mp3]],
+	["whisper"] = "ElvUI Whisper",
+	["warning"] = "ElvUI Warning",
 	["glossyTexture"] = false,	-- Use a glossy texture for all frames
 }
 
@@ -84,7 +58,7 @@ C["unitframes"] = {
 	["charportrait"] = true,              -- enable character portrait
 	["charportraithealth"] = false,			-- portrait overlay healthbar
 	["classcolor"] = false,                  -- color unitframes by class
-	["healthcolor"] = C["media"].bordercolor, --color of the unitfram
+	["healthcolor"] = C["media"].bordercolor, --color of the unitframe
 	["healthcolorbyvalue"] = true,			-- color health by current health remaining
 	["healthbackdrop"] = false,				-- enable using custom healthbackdrop color
 	["healthbackdropcolor"] = C["media"].backdropcolor,
@@ -93,9 +67,9 @@ C["unitframes"] = {
 	["classbar"] = true,                    -- enable runebar/totembar/holypowerbar/soulshardbar/eclipsebar
 	["combat"] = false,						-- only show main unitframes when in combat/havetarget/or mouseover
 	["mini_powerbar"] = false,
-}
-
-C["framesizes"] = {
+	["showboss"] = true,                   -- enable boss unit frames for PVELOL encounters.
+	
+	--frame sizes
 	["playtarwidth"] = 275,					--width of player/target frame
 	["playtarheight"] = 55,					--height of player/target frame
 	["smallwidth"] = 130,					--Width of TargetTarget, Focus, FocusTarget, Player's Pet frames
@@ -104,6 +78,33 @@ C["framesizes"] = {
 	["arenabossheight"] = 43,				--Height of Arena/Boss Frames
 	["assisttankwidth"] = 120,				--Width of MainTank/MainAssist frames
 	["assisttankheight"] = 27,				--Height of MainTank/MainAssist frames
+	
+	--auras
+	["auratimer"] = true,                  -- enable timers on buffs/debuffs
+	["auratextscale"] = 11,                -- the font size of buffs/debuffs timers on unitframes
+	["playerauras"] = true,               -- enable auras
+	["playershowonlydebuffs"] = true, 		-- only show the players debuffs over the player frame, not buffs (playerauras must be true)
+	["playerdebuffsonly"] = true,			-- show the players debuffs on target, and any debuff in the whitelist (see debuffFilter.lua)
+	["targetauras"] = true,                -- enable auras on target unit frame
+	["arenadebuffs"] = true, 				-- enable debuff filter for arena frames
+	["totdebuffs"] = true,                -- enable tot debuffs (high reso only)
+	["focusdebuffs"] = true,              -- enable focus debuffs 
+	["playtarbuffperrow"] = 8,				-- buffs/debuffs per row on player/target frames
+	["smallbuffperrow"] = 5,				-- debuffs per row on targettarget/focus frames
+	
+	
+	--castbar
+	["unitcastbar"] = true, -- enable Elvui castbar
+	["cblatency"] = false, -- enable castbar latency
+	["cbicons"] = true, -- enable icons on castbar
+	["castplayerwidth"] = 275,
+	["casttargetwidth"] = 275,
+	["castfocuswidth"] = 275,
+	["castbarcolor"] = C["media"].bordercolor, -- Color of player castbar
+	["nointerruptcolor"] = { 0.78, 0.25, 0.25, 0.5 }, -- Color of target castbar	
+	
+	--arena
+	["arena"] = true,                 -- enable elvui arena unitframes (requirement : Elvui unitframes enabled)
 }
 
 C["raidframes"] = {
@@ -111,100 +112,67 @@ C["raidframes"] = {
 	["fontsize"] = 12,						-- default font height for raidframes
 	["scale"] = 1,							-- for smaller use a number less than one (0.73), for higher use a number larger than one
 	["showrange"] = true,                  -- show range opacity on raidframes
-	["hidenonmana"] = true,					-- hide non mana on party/raid frames
 	["healcomm"] = true,                  -- enable healcomm4 support on healer layout.
 	["raidalphaoor"] = 0.3,                -- alpha of raidframes when unit is out of range
-	["gridonly"] = false,                  -- enable grid only mode for all raid layout. TEMP
 	["gridhealthvertical"] = true,         -- enable vertical grow on health bar for healer layout
 	["showplayerinparty"] = true,          -- show my player frame in party
 	["maintank"] = true,                  -- enable maintank
 	["mainassist"] = true,                -- enable mainassist
-	["showboss"] = true,                   -- enable boss unit frames for PVELOL encounters.
 	["partypets"] = true,					-- enable party pets for the healer layout
 	["disableblizz"] = true,				-- fuck fuck fuckin fuck
 	["healthdeficit"] = false,			-- show the health deficit on the raidframes
 	["griddps"] = true,					-- show dps layout in grid style
 	["role"] = false,					--display role on raidframe
 	["partytarget"]	= false,				--display party members targets (DPS ONLY)
-}
-
-C["auras"] = {
-	["auratimer"] = true,                  -- enable timers on buffs/debuffs
-	["auratextscale"] = 11,                -- the font size of buffs/debuffs timers on unitframes
-	["playerauras"] = true,               -- enable auras
-	["playershowonlydebuffs"] = true, 		-- only show the players debuffs over the player frame, not buffs (playerauras must be true)
-	["playerdebuffsonly"] = true,			-- show the players debuffs on target, and any debuff in the whitelist (see debuffFilter.lua)
-	["targetauras"] = true,                -- enable auras on target unit frame
-	["minimapauras"] = true,				-- enable minimap auras
-	["arenadebuffs"] = true, 				-- enable debuff filter for arena frames
+	["mouseglow"] = true,					--glow the class/reaction color of the unit that you mouseover
 	["raidunitbuffwatch"] = true,       -- track important spell to watch in pve for grid mode.
-	["totdebuffs"] = true,                -- enable tot debuffs (high reso only)
-	["focusdebuffs"] = true,              -- enable focus debuffs 
-	["playtarbuffperrow"] = 8,				-- buffs/debuffs per row on player/target frames
-	["smallbuffperrow"] = 5,				-- debuffs per row on targettarget/focus frames
-	["buffindicatorsize"] = 6,				-- size of the buff indicator on raid/party frames
-}
-
-C["castbar"] = {
-	["unitcastbar"] = true, -- enable Elvui castbar
-		["cblatency"] = false, -- enable castbar latency
-		["cbicons"] = true, -- enable icons on castbar
-		["playerwidth"] = C["framesizes"].playtarwidth,
-		["targetwidth"] = C["framesizes"].playtarwidth,
-		["focuswidth"] = C["framesizes"].playtarwidth,
-		["classcolor"] = false, -- classcolor
-		["castbarcolor"] = C["media"].bordercolor, -- Color of player castbar
-		["nointerruptcolor"] = { 0.78, 0.25, 0.25, 0.5 }, -- Color of target castbar
+	["buffindicatorsize"] = 6,				-- size of the buff indicator on raid/party frames	
 }
 
 C["classtimer"] = {
 	["enable"] = true,
-		["bar_height"] = 17,
-		["bar_spacing"] = 1,
-		["icon_position"] = 2, -- 0 = left, 1 = right, 2 = Outside left, 3 = Outside Right
-		["layout"] = 4, --1 - both player and target auras in one frame right above player frame, 2 - player and target auras separated into two frames above player frame, 3 - player, target and trinket auras separated into three frames above player frame, 4 - player and trinket auras are shown above player frame and target auras are shown above target frame, 5 - Everything above player frame, no target debuffs.
-		["showspark"] = true,
-		["cast_suparator"] = true,
-		
-		["classcolor"] = false,
-		["buffcolor"] = C["media"].bordercolor, -- if classcolor isnt true
-		["debuffcolor"] = {0.78, 0.25, 0.25, 1},
-		["proccolor"] = {0.84, 0.75, 0.65, 1},
-}
-
-C["arena"] = {
-	["unitframes"] = true,                 -- enable elvui arena unitframes (requirement : Elvui unitframes enabled)
+	["bar_height"] = 17,
+	["bar_spacing"] = 1,
+	["icon_position"] = 2, -- 0 = left, 1 = right, 2 = Outside left, 3 = Outside Right
+	["layout"] = 4, --1 - both player and target auras in one frame right above player frame, 2 - player and target auras separated into two frames above player frame, 3 - player, target and trinket auras separated into three frames above player frame, 4 - player and trinket auras are shown above player frame and target auras are shown above target frame, 5 - Everything above player frame, no target debuffs.
+	["showspark"] = true,
+	["cast_suparator"] = true,
+	
+	["classcolor"] = false,
+	["buffcolor"] = C["media"].bordercolor, -- if classcolor isnt true
+	["debuffcolor"] = {0.78, 0.25, 0.25, 1},
+	["proccolor"] = {0.84, 0.75, 0.65, 1},
 }
 
 C["actionbar"] = {
 	["enable"] = true,                     -- enable elvui action bars
-		["hotkey"] = true,                     -- enable hotkey display because it was a lot requested
-		["rightbarmouseover"] = false,         -- enable right bars on mouse over
-		["shapeshiftmouseover"] = false,       -- enable shapeshift or totembar on mouseover
-		["hideshapeshift"] = false,            -- hide shapeshift or totembar because it was a lot requested.
-		["showgrid"] = true,                   -- show grid on empty button
-		["bottompetbar"] = false,				-- position petbar below the actionbars instead of the right side
-		["buttonsize"] = 30,					--size of action buttons
-		["buttonspacing"] = 4,					--spacing of action buttons
-		["petbuttonsize"] = 30,					--size of pet/stance buttons
-		["swaptopbottombar"] = false,			--swap the main actionbar position with the bottom actionbar
-		["macrotext"] = false,					--show macro text on actionbuttons
-		["verticalstance"] = false,				--make stance bar vertical
-		["microbar"] = false,					--enable microbar display
-		["mousemicro"] = false,					--only show microbar on mouseover
+	["hotkey"] = true,                     -- enable hotkey display because it was a lot requested
+	["rightbarmouseover"] = false,         -- enable right bars on mouse over
+	["shapeshiftmouseover"] = false,       -- enable shapeshift or totembar on mouseover
+	["hideshapeshift"] = false,            -- hide shapeshift or totembar because it was a lot requested.
+	["showgrid"] = true,                   -- show grid on empty button
+	["bottompetbar"] = false,				-- position petbar below the actionbars instead of the right side
+	["buttonsize"] = 30,					--size of action buttons
+	["buttonspacing"] = 4,					--spacing of action buttons
+	["petbuttonsize"] = 30,					--size of pet/stance buttons
+	["swaptopbottombar"] = false,			--swap the main actionbar position with the bottom actionbar
+	["macrotext"] = false,					--show macro text on actionbuttons
+	["verticalstance"] = false,				--make stance bar vertical
+	["microbar"] = false,					--enable microbar display
+	["mousemicro"] = false,					--only show microbar on mouseover
 }
 
 C["nameplate"] = {
 	["enable"] = true,                     -- enable nice skinned nameplates that fit into Elvui
-		["showhealth"] = false,					-- show health text on nameplate
-		["enhancethreat"] = true,				-- threat features based on if your a tank or not
-		["overlap"] = false,				--allow nameplates to overlap
-		["combat"] = false,					--only show enemy nameplates in-combat.
-		["goodcolor"] = {75/255,  175/255, 76/255},			--good threat color (tank shows this with threat, everyone else without)
-		["badcolor"] = {0.78, 0.25, 0.25},			--bad threat color (opposite of above)
-		["transitioncolor"] = {218/255, 197/255, 92/255},	--threat color when gaining threat
-		["trackauras"] = false,		--track players debuffs only (debuff list derived from classtimer spell list)
-		["trackccauras"] = true,			--track all CC debuffs
+	["showhealth"] = false,					-- show health text on nameplate
+	["enhancethreat"] = true,				-- threat features based on if your a tank or not
+	["overlap"] = false,				--allow nameplates to overlap
+	["combat"] = false,					--only show enemy nameplates in-combat.
+	["goodcolor"] = {75/255,  175/255, 76/255},			--good threat color (tank shows this with threat, everyone else without)
+	["badcolor"] = {0.78, 0.25, 0.25},			--bad threat color (opposite of above)
+	["transitioncolor"] = {218/255, 197/255, 92/255},	--threat color when gaining threat
+	["trackauras"] = false,		--track players debuffs only (debuff list derived from classtimer spell list)
+	["trackccauras"] = true,			--track all CC debuffs
 }
 
 C["loot"] = {
@@ -245,32 +213,32 @@ C["datatext"] = {
 
 C["chat"] = {
 	["enable"] = true,                     -- blah
-		["whispersound"] = true,               -- play a sound when receiving whisper
-		["showbackdrop"] = true,				-- show a backdrop on the chat panels
-		["chatwidth"] = 348,					-- width of chat frame
-		["chatheight"] = 111,					-- height of chat frame
-		["fadeoutofuse"] = true,				-- fade chat text when out of use
-		["sticky"] = true,						-- when opening the chat edit box resort to previous channel
-		["combathide"] = "NONE",			-- Set to "Left", "Right", "Both", or "NONE"
+	["whispersound"] = true,               -- play a sound when receiving whisper
+	["showbackdrop"] = true,				-- show a backdrop on the chat panels
+	["chatwidth"] = 348,					-- width of chat frame
+	["chatheight"] = 111,					-- height of chat frame
+	["fadeoutofuse"] = true,				-- fade chat text when out of use
+	["sticky"] = true,						-- when opening the chat edit box resort to previous channel
+	["combathide"] = "NONE",			-- Set to "Left", "Right", "Both", or "NONE"
 	["bubbles"] = true,							--skin blizzard chat bubbles
 }
 
 C["tooltip"] = {
 	["enable"] = true,                     -- true to enable this mod, false to disable
-		["hidecombat"] = true,                -- hide bottom-right tooltip when in combat
-		["hidecombatraid"] = true,				-- only hide in combat in a raid instance
-		["hidebuttons"] = false,               -- always hide action bar buttons tooltip.
-		["hideuf"] = false,                    -- hide tooltip on unitframes
-		["cursor"] = false,                    -- show anchored to cursor
-		["colorreaction"] = false,				-- always color border of tooltip by unit reaction
-		["itemid"] = true,						--display itemid on item tooltips 
-		["whotargetting"] = true,				--show who is targetting the unit (in raid or party)
+	["hidecombat"] = true,                -- hide bottom-right tooltip when in combat
+	["hidecombatraid"] = true,				-- only hide in combat in a raid instance
+	["hidebuttons"] = false,               -- always hide action bar buttons tooltip.
+	["hideuf"] = false,                    -- hide tooltip on unitframes
+	["cursor"] = false,                    -- show anchored to cursor
+	["colorreaction"] = false,				-- always color border of tooltip by unit reaction
+	["itemid"] = true,						--display itemid on item tooltips 
+	["whotargetting"] = true,				--show who is targetting the unit (in raid or party)
 }
 
 C["buffreminder"] = {
 	["enable"] = true,                     -- this is now the new innerfire warning script for all armor/aspect class.
-		["sound"] = true,                      -- enable warning sound notification for reminder.
-		["raidbuffreminder"] = true,			-- buffbar below the minimap, important missing buffs
+	["sound"] = true,                      -- enable warning sound notification for reminder.
+	["raidbuffreminder"] = true,			-- buffbar below the minimap, important missing buffs
 }
 
 C["others"] = {
@@ -282,7 +250,6 @@ C["others"] = {
 	["enablemap"] = true,                     -- reskin the map to fit Elvui
 	["enablebag"] = true,                     -- enable an all in one bag mod that fit Elvui perfectly
 	["announceinterrupt"] = true,			-- announce in party/raid when you interrupt
-	["showthreat"] = true,                 -- enable the threat bar anchored to info right panel.	
+	["showthreat"] = true,                 -- enable the threat bar anchored to info right panel.
+	["minimapauras"] = true,				-- enable minimap auras	
 }
-
-C["media"].normTex2 = C["media"].normTex
