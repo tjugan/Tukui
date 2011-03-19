@@ -55,7 +55,7 @@ L["Media"] = true
 		L["Backdrop Fade Color"] = true
 			L["Faded backdrop color of some frames"] = true
 		L["Value Color"] = true
-			L["Value color of various text/frame objects"] = true
+			L["Value color of various text/frame objects"] = true	
 	L["Sounds"] = true
 		L["Whisper Sound"] = true
 			L["Sound that is played when recieving a whisper"] = true
@@ -174,7 +174,14 @@ L["Castbar"] = true
 	L["Color of the castbar"] = true
 	L["Interrupt Color"] = true
 	L["Color of the castbar when you can't interrupt the cast"] = true
-
+	
+L["Power Colors"] = true
+	L["Mana"] = true
+	L["Rage"] = true
+	L["Focus"] = true
+	L["Energy"] = true
+	L["Runic Power"] = true
+		
 --Raidframe
 L["Raid Frames"] = true
 	L["Enable Raidframes"] = true
@@ -390,7 +397,11 @@ L["Misc"] = true
 		L["Display threat in the bottomright panel"] = true
 	L["Minimap Auras"] = true
 		L["Display blizzard skinned auras by the minimap"] = true
-	
+	L["All-In-One Bag"] = true
+		L["Enable/Disable the All-In-One Bag, you must disable this if you wish to run another bag addon"] = true
+	L["Map Skin"] = true
+		L["Enable/Disable the map skin"] = true
+		
 --Profiles
 L["Profiles"] = true
 L["CFG_RELOAD"] = "A setting you have changed requires a ReloadUI for changes to take effect, when you are done configing hit Accept to ReloadUI."
