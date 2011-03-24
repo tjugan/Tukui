@@ -162,6 +162,18 @@ f:RegisterEvent("ADDON_LOADED")
 f:SetScript("OnEvent", function(self, event, addon)
 	if event == "ADDON_LOADED" and addon == "BigWigs_Plugins" then
 		RegisterStyle()
+		local profile = BigWigs3DB["profileKeys"][E.myname.." - "..E.myrealm]
+		local path = BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"][profile]
+		path.texture = "ElvUI Norm"
+		path.barStyle = "ElvUI"
+		path.font = "ElvUI Font"
+		
+		local path = BigWigs3DB["namespaces"]["BigWigs_Plugins_Messages"]["profiles"][profile]
+		path.font = "ElvUI Font"
+		
+		local path = BigWigs3DB["namespaces"]["BigWigs_Plugins_Proximity"]["profiles"][profile]
+		path.font = "ElvUI Font"
+		
 		f:UnregisterEvent("ADDON_LOADED")
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		SlashCmdList["BigWigs"]()
@@ -171,6 +183,17 @@ f:SetScript("OnEvent", function(self, event, addon)
 		InterfaceOptionsFrameCategoriesButton1:Click()
 		HideUIPanel(InterfaceOptionsFrame)
 		PositionBWAnchor()
+		
+		if Skada and Skada:GetWindows() and Skada:GetWindows()[1] and C["skin"].embedright == "Skada" then
+			Skada:GetWindows()[1].bargroup:HookScript("OnShow", function() PositionBWAnchor() end)
+			Skada:GetWindows()[1].bargroup:HookScript("OnHide", function() PositionBWAnchor() end)
+		elseif Recount_MainWindow and C["skin"].embedright == "Recount" then
+			Recount_MainWindow:HookScript("OnShow", function() PositionBWAnchor() end)
+			Recount_MainWindow:HookScript("OnHide", function() PositionBWAnchor() end)
+		elseif OmenAnchor and C["skin"].embedright == "Omen" then
+			OmenAnchor:HookScript("OnShow", function() PositionBWAnchor() end)
+			OmenAnchor:HookScript("OnHide", function() PositionBWAnchor() end)		
+		end	
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		PositionBWAnchor()
 	elseif event == "PLAYER_REGEN_ENABLED" then
