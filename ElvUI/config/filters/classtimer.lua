@@ -103,8 +103,8 @@ TRINKET_FILTER = {
 	CreateSpellEntry( 91024 ), -- Revelation (Theralion's Mirror)
 	CreateSpellEntry( 92320 ), -- Revelation (H Theralion's Mirror)
 	CreateSpellEntry( 92108 ), -- Heedless Carnage (Unheeded Warning)
-	CreateSpellEntry( 92213 ), -- Memory of Invincibility (Vial of Stolen Memories)
-	CreateSpellEntry( 92357 ), -- Memory of Invincibility (H Vial of Stolen Memories)	
+	--CreateSpellEntry( 92213 ), -- Memory of Invincibility (Vial of Stolen Memories)
+	--CreateSpellEntry( 92357 ), -- Memory of Invincibility (H Vial of Stolen Memories)	
 	CreateSpellEntry( 54861 ), -- Nitro Boosts (engineer tinker)
 	CreateSpellEntry( 92126 ), -- Twisted (Essence of the Cyclone)
 	CreateSpellEntry( 92351 ), -- Twisted (Heroic Essence of the Cyclone)
@@ -272,20 +272,20 @@ CLASS_FILTERS = {
 	},
 	MAGE = {
 		target = { 
-			CreateSpellEntry( 44457 ), -- Living Bomb
+			-- CreateSpellEntry( 44457 ), -- Living Bomb
 			CreateSpellEntry( 118 ), -- Polymorph
 			CreateSpellEntry( 28271 ), -- Polymorph Turtle
-			CreateSpellEntry( 31589 ), -- Slow
-			CreateSpellEntry( 116 ), -- Frostbolt
+			--CreateSpellEntry( 31589 ), -- Slow
+			--CreateSpellEntry( 116 ), -- Frostbolt
 			CreateSpellEntry( 120 ), -- Cone of Cold
 			CreateSpellEntry( 122 ), -- Frost Nova
-			CreateSpellEntry( 44614 ), -- Frostfire Bolt
-			CreateSpellEntry( 92315 ), -- Pyroblast!
-			CreateSpellEntry( 12654 ), -- Ignite
-			CreateSpellEntry( 22959 ), -- Critical Mass
+			--CreateSpellEntry( 44614 ), -- Frostfire Bolt
+			--CreateSpellEntry( 92315 ), -- Pyroblast!
+			--CreateSpellEntry( 12654 ), -- Ignite
+			--CreateSpellEntry( 22959 ), -- Critical Mass
 			CreateSpellEntry( 83853 ), -- Combustion
-			CreateSpellEntry( 31661 ), -- Dragon's Breath
-			CreateSpellEntry( 83154 ), -- Piercing Chill
+			--CreateSpellEntry( 31661 ), -- Dragon's Breath
+			--CreateSpellEntry( 83154 ), -- Piercing Chill
 			CreateSpellEntry( 44572 ), -- Deep Freeze
 		},
 		player = {
@@ -301,10 +301,10 @@ CLASS_FILTERS = {
 			CreateSpellEntry( 57761 ), -- Brain Freeze
 		},
 		procs = {
-			CreateSpellEntry( 44544 ), -- Fingers of Frost
+			--CreateSpellEntry( 44544 ), -- Fingers of Frost
 			CreateSpellEntry( 79683 ), -- Arcane Missiles!
-			CreateSpellEntry( 48108 ), -- Hot Streak
-			CreateSpellEntry( 64343 ), -- Impact
+			--CreateSpellEntry( 48108 ), -- Hot Streak
+			--CreateSpellEntry( 64343 ), -- Impact
 			CreateSpellEntry( 12536 ), -- Clearcasting
 		},
 	},
@@ -525,7 +525,7 @@ CLASS_FILTERS = {
 			-- CreateSpellEntry( 6343 ), -- Thunderclap
 		},
 		player = {
-			CreateSpellEntry( 469 ), -- Commanding Shout
+			--CreateSpellEntry( 469 ), -- Commanding Shout
 			CreateSpellEntry( 6673 ), -- Battle Shout
 			CreateSpellEntry( 55694 ), -- Enraged Regeneration
 			CreateSpellEntry( 23920 ), -- Spell Reflection
@@ -544,7 +544,7 @@ CLASS_FILTERS = {
 			CreateSpellEntry( 46924 ), -- Bladestorm	
 			CreateSpellEntry( 86627 ), -- Incite
 			CreateSpellEntry( 12964 ), -- Battle Trance
-			CreateSpellEntry( 14202 ), --Enrage
+			CreateSpellEntry( 14202 ), -- Enrage
 		},
 		procs = {
 			CreateSpellEntry( 65156 ), -- Juggernaut

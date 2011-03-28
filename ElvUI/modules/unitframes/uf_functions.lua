@@ -34,6 +34,7 @@ E.LoadUFFunctions = function(layout)
 		
 		if text then
 			health:FontString("value", C["media"].uffont, C["unitframes"].fontsize*E.ResScale, "THINOUTLINE")
+			health.value:SetShadowColor(0, 0, 0, 0)
 			health.value:SetParent(self)
 		end
 		
@@ -81,6 +82,7 @@ E.LoadUFFunctions = function(layout)
 		
 		if text then
 			power:FontString("value", C["media"].uffont, C["unitframes"].fontsize*E.ResScale, "THINOUTLINE")
+			power.value:SetShadowColor(0, 0, 0, 0)			
 			power.value:SetParent(self)
 		end
 		
@@ -114,6 +116,7 @@ E.LoadUFFunctions = function(layout)
 		castbar.bg:SetFrameLevel(castbar:GetFrameLevel() - 1)
 		
 		castbar:FontString("Time", C["media"].uffont, C["unitframes"].fontsize*E.ResScale, "THINOUTLINE")
+		castbar.Time:SetShadowColor(0, 0, 0, 0)	
 		castbar.Time:Point("RIGHT", castbar, "RIGHT", -4, 0)
 		castbar.Time:SetTextColor(0.84, 0.75, 0.65)
 		castbar.Time:SetJustifyH("RIGHT")
@@ -122,7 +125,8 @@ E.LoadUFFunctions = function(layout)
 		castbar:FontString("Text", C["media"].uffont, C["unitframes"].fontsize*E.ResScale, "THINOUTLINE")
 		castbar.Text:SetPoint("LEFT", castbar, "LEFT", 4, 0)
 		castbar.Text:SetTextColor(0.84, 0.75, 0.65)
-
+		castbar.Text:SetShadowColor(0, 0, 0, 0)
+		
 		-- cast bar latency on player
 		if C["unitframes"].cblatency == true and self.unit == "player" then
 			castbar.SafeZone = castbar:CreateTexture(nil, "OVERLAY")
@@ -868,6 +872,11 @@ E.LoadUFFunctions = function(layout)
 			end
 		elseif unit and unit:find("boss%d") and self.text then
 			self.text:SetTextColor(self:GetStatusBarColor())
+			if not self:GetParent().Power.value:GetText() or self:GetParent().Power.value:GetText() == "" then
+				self.text:Point("BOTTOMRIGHT", self:GetParent().Health, "BOTTOMRIGHT")
+			else
+				self.text:Point("RIGHT", self:GetParent().Power.value.value, "LEFT", 2, E.mult)	
+			end
 			if perc > 0 then
 				self.text:SetText("|cffD7BEA5[|r"..format("%d%%", perc).."|cffD7BEA5]|r")
 			else
