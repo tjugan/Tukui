@@ -35,6 +35,7 @@ DB["general"] = {
 	["fontscale"] = 12,					--Master font
 	["resolutionoverride"] = "NONE",		--override lowversion (Low, High)
 	["layoutoverride"] = "NONE",			--ovverride layout (DPS, Healer)
+	["sharpborders"] = true,
 }
 
 DB["skin"] = {
@@ -212,6 +213,7 @@ DB["datatext"] = {
 	["time24"] = false,                     -- set time to 24h format.
 	["localtime"] = true,                 -- set time to local time instead of server time.
 	["fontsize"] = 12,                     -- font size for panels.
+	["classcolor"] = false,
 }
 
 DB["chat"] = {

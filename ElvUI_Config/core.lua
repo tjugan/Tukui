@@ -181,6 +181,12 @@ function ElvuiConfig.GenerateOptionsInternal()
 							["Heal"] = L["Heal"],
 						},
 					},
+					sharpborders = {
+						order = 9,
+						type = "toggle",
+						name = L["Sharp Borders"],
+						desc = L["Enhance the borders on all frames by making a dark outline around the edges. You will probably need to disable this if you do not play in your monitors max resolution."],	
+					},
 				},
 			},
 			media = {
@@ -426,6 +432,11 @@ function ElvuiConfig.GenerateOptionsInternal()
 								order = 5,
 								name = L["Track CC Debuffs"],
 								desc = L["Tracks CC debuffs on nameplates from you or a friendly player"],										
+							},
+							overlap = { --GetBuildInfo() <-- Reminder to remove this for 4.1
+								type = "toggle",
+								order = 6,
+								name = L["Allow Overlap"],						
 							},
 							Colors = {
 								type = "group",
@@ -1462,8 +1473,14 @@ function ElvuiConfig.GenerateOptionsInternal()
 						desc = L["Display local time instead of server time"],	
 						disabled = function() return db.datatext.wowtime == 0 end,					
 					},
-					DataGroup = {
+					classcolor = {
 						order = 6,
+						type = "toggle",
+						name = L["Class Color"],
+						desc = L["Color the datatext values based on your class"],
+					},
+					DataGroup = {
+						order = 7,
 						type = "group",
 						name = L["Text Positions"],
 						guiInline = true,

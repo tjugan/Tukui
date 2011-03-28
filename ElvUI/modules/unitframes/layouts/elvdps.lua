@@ -683,6 +683,7 @@ local function Shared(self, unit)
 		self:FontString("Name", FONT, FONTSIZE, "THINOUTLINE")
 		self.Name:SetJustifyH("LEFT")
 		self.Name.frequentUpdates = 0.2
+		self.Name:SetShadowColor(0, 0, 0, 0)
 		self:Tag(self.Name, '[Elvui:getnamecolor][Elvui:namelong] [Elvui:diffcolor][level] [shortclassification]')
 		
 		--Portrait
@@ -932,6 +933,7 @@ local function Shared(self, unit)
 		--Name
 		self:FontString("Name", FONT, FONTSIZE, "THINOUTLINE")
 		self.Name:Point("CENTER", health, "CENTER", 0, 2)
+		self.Name:SetShadowColor(0, 0, 0, 0)
 		self.Name.frequentUpdates = 0.5
 		self:Tag(self.Name, '[Elvui:getnamecolor][Elvui:namemedium]')		
 		
@@ -1079,16 +1081,18 @@ local function Shared(self, unit)
 
 			altpower:Point("TOPLEFT", altpower.bg, "TOPLEFT", BORDER, -BORDER)
 			altpower:Point("BOTTOMRIGHT", altpower.bg, "BOTTOMRIGHT", -BORDER, BORDER)
+			
+			altpower:FontString("text", FONT, FONTSIZE, "THINOUTLINE")
+			altpower.text:Point("RIGHT", power.value, "LEFT", 2, E.mult)		
+			
 			altpower:HookScript("OnShow", function(self) 			
 				health:Point("TOPRIGHT", self:GetParent(), "TOPRIGHT", -BORDER, -(POWERBAR_HEIGHT + BORDER))	
 			end)
 			
 			altpower:HookScript("OnHide", function(self) 
-				health:Point("TOPRIGHT", self:GetParent(), "TOPRIGHT", -BORDER, -BORDER)			
+				health:Point("TOPRIGHT", self:GetParent(), "TOPRIGHT", -BORDER, -BORDER)
+				altpower.text:SetText("")
 			end)
-			
-			altpower:FontString("text", FONT, FONTSIZE, "THINOUTLINE")
-			altpower.text:Point("RIGHT", power.value, "LEFT", 2, E.mult)		
 			
 			self.AltPowerBar = altpower
 		end
@@ -1096,6 +1100,7 @@ local function Shared(self, unit)
 		--Name
 		self:FontString("Name", FONT, FONTSIZE, "THINOUTLINE")
 		self.Name:Point("LEFT", health, "LEFT", 4, 0)
+		self.Name:SetShadowColor(0, 0, 0, 0)
 		self.Name.frequentUpdates = 0.5
 		self:Tag(self.Name, '[Elvui:getnamecolor][Elvui:namemedium]')
 				
@@ -1162,6 +1167,7 @@ local function Shared(self, unit)
 		--Name
 		self:FontString("Name", FONT, FONTSIZE, "THINOUTLINE")
 		self.Name:Point("CENTER", health, "CENTER", 0, 2)
+		self.Name:SetShadowColor(0, 0, 0, 0)
 		self.Name.frequentUpdates = 0.5
 		self:Tag(self.Name, '[Elvui:getnamecolor][Elvui:namemedium]')			
 	end
