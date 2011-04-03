@@ -36,6 +36,8 @@ DB["general"] = {
 	["resolutionoverride"] = "NONE",		--override lowversion (Low, High)
 	["layoutoverride"] = "NONE",			--ovverride layout (DPS, Healer)
 	["sharpborders"] = true,
+	["upperpanel"] = false,
+	["lowerpanel"] = false,
 }
 
 DB["skin"] = {
@@ -109,7 +111,7 @@ DB["unitframes"] = {
 	["casttargetwidth"] = 275,
 	["castfocuswidth"] = 275,
 	["castbarcolor"] = DB["media"].bordercolor, -- Color of player castbar
-	["nointerruptcolor"] = { r = 0.78, g = 0.25, g = 0.25, a = 0.5 }, -- Color of target castbar
+	["nointerruptcolor"] = { r = 0.78, g = 0.25, g = 0.25, a = 1 }, -- Color of target castbar
 	
 	["POWER_MANA"] = {r = 0.31, g = 0.45, b = 0.63},
 	["POWER_RAGE"] = {r = 0.78, g = 0.25, b = 0.25},
