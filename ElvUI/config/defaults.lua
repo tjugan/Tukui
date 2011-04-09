@@ -74,7 +74,7 @@ DB["unitframes"] = {
 	["classbar"] = true,                    -- enable runebar/totembar/holypowerbar/soulshardbar/eclipsebar
 	["combat"] = false,						-- only show main unitframes when in combat/havetarget/or mouseover
 	["mini_powerbar"] = false,
-	["mini_classbar"] = true,
+	["mini_classbar"] = false,
 	["powerbar_offset"] = 0,
 	["showboss"] = true,                   -- enable boss unit frames for PVELOL encounters.
 	["arena"] = true,                 -- enable elvui arena unitframes (requirement : Elvui unitframes enabled)	
@@ -118,7 +118,7 @@ DB["unitframes"] = {
 	["casttargetwidth"] = 275,
 	["castfocuswidth"] = 275,
 	["castbarcolor"] = DB["media"].bordercolor, -- Color of player castbar
-	["nointerruptcolor"] = { r = 0.78, g = 0.25, g = 0.25, a = 1 }, -- Color of target castbar
+	["nointerruptcolor"] = {r = 0.78, g = 0.25, b = 0.25}, -- Color of target castbar
 	
 	["POWER_MANA"] = {r = 0.31, g = 0.45, b = 0.63},
 	["POWER_RAGE"] = {r = 0.78, g = 0.25, b = 0.25},
@@ -146,7 +146,8 @@ DB["raidframes"] = {
 	["partytarget"]	= false,				--display party members targets (DPS ONLY)
 	["mouseglow"] = true,					--glow the class/reaction color of the unit that you mouseover
 	["raidunitbuffwatch"] = true,       -- track important spell to watch in pve for grid mode.
-	["buffindicatorsize"] = 6,				-- size of the buff indicator on raid/party frames	
+	["buffindicatorsize"] = 6,				-- size of the buff indicator on raid/party frames
+	["debuffs"] = true,
 	["displayaggro"] = true,
 	["mini_powerbar"] = false,
 	["gridonly"] = false,
@@ -274,7 +275,7 @@ DB["others"] = {
 	["buffreminder"] = true,                     -- this is now the new innerfire warning script for all armor/aspect class.
 	["remindersound"] = true,                      -- enable warning sound notification for reminder.
 	["raidbuffreminder"] = true,			-- buffbar below the minimap, important missing buffs	
-	["announceinterrupt"] = true,			-- announce in party/raid when you interrupt
+	["announceinterrupt"] = "PARTY",			-- announce in party/raid when you interrupt
 	["showthreat"] = true,                 -- enable the threat bar anchored to info right panel.
 	["minimapauras"] = true,				-- enable minimap auras		
 }

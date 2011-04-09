@@ -1265,9 +1265,14 @@ function ElvuiConfig.GenerateOptionsInternal()
 								desc = L["Display special buffs on raidframes"],
 								disabled = function() return not db.raidframes.enable and not db.unitframes.enable end,
 							},
+							debuffs = {
+								type = "toggle",
+								order = 21,
+								name = L["Display Debuffs"],
+							},
 							buffindicatorsize = {
 								type = "range",
-								order = 21,
+								order = 22,
 								name = L["Raid Buff Display Size"],
 								desc = L["Size of the buff icon on raidframes"],
 								disabled = function() return not db.raidframes.enable and not db.unitframes.enable end,
@@ -2253,10 +2258,16 @@ function ElvuiConfig.GenerateOptionsInternal()
 								desc = L["Icons below minimap, displayed inside instances"],								
 							},
 							announceinterrupt = {
-								type = "toggle",
+								type = "select",
 								order = 4,
 								name = L["Interrupt Announce"],
-								desc = L["Announce when you interrupt a spell"],								
+								desc = L["Announce when you interrupt a spell"],
+								values = {
+									["NONE"] = L["None"],
+									["SAY"] = CHAT_MSG_SAY,
+									["PARTY"] = PARTY,
+									["RAID"] = RAID,
+								},
 							},
 							showthreat = {
 								type = "toggle",
