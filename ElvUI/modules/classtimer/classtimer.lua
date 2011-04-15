@@ -20,6 +20,7 @@ SPARK = C["classtimer"].showspark;
 CAST_SEPARATOR = C["classtimer"].cast_suparator;
 CAST_SEPARATOR_COLOR = CreateColor( 0, 0, 0, 0.5 );
 TEXT_MARGIN = 5;
+local GROUP_SPACING = 3
 
 if ( E and C["media"] and C["media"]["uffont"] ) then
 	-- Sets font for all texts
@@ -68,7 +69,7 @@ function E.LoadClassTimers(Elv_player, Elv_target)
 			local byPlayer = caster == "player" or caster == "pet" or caster == "vehicle";
 				
 			for _, v in ipairs( filter ) do
-				if ( v.id == id and ( v.castByAnyone or byPlayer ) ) then return v; end
+				if ( v.id == id and ( v.castByAnyone or byPlayer ) and v.enabled == true ) then return v; end
 			end
 			
 			return false;
@@ -165,9 +166,13 @@ function E.LoadClassTimers(Elv_player, Elv_target)
 			for _, v in pairs( filter ) do
 				local clone = { };
 				
+				if v.color then
+					clone.color = {v.color.r, v.color.g, v.color.b}
+				end
+
+				clone.enabled = v.enabled;
 				clone.id = v.id;
 				clone.castByAnyone = v.castByAnyone;
-				clone.color = v.color;
 				clone.unitType = v.unitType;
 				clone.castSpellId = v.castSpellId;
 				
@@ -184,6 +189,7 @@ function E.LoadClassTimers(Elv_player, Elv_target)
 			for _, v in pairs( filter ) do
 				local clone = { };
 				
+				clone.enabled = v.enabled;
 				clone.id = v.id;
 				clone.castByAnyone = v.castByAnyone;
 				clone.color = v.color;
@@ -790,8 +796,8 @@ function E.LoadClassTimers(Elv_player, Elv_target)
 		playerFrame:Show();
 
 		local targetFrame = CreateAuraBarFrame( targetDataSource, Elv_player );
-		targetFrame:Point( "BOTTOMLEFT", playerFrame, "TOPLEFT", 0, BAR_SPACING );
-		targetFrame:Point( "BOTTOMRIGHT", playerFrame, "TOPRIGHT", 0, BAR_SPACING );
+		targetFrame:Point( "BOTTOMLEFT", playerFrame, "TOPLEFT", 0, BAR_SPACING+GROUP_SPACING );
+		targetFrame:Point( "BOTTOMRIGHT", playerFrame, "TOPRIGHT", 0, BAR_SPACING+GROUP_SPACING );
 		targetFrame:Show();
 	elseif ( LAYOUT == 3 ) then
 		local yOffset = 6;
@@ -845,14 +851,14 @@ function E.LoadClassTimers(Elv_player, Elv_target)
 
 		local trinketFrame = CreateAuraBarFrame( trinketDataSource, Elv_player );
 		trinketFrame:SetHiddenHeight( -BAR_SPACING );
-		trinketFrame:Point( "BOTTOMLEFT", playerFrame, "TOPLEFT", 0, BAR_SPACING );
-		trinketFrame:Point( "BOTTOMRIGHT", playerFrame, "TOPRIGHT", 0, BAR_SPACING );
+		trinketFrame:Point( "BOTTOMLEFT", playerFrame, "TOPLEFT", 0, BAR_SPACING+GROUP_SPACING );
+		trinketFrame:Point( "BOTTOMRIGHT", playerFrame, "TOPRIGHT", 0, BAR_SPACING+GROUP_SPACING );
 		trinketFrame:Show();
 		
 		local targetFrame = CreateAuraBarFrame( targetDataSource, Elv_player );
 		targetFrame:SetHiddenHeight( -BAR_SPACING );
-		targetFrame:Point( "BOTTOMLEFT", trinketFrame, "TOPLEFT", 0, BAR_SPACING );
-		targetFrame:Point( "BOTTOMRIGHT", trinketFrame, "TOPRIGHT", 0, BAR_SPACING );
+		targetFrame:Point( "BOTTOMLEFT", trinketFrame, "TOPLEFT", 0, BAR_SPACING+GROUP_SPACING );
+		targetFrame:Point( "BOTTOMRIGHT", trinketFrame, "TOPRIGHT", 0, BAR_SPACING+GROUP_SPACING );
 		targetFrame:Show();
 	elseif ( LAYOUT == 4 ) then
 		local yOffset = 6;
@@ -904,8 +910,8 @@ function E.LoadClassTimers(Elv_player, Elv_target)
 
 		local trinketFrame = CreateAuraBarFrame( trinketDataSource, Elv_player );
 		trinketFrame:SetHiddenHeight( -BAR_SPACING );
-		trinketFrame:Point( "BOTTOMLEFT", playerFrame, "TOPLEFT", 0, BAR_SPACING );
-		trinketFrame:Point( "BOTTOMRIGHT", playerFrame, "TOPRIGHT", 0, BAR_SPACING );
+		trinketFrame:Point( "BOTTOMLEFT", playerFrame, "TOPLEFT", 0, BAR_SPACING+GROUP_SPACING );
+		trinketFrame:Point( "BOTTOMRIGHT", playerFrame, "TOPRIGHT", 0, BAR_SPACING+GROUP_SPACING );
 		trinketFrame:Show();
 		
 		local targetFrame = CreateAuraBarFrame( targetDataSource, Elv_target );
@@ -966,8 +972,8 @@ function E.LoadClassTimers(Elv_player, Elv_target)
 
 		local trinketFrame = CreateAuraBarFrame( trinketDataSource, Elv_player );
 		trinketFrame:SetHiddenHeight( -BAR_SPACING );
-		trinketFrame:Point( "BOTTOMLEFT", playerFrame, "TOPLEFT", 0, BAR_SPACING );
-		trinketFrame:Point( "BOTTOMRIGHT", playerFrame, "TOPRIGHT", 0, BAR_SPACING );
+		trinketFrame:Point( "BOTTOMLEFT", playerFrame, "TOPLEFT", 0, BAR_SPACING+GROUP_SPACING );
+		trinketFrame:Point( "BOTTOMRIGHT", playerFrame, "TOPRIGHT", 0, BAR_SPACING+GROUP_SPACING );
 		trinketFrame:Show();
 	else
 		error( "Undefined layout " .. tostring( LAYOUT ) );
