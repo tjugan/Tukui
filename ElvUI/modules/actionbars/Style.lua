@@ -1,16 +1,15 @@
-local ElvDB = ElvDB
-local ElvCF = ElvCF
+local E, C, L, DB = unpack(select(2, ...)) -- Import Functions/Constants, Config, Locales
 
-if not ElvCF["actionbar"].enable == true then return end
+if not C["actionbar"].enable == true then return end
 
 local _G = _G
-local media = ElvCF["media"]
+local media = C["media"]
 local securehandler = CreateFrame("Frame", nil, nil, "SecureHandlerBaseTemplate")
 
-function style(self, vehicle, totem)
+function Style(self, totem)
 	local name = self:GetName()
 	
-	if name:match("MultiCastActionButton") then return end 
+	if name:match("MultiCast") then return end 
 	
 	local action = self.action
 	local Button = self
@@ -29,56 +28,53 @@ function style(self, vehicle, totem)
 	
 	if Border then
 		Border:Hide()
-		Border = ElvDB.dummy
+		Border = E.dummy
 	end
 	
 	if Count then
 		Count:ClearAllPoints()
-		Count:SetPoint("BOTTOMRIGHT", 0, ElvDB.Scale(2))
-		Count:SetFont(ElvCF["media"].font, 12, "OUTLINE")
+		Count:SetPoint("BOTTOMRIGHT", 0, E.Scale(2))
+		Count:SetFont(C["media"].font, C["general"].fontscale, "OUTLINE")
 	end
 	
 	if Btname then
-		if ElvCF["actionbar"].macrotext ~= true then
+		if C["actionbar"].macrotext ~= true then
 			Btname:SetText("")
 			Btname:Hide()
-			Btname.Show = ElvDB.dummy
+			Btname.Show = E.dummy
 		end
 	end
 	
 	if not _G[name.."Panel"] then
 		if not totem then
-			self:SetWidth(ElvDB.buttonsize)
-			self:SetHeight(ElvDB.buttonsize)
+			self:SetWidth(E.buttonsize)
+			self:SetHeight(E.buttonsize)
  
 			local panel = CreateFrame("Frame", name.."Panel", self)
-			if vehicle then
-				ElvDB.CreatePanel(panel, ElvDB.buttonsize*1.2, ElvDB.buttonsize*1.2, "CENTER", self, "CENTER", 0, 0)
-			else
-				ElvDB.CreatePanel(panel, ElvDB.buttonsize, ElvDB.buttonsize, "CENTER", self, "CENTER", 0, 0)
-			end
-			ElvDB.SetNormTexTemplate(panel)
+			panel:CreatePanel("Default", E.buttonsize, E.buttonsize, "CENTER", self, "CENTER", 0, 0)
+			panel:SetTemplate("Default", true)
 			panel:SetFrameStrata(self:GetFrameStrata())
-			panel:SetFrameLevel(self:GetFrameLevel() - 1)
+			panel:SetFrameLevel(self:GetFrameLevel() - 1 or 0)
 		end
 		
 		if Icon then
 			Icon:SetTexCoord(.08, .92, .08, .92)
-			Icon:SetPoint("TOPLEFT", Button, ElvDB.Scale(2), ElvDB.Scale(-2))
-			Icon:SetPoint("BOTTOMRIGHT", Button, ElvDB.Scale(-2), ElvDB.Scale(2))
+			Icon:SetPoint("TOPLEFT", Button, E.Scale(2), E.Scale(-2))
+			Icon:SetPoint("BOTTOMRIGHT", Button, E.Scale(-2), E.Scale(2))
 		end
 	end
 	
 	if HotKey then
 		HotKey:ClearAllPoints()
-		HotKey:SetPoint("TOPRIGHT", 0, ElvDB.Scale(-3))
-		HotKey:SetFont(ElvCF["media"].font, 12, "OUTLINE")
-		HotKey.ClearAllPoints = ElvDB.dummy
-		HotKey.SetPoint = ElvDB.dummy
-		if not ElvCF["actionbar"].hotkey == true then
+		HotKey:SetPoint("TOPRIGHT", 0, E.Scale(-3))
+		HotKey:SetFont(C["media"].font, C["general"].fontscale, "THINOUTLINE")
+		HotKey:SetShadowColor(0, 0, 0, 0.3)
+		HotKey.ClearAllPoints = E.dummy
+		HotKey.SetPoint = E.dummy
+		if not C["actionbar"].hotkey == true then
 			HotKey:SetText("")
 			HotKey:Hide()
-			HotKey.Show = ElvDB.dummy
+			HotKey.Show = E.dummy
 		end
 	end
 	
@@ -89,38 +85,41 @@ function style(self, vehicle, totem)
 	end
 end
 
-local function stylesmallbutton(normal, button, icon, name, pet)
+local function Stylesmallbutton(normal, button, icon, name, pet)
 	local Flash	 = _G[name.."Flash"]
 	button:SetNormalTexture("")
 	
 	-- another bug fix reported by Affli in t12 beta
-	button.SetNormalTexture = ElvDB.dummy
+	button.SetNormalTexture = E.dummy
 	
 	Flash:SetTexture(1, 1, 1, 0.3)
 	
 	if not _G[name.."Panel"] then
-		button:SetWidth(ElvDB.petbuttonsize)
-		button:SetHeight(ElvDB.petbuttonsize)
+		button:SetWidth(E.petbuttonsize)
+		button:SetHeight(E.petbuttonsize)
 		
 		local panel = CreateFrame("Frame", name.."Panel", button)
-		ElvDB.CreatePanel(panel, ElvDB.petbuttonsize, ElvDB.petbuttonsize, "CENTER", button, "CENTER", 0, 0)
+		panel:CreatePanel("Default", E.petbuttonsize, E.petbuttonsize, "CENTER", button, "CENTER", 0, 0)
 		panel:SetBackdropColor(unpack(media.backdropcolor))
 		panel:SetFrameStrata(button:GetFrameStrata())
 		panel:SetFrameLevel(button:GetFrameLevel() - 1)
 
 		icon:SetTexCoord(.08, .92, .08, .92)
 		icon:ClearAllPoints()
-		if pet then
-			local autocast = _G[name.."AutoCastable"]
-			autocast:SetWidth(ElvDB.Scale(41))
-			autocast:SetHeight(ElvDB.Scale(40))
-			autocast:ClearAllPoints()
-			autocast:SetPoint("CENTER", button, 0, 0)
-			icon:SetPoint("TOPLEFT", button, ElvDB.Scale(2), ElvDB.Scale(-2))
-			icon:SetPoint("BOTTOMRIGHT", button, ElvDB.Scale(-2), ElvDB.Scale(2))
+		if pet then			
+			if E.petbuttonsize < 30 then
+				local autocast = _G[name.."AutoCastable"]
+				autocast:SetAlpha(0)
+			end
+			local shine = _G[name.."Shine"]
+			shine:Size(E.petbuttonsize, E.petbuttonsize)
+			shine:ClearAllPoints()
+			shine:SetPoint("CENTER", button, 0, 0)
+			icon:Point("TOPLEFT", button, 2, -2)
+			icon:Point("BOTTOMRIGHT", button, -2, 2)
 		else
-			icon:SetPoint("TOPLEFT", button, ElvDB.Scale(2), ElvDB.Scale(-2))
-			icon:SetPoint("BOTTOMRIGHT", button, ElvDB.Scale(-2), ElvDB.Scale(2))
+			icon:Point("TOPLEFT", button, 2, -2)
+			icon:Point("BOTTOMRIGHT", button, -2, 2)
 		end
 	end
 	
@@ -131,23 +130,23 @@ local function stylesmallbutton(normal, button, icon, name, pet)
 	end
 end
 
-function ElvDB.StyleShift()
+function E.StyleShift()
 	for i=1, NUM_SHAPESHIFT_SLOTS do
 		local name = "ShapeshiftButton"..i
 		local button  = _G[name]
 		local icon  = _G[name.."Icon"]
 		local normal  = _G[name.."NormalTexture"]
-		stylesmallbutton(normal, button, icon, name)
+		Stylesmallbutton(normal, button, icon, name)
 	end
 end
 
-function ElvDB.StylePet()
+function E.StylePet()
 	for i=1, NUM_PET_ACTION_SLOTS do
 		local name = "PetActionButton"..i
 		local button  = _G[name]
 		local icon  = _G[name.."Icon"]
 		local normal  = _G[name.."NormalTexture2"]
-		stylesmallbutton(normal, button, icon, name, true)
+		Stylesmallbutton(normal, button, icon, name, true)
 	end
 end
 
@@ -174,9 +173,9 @@ local function SetupFlyoutButton()
 	for i=1, buttons do
 		--prevent error if you don't have max ammount of buttons
 		if _G["SpellFlyoutButton"..i] then
-			style(_G["SpellFlyoutButton"..i], false)
-			ElvDB.StyleButton(_G["SpellFlyoutButton"..i], true)
-			if ElvCF["actionbar"].rightbarmouseover == true then
+			Style(_G["SpellFlyoutButton"..i], false)
+			_G["SpellFlyoutButton"..i]:StyleButton(true)
+			if C["actionbar"].rightbarmouseover == true then
 				SpellFlyout:HookScript("OnEnter", function(self) RightBarMouseOver(1) end)
 				SpellFlyout:HookScript("OnLeave", function(self) RightBarMouseOver(0) end)
 				_G["SpellFlyoutButton"..i]:HookScript("OnEnter", function(self) RightBarMouseOver(1) end)
@@ -187,36 +186,9 @@ local function SetupFlyoutButton()
 end
 SpellFlyout:HookScript("OnShow", SetupFlyoutButton)
 
--- Reposition flyout buttons depending on what Elvui bar the button is parented to
-local function FlyoutButtonPos(self, buttons, direction)
-	for i=1, buttons do
-		local parent = SpellFlyout:GetParent()
-		if not _G["SpellFlyoutButton"..i] then return end
-		
-		if InCombatLockdown() then return end
- 
-		if direction == "LEFT" then
-			if i == 1 then
-				_G["SpellFlyoutButton"..i]:ClearAllPoints()
-				_G["SpellFlyoutButton"..i]:SetPoint("RIGHT", parent, "LEFT", -4, 0)
-			else
-				_G["SpellFlyoutButton"..i]:ClearAllPoints()
-				_G["SpellFlyoutButton"..i]:SetPoint("RIGHT", _G["SpellFlyoutButton"..i-1], "LEFT", -4, 0)
-			end
-		else
-			if i == 1 then
-				_G["SpellFlyoutButton"..i]:ClearAllPoints()
-				_G["SpellFlyoutButton"..i]:SetPoint("BOTTOM", parent, "TOP", 0, 4)
-			else
-				_G["SpellFlyoutButton"..i]:ClearAllPoints()
-				_G["SpellFlyoutButton"..i]:SetPoint("BOTTOM", _G["SpellFlyoutButton"..i-1], "TOP", 0, 4)
-			end
-		end
-	end
-end
  
 --Hide the Mouseover texture and attempt to find the ammount of buttons to be skinned
-local function styleflyout(self)
+local function StyleFlyout(self)
 	self.FlyoutBorder:SetAlpha(0)
 	self.FlyoutBorderShadow:SetAlpha(0)
 	
@@ -236,61 +208,64 @@ local function styleflyout(self)
 	--Change arrow direction depending on what bar the button is on
 	local arrowDistance
 	if ((SpellFlyout and SpellFlyout:IsShown() and SpellFlyout:GetParent() == self) or GetMouseFocus() == self) then
-			arrowDistance = 5
+		arrowDistance = 5
 	else
-			arrowDistance = 2
+		arrowDistance = 2
 	end
 	
-	if (self:GetParent() == MultiBarBottomRight and ElvCF.actionbar.rightbars > 1) then
-		self.FlyoutArrow:ClearAllPoints()
-		self.FlyoutArrow:SetPoint("LEFT", self, "LEFT", -arrowDistance, 0)
-		SetClampedTextureRotation(self.FlyoutArrow, 270)
-		FlyoutButtonPos(self,buttons,"LEFT")
-	elseif (self:GetParent() == MultiBarLeft and not ElvDB.lowversion and ElvCF.actionbar.bottomrows == 2) then
-		self.FlyoutArrow:ClearAllPoints()
-		self.FlyoutArrow:SetPoint("TOP", self, "TOP", 0, arrowDistance)
-		SetClampedTextureRotation(self.FlyoutArrow, 0)
-		FlyoutButtonPos(self,buttons,"UP")	
-	elseif not self:GetParent():GetParent() == "SpellBookSpellIconsFrame" then
-		FlyoutButtonPos(self,buttons,"UP")
+	if self:GetParent():GetParent():GetName() == "SpellBookSpellIconsFrame" then return end
+	
+	if self:GetAttribute("flyoutDirection") ~= nil then
+		local point, _, _, _, _ = self:GetParent():GetParent():GetParent():GetPoint()
+		
+		if strfind(point, "BOTTOM") then
+			self.FlyoutArrow:ClearAllPoints()
+			self.FlyoutArrow:SetPoint("TOP", self, "TOP", 0, arrowDistance)
+			SetClampedTextureRotation(self.FlyoutArrow, 0)
+			if not InCombatLockdown() then self:SetAttribute("flyoutDirection", "UP") end
+		else
+			self.FlyoutArrow:ClearAllPoints()
+			self.FlyoutArrow:SetPoint("LEFT", self, "LEFT", -arrowDistance, 0)
+			SetClampedTextureRotation(self.FlyoutArrow, 270)
+			if not InCombatLockdown() then self:SetAttribute("flyoutDirection", "LEFT") end
+		end
 	end
 end
 
 do	
 	for i = 1, 12 do
-		ElvDB.StyleButton(_G["MultiBarLeftButton"..i], true)
-		ElvDB.StyleButton(_G["MultiBarRightButton"..i], true)
-		ElvDB.StyleButton(_G["MultiBarBottomRightButton"..i], true)
-		ElvDB.StyleButton(_G["MultiBarBottomLeftButton"..i], true)
-		ElvDB.StyleButton(_G["ActionButton"..i], true)
+		_G["MultiBarLeftButton"..i]:StyleButton(true)
+		_G["MultiBarRightButton"..i]:StyleButton(true)
+		_G["MultiBarBottomRightButton"..i]:StyleButton(true)
+		_G["MultiBarBottomLeftButton"..i]:StyleButton(true)
+		_G["ActionButton"..i]:StyleButton(true)
 	end
 	 
 	for i=1, 10 do
-		ElvDB.StyleButton(_G["ShapeshiftButton"..i], true)
-		ElvDB.StyleButton(_G["PetActionButton"..i], true)	
+		_G["ShapeshiftButton"..i]:StyleButton(true)
+		_G["PetActionButton"..i]:StyleButton(true)
 	end
 	
 	for i=1, 6 do
-		ElvDB.StyleButton(_G["VehicleMenuBarActionButton"..i], true)
-		style(_G["VehicleMenuBarActionButton"..i], true)
+		_G["VehicleMenuBarActionButton"..i]:StyleButton(true)
+		Style(_G["VehicleMenuBarActionButton"..i])
 	end
 end
 
-hooksecurefunc("ActionButton_Update", style)
-hooksecurefunc("ActionButton_UpdateHotkeys", ElvDB.UpdateHotkey)
-hooksecurefunc("ActionButton_UpdateFlyout", styleflyout)
+hooksecurefunc("ActionButton_Update", Style)
+hooksecurefunc("ActionButton_UpdateHotkeys", E.UpdateHotkey)
+hooksecurefunc("ActionButton_UpdateFlyout", StyleFlyout)
 
---[[
-    MultiCastActionBar Skin
-	
-	(C)2010 Darth Android / Telroth - The Venture Co.
+---------------------------------------------------------------
+-- Totem Style, they need a lot more work than "normal" buttons
+-- Because of this, we skin it via separate styling codes
+-- Special thank's to DarthAndroid
+---------------------------------------------------------------
 
-]]
+-- don't continue executing code in this file is not playing a shaman.
+if not E.myclass == "SHAMAN" then return end
 
-if ElvDB.myclass ~= "SHAMAN" then return end
-
--- Courtesy Blizzard Inc.
--- I wouldn't have to copy these if they'd just make them not local >.>
+-- Tex Coords for empty buttons
 SLOT_EMPTY_TCOORDS = {
 	[EARTH_TOTEM_SLOT] = {
 		left	= 66 / 128,
@@ -318,209 +293,171 @@ SLOT_EMPTY_TCOORDS = {
 	},
 }
 
-local AddOn_Loaded = CreateFrame("Frame")
-AddOn_Loaded:RegisterEvent("ADDON_LOADED")
-AddOn_Loaded:SetScript("OnEvent", function(self, event, addon)
-	if addon ~= "ElvUI" then return end
-
-	Mod_AddonSkins:RegisterSkin("Blizzard_TotemBar",function(Skin,skin,Layout,layout,config)
-		-- Skin Flyout
-		function Skin:SkinMCABFlyoutFrame(flyout, type, parent)
-			local point
-			if ShapeShiftMover then
-				point, _, _, _, _ = ShapeShiftMover:GetPoint()
-			else
-				point, _, _, _, _ = ElvuiShiftBar:GetPoint()
-			end
-			flyout.top:SetTexture(nil)
-			flyout.middle:SetTexture(nil)
-			self:SkinFrame(flyout)
-			flyout:SetBackdropBorderColor(0,0,0,0)
-			flyout:SetBackdropColor(0,0,0,0)
-			-- Skin buttons
-			local last = nil
-			for _,button in ipairs(flyout.buttons) do
-				self:SkinButton(button)
-				if not InCombatLockdown() then
-					button:SetSize(ElvDB.petbuttonsize,ElvDB.petbuttonsize)
-					button:ClearAllPoints()
-					button:SetPoint("BOTTOM",last,"TOP",0,config.borderWidth)
-				end			
-				if button:IsVisible() then last = button end
-				button:SetBackdropBorderColor(parent:GetBackdropBorderColor())
-				if ElvCF["actionbar"].shapeshiftmouseover == true then
-					button:HookScript("OnEnter", function() MultiCastActionBarFrame:SetAlpha(1) end)
-					button:HookScript("OnLeave", function() MultiCastActionBarFrame:SetAlpha(0) end)
-				end
-			end
-			flyout.buttons[1]:SetPoint("BOTTOM",flyout,"BOTTOM")
-			if type == "slot" then
-				local tcoords = SLOT_EMPTY_TCOORDS[flyout.parent:GetID()]
-				flyout.buttons[1].icon:SetTexCoord(tcoords.left,tcoords.right,tcoords.top,tcoords.bottom)
-			end
-			-- Skin Close button
-			local close = MultiCastFlyoutFrameCloseButton
-			self:SkinButton(close)
-			
-			close:GetHighlightTexture():SetTexture([[Interface\Buttons\ButtonHilight-Square]])
-			close:GetHighlightTexture():SetPoint("TOPLEFT",close,"TOPLEFT",config.borderWidth,-config.borderWidth)
-			close:GetHighlightTexture():SetPoint("BOTTOMRIGHT",close,"BOTTOMRIGHT",-config.borderWidth,config.borderWidth)
-			close:GetNormalTexture():SetTexture(nil)
-			close:ClearAllPoints()
-			if point == "BOTTOMLEFT" or point == "BOTTOMRIGHT" or point == "BOTTOM" then
-				close:SetPoint("BOTTOMLEFT",last,"TOPLEFT",0,4)
-				close:SetPoint("BOTTOMRIGHT",last,"TOPRIGHT",0,4)
-			else
-				if last then
-					close:SetWidth(last:GetWidth())
-				end
-				close:SetPoint("TOP",flyout,"BOTTOM",0,-4)		
-			end
-			close:SetHeight(4*2)
-			close:SetBackdropBorderColor(parent:GetBackdropBorderColor())
-			flyout:ClearAllPoints()
-			if point == "BOTTOMLEFT" or point == "BOTTOMRIGHT" or point == "BOTTOM" then
-				flyout:SetPoint("BOTTOM",parent,"TOP",0,4)
-			else
-				flyout:SetPoint("TOP",parent,"BOTTOM",0,-4)
-			end
-			
-			if ElvCF["actionbar"].shapeshiftmouseover == true then
-				flyout:HookScript("OnEnter", function() MultiCastActionBarFrame:SetAlpha(1) end)
-				flyout:HookScript("OnLeave", function() MultiCastActionBarFrame:SetAlpha(0) end)
-				close:HookScript("OnEnter", function() MultiCastActionBarFrame:SetAlpha(1) end)
-				close:HookScript("OnLeave", function() MultiCastActionBarFrame:SetAlpha(0) end)
-			end
-			
-			MultiCastFlyoutFrameOpenButton:Hide()
-		end
-		hooksecurefunc("MultiCastFlyoutFrame_ToggleFlyout",function(self, type, parent) skin:SkinMCABFlyoutFrame(self, type, parent) end)
-		
-		function Skin:SkinMCABFlyoutOpenButton(button, parent)
-			local point
-			if ShapeShiftMover then
-				point, _, _, _, _ = ShapeShiftMover:GetPoint()
-			else
-				point, _, _, _, _ = ElvuiShiftBar:GetPoint()
-			end
-			button:GetHighlightTexture():SetTexture(nil)
-			button:GetNormalTexture():SetTexture(nil)
-			button:SetHeight(ElvDB.Scale(4)*3)
+local function StyleTotemFlyout(flyout)
+	-- remove blizzard flyout texture
+	flyout.top:SetTexture(nil)
+	flyout.middle:SetTexture(nil)
+	
+	-- Skin buttons
+	local last = nil
+	
+	for _,button in ipairs(flyout.buttons) do
+		button:SetTemplate("Default")
+		local icon = select(1,button:GetRegions())
+		icon:SetTexCoord(.09,.91,.09,.91)
+		icon:SetDrawLayer("ARTWORK")
+		icon:Point("TOPLEFT",button,"TOPLEFT",2,-2)
+		icon:Point("BOTTOMRIGHT",button,"BOTTOMRIGHT",-2,2)		
+		if not InCombatLockdown() then
+			button:Size(C["actionbar"].petbuttonsize)
 			button:ClearAllPoints()
-			if point == "BOTTOMLEFT" or point == "BOTTOMRIGHT" or point == "BOTTOM" then
-				button:SetPoint("BOTTOMLEFT", parent, "TOPLEFT")
-				button:SetPoint("BOTTOMRIGHT", parent, "TOPRIGHT")
-			else
-				button:SetPoint("TOPLEFT", parent, "BOTTOMLEFT")
-				button:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT")			
-			end
-			button:SetBackdropColor(0,0,0,0)
-			button:SetBackdropBorderColor(0,0,0,0)
-			if not button.visibleBut then
-				button.visibleBut = CreateFrame("Frame",nil,button)
-				button.visibleBut:SetHeight(ElvDB.Scale(4)*2)
-				if point == "BOTTOMLEFT" or point == "BOTTOMRIGHT" or point == "BOTTOM" then
-					button.visibleBut:SetPoint("TOPLEFT",config.barSpacing)
-					button.visibleBut:SetPoint("TOPRIGHT",config.barSpacing)
-				else
-					button.visibleBut:SetPoint("BOTTOMLEFT")
-					button.visibleBut:SetPoint("BOTTOMRIGHT")				
-				end
-				self:SkinFrame(button.visibleBut)
-			end
-			
-			if ElvCF["actionbar"].shapeshiftmouseover == true then
-				button:HookScript("OnEnter", function() MultiCastActionBarFrame:SetAlpha(1) end)
-				button:HookScript("OnLeave", function() MultiCastActionBarFrame:SetAlpha(0) end)
-			end
-			button.visibleBut:SetBackdropBorderColor(parent:GetBackdropBorderColor())
+			button:Point("BOTTOM",last,"TOP",0,4)
 		end
-		hooksecurefunc("MultiCastFlyoutFrameOpenButton_Show",function(button,_, parent) skin:SkinMCABFlyoutOpenButton(button, parent) end)
+		if button:IsVisible() then last = button end
+		button:SetBackdropBorderColor(flyout.parent:GetBackdropBorderColor())
+		button:StyleButton()
 		
-		local bordercolors = {
-			{.58,.23,.10},    -- Fire
-			{.23,.45,.13},    -- Earth
-			{.19,.48,.60},   -- Water
-			{.42,.18,.74},   -- Air
-			{.39,.39,.12}    -- Summon / Recall
-		}
-		
-		function Skin:SkinMCABSlotButton(button, index)
-			self:SkinButton(button)
-			if _G[button:GetName().."Panel"] then _G[button:GetName().."Panel"]:Hide() end
-			button.overlayTex:SetTexture(nil)
-			button.background:SetDrawLayer("ARTWORK")
-			button.background:ClearAllPoints()
-			button.background:SetPoint("TOPLEFT",button,"TOPLEFT",config.borderWidth,-config.borderWidth)
-			button.background:SetPoint("BOTTOMRIGHT",button,"BOTTOMRIGHT",-config.borderWidth,config.borderWidth)
-			button:SetSize(ElvDB.petbuttonsize, ElvDB.petbuttonsize)
-			button:SetBackdropBorderColor(unpack(bordercolors[((index-1) % 4) + 1]))
-			style(button, false, true)
-			ElvDB.StyleButton(button, false)
-			if ElvCF["actionbar"].shapeshiftmouseover == true then
-				button:HookScript("OnEnter", function() MultiCastActionBarFrame:SetAlpha(1) end)
-				button:HookScript("OnLeave", function() MultiCastActionBarFrame:SetAlpha(0) end)
-			end
-		end
-		hooksecurefunc("MultiCastSlotButton_Update",function(self, slot) skin:SkinMCABSlotButton(self, slot) end)
-		
-		-- Skin the actual totem buttons
-		function Skin:SkinMCABActionButton(button, index)
-			for i=1, button:GetNumRegions() do
-				local region = select(i, button:GetRegions())
-				if region:GetObjectType() == "Texture" then
-					if region:GetDrawLayer() == "BACKGROUND" then
-						region:SetTexCoord(0.1, 0.1, 0.1, 0.9, 0.9, 0.1, 0.9, 0.9)
-						if not InCombatLockdown() then
-							region:ClearAllPoints()
-							region:SetPoint("TOPLEFT", button.slotButton, "TOPLEFT", config.borderWidth, -config.borderWidth)
-							region:SetPoint("BOTTOMRIGHT", button.slotButton, "BOTTOMRIGHT", -config.borderWidth, config.borderWidth)
-						end
-					end
-				end
-			end
-			button.overlayTex:SetTexture(nil)
-			button.overlayTex:Hide()
-			button:GetNormalTexture():SetTexture(nil)
-			button:GetNormalTexture():Hide()
-			button:GetNormalTexture().Show = ElvDB.dummy
-			if _G[button:GetName().."Panel"] then _G[button:GetName().."Panel"]:Hide() end
-			if not InCombatLockdown() then button:SetAllPoints(button.slotButton) end
-			button:SetBackdropBorderColor(unpack(bordercolors[((index-1) % 4) + 1]))
-			button:SetBackdropColor(0,0,0,0)
-			style(button, false, true)
-			ElvDB.StyleButton(button, false)
-			if ElvCF["actionbar"].shapeshiftmouseover == true then
-				button:HookScript("OnEnter", function() MultiCastActionBarFrame:SetAlpha(1) end)
-				button:HookScript("OnLeave", function() MultiCastActionBarFrame:SetAlpha(0) end)
-			end
-		end
-		hooksecurefunc("MultiCastActionButton_Update",function(actionButton, actionId, actionIndex, slot) skin:SkinMCABActionButton(actionButton,actionIndex) end)
-		
-		-- Skin the summon and recall buttons
-		function Skin:SkinMCABSpellButton(button, index)
-			if not button then return end
-			self:SkinButton(button)
-			button:GetNormalTexture():SetTexture(nil)
-			self:SkinBackgroundFrame(button)
-			button:SetBackdropBorderColor(unpack(bordercolors[((index-1)%5)+1]))
-			if not InCombatLockdown() then button:SetSize(ElvDB.petbuttonsize, ElvDB.petbuttonsize) end
-			_G[button:GetName().."Highlight"]:SetTexture(nil)
-			_G[button:GetName().."NormalTexture"]:SetTexture(nil)
-			style(button, false, true)
-			ElvDB.StyleButton(button, false)
-			if index == 0 then
-				button:ClearAllPoints()
-				button:SetPoint("RIGHT", MultiCastActionButton1, "LEFT", -8, 0)
-			end
-			if ElvCF["actionbar"].shapeshiftmouseover == true then
-				button:HookScript("OnEnter", function() MultiCastActionBarFrame:SetAlpha(1) end)
-				button:HookScript("OnLeave", function() MultiCastActionBarFrame:SetAlpha(0) end)
-			end
-		end
-		hooksecurefunc("MultiCastSummonSpellButton_Update", function(self) skin:SkinMCABSpellButton(self,0) end)
-		hooksecurefunc("MultiCastRecallSpellButton_Update", function(self) skin:SkinMCABSpellButton(self,5) end)
-		
-		local frame = MultiCastActionBarFrame
-	end)
-end)
+		if C["actionbar"].shapeshiftmouseover == true then
+			button:HookScript("OnEnter", function() MultiCastActionBarFrame:SetAlpha(1) end)
+			button:HookScript("OnLeave", function() MultiCastActionBarFrame:SetAlpha(0) end)
+		end			
+	end
+	
+	flyout.buttons[1]:SetPoint("BOTTOM",flyout,"BOTTOM")
+	
+	if flyout.type == "slot" then
+		local tcoords = SLOT_EMPTY_TCOORDS[flyout.parent:GetID()]
+		flyout.buttons[1].icon:SetTexCoord(tcoords.left,tcoords.right,tcoords.top,tcoords.bottom)
+	end
+	
+	-- Skin Close button
+	local close = MultiCastFlyoutFrameCloseButton
+	close:SetTemplate("Default")	
+	close:GetHighlightTexture():SetTexture([[Interface\Buttons\ButtonHilight-Square]])
+	close:GetHighlightTexture():Point("TOPLEFT",close,"TOPLEFT",1,-1)
+	close:GetHighlightTexture():Point("BOTTOMRIGHT",close,"BOTTOMRIGHT",-1,1)
+	close:GetNormalTexture():SetTexture(nil)
+	close:ClearAllPoints()
+	close:Point("BOTTOMLEFT",last,"TOPLEFT",0,4)
+	close:Point("BOTTOMRIGHT",last,"TOPRIGHT",0,4)	
+	close:SetBackdropBorderColor(last:GetBackdropBorderColor())
+	close:Height(8)
+	
+	flyout:ClearAllPoints()
+	flyout:Point("BOTTOM",flyout.parent,"TOP",0,4)
+	
+	if C["actionbar"].shapeshiftmouseover == true then
+		flyout:HookScript("OnEnter", function() MultiCastActionBarFrame:SetAlpha(1) end)
+		flyout:HookScript("OnLeave", function() MultiCastActionBarFrame:SetAlpha(0) end)
+		close:HookScript("OnEnter", function() MultiCastActionBarFrame:SetAlpha(1) end)
+		close:HookScript("OnLeave", function() MultiCastActionBarFrame:SetAlpha(0) end)
+	end
+end
+hooksecurefunc("MultiCastFlyoutFrame_ToggleFlyout",function(self) StyleTotemFlyout(self) end)
+	
+local function StyleTotemOpenButton(button, parent)
+	button:GetHighlightTexture():SetAlpha(0)
+	button:GetNormalTexture():SetAlpha(0)
+
+	button:Height(20)
+	button:ClearAllPoints()
+	button:Point("BOTTOMLEFT", parent, "TOPLEFT", 0, -3)
+	button:Point("BOTTOMRIGHT", parent, "TOPRIGHT", 0, -3)
+	if not button.visibleBut then
+		button.visibleBut = CreateFrame("Frame",nil,button)
+		button.visibleBut:Height(8)
+		button.visibleBut:Width(C["actionbar"].petbuttonsize)
+		button.visibleBut:SetPoint("CENTER")
+		button.visibleBut.highlight = button.visibleBut:CreateTexture(nil,"HIGHLIGHT")
+		button.visibleBut.highlight:SetTexture([[Interface\Buttons\ButtonHilight-Square]])
+		button.visibleBut.highlight:Point("TOPLEFT",button.visibleBut,"TOPLEFT",1,-1)
+		button.visibleBut.highlight:Point("BOTTOMRIGHT",button.visibleBut,"BOTTOMRIGHT",-1,1)
+		button.visibleBut:SetTemplate("Default")
+	end	
+	
+	if C["actionbar"].shapeshiftmouseover == true then
+		button:HookScript("OnEnter", function() MultiCastActionBarFrame:SetAlpha(1) end)
+		button:HookScript("OnLeave", function() MultiCastActionBarFrame:SetAlpha(0) end)
+	end	
+	button.visibleBut:SetBackdropBorderColor(parent:GetBackdropBorderColor())
+end
+hooksecurefunc("MultiCastFlyoutFrameOpenButton_Show",function(button,_, parent) StyleTotemOpenButton(button, parent) end)
+
+-- the color we use for border
+local bordercolors = {
+	{.23,.45,.13},   -- Earth
+	{.58,.23,.10},   -- Fire
+	{.19,.48,.60},   -- Water
+	{.42,.18,.74},   -- Air
+}
+
+local function StyleTotemSlotButton(button, index)
+	button:SetTemplate("Default")
+	button.overlayTex:SetTexture(nil)
+	button.background:SetDrawLayer("ARTWORK")
+	button.background:ClearAllPoints()
+	button.background:Point("TOPLEFT",button,"TOPLEFT",2, -2)
+	button.background:Point("BOTTOMRIGHT",button,"BOTTOMRIGHT",-2, 2)
+	if not InCombatLockdown() then button:Size(C["actionbar"].petbuttonsize) end
+	button:SetBackdropBorderColor(unpack(bordercolors[((index-1) % 4) + 1]))
+	button:StyleButton()
+	if C["actionbar"].shapeshiftmouseover == true then
+		button:HookScript("OnEnter", function() MultiCastActionBarFrame:SetAlpha(1) end)
+		button:HookScript("OnLeave", function() MultiCastActionBarFrame:SetAlpha(0) end)
+	end	
+end
+hooksecurefunc("MultiCastSlotButton_Update",function(self, slot) StyleTotemSlotButton(self,tonumber( string.match(self:GetName(),"MultiCastSlotButton(%d)"))) end)
+
+-- Skin the actual totem buttons
+local function StyleTotemActionButton(button, index)
+	local icon = select(1,button:GetRegions())
+	icon:SetTexCoord(.09,.91,.09,.91)
+	icon:SetDrawLayer("ARTWORK")
+	icon:Point("TOPLEFT",button,"TOPLEFT",2,-2)
+	icon:Point("BOTTOMRIGHT",button,"BOTTOMRIGHT",-2,2)
+	button.overlayTex:SetTexture(nil)
+	button.overlayTex:Hide()
+	button:GetNormalTexture():SetAlpha(0)
+	if button.slotButton and not InCombatLockdown() then
+		button:ClearAllPoints()
+		button:SetAllPoints(button.slotButton)
+		button:SetFrameLevel(button.slotButton:GetFrameLevel()+1)
+	end
+	button:SetBackdropBorderColor(unpack(bordercolors[((index-1) % 4) + 1]))
+	button:SetBackdropColor(0,0,0,0)
+	button:StyleButton(true)
+	if C["actionbar"].shapeshiftmouseover == true then
+		button:HookScript("OnEnter", function() MultiCastActionBarFrame:SetAlpha(1) end)
+		button:HookScript("OnLeave", function() MultiCastActionBarFrame:SetAlpha(0) end)
+	end	
+end
+hooksecurefunc("MultiCastActionButton_Update",function(actionButton, actionId, actionIndex, slot) StyleTotemActionButton(actionButton,actionIndex) end)
+
+local function FixBackdrop(button)
+	if button:GetName() and button:GetName():find("MultiCast") and button:GetNormalTexture() then
+		button:GetNormalTexture():SetAlpha(0)
+	end
+end
+hooksecurefunc("ActionButton_ShowGrid", FixBackdrop)
+
+-- Skin the summon and recall buttons
+local function StyleTotemSpellButton(button, index)
+	if not button then return end
+	local icon = select(1,button:GetRegions())
+	icon:SetTexCoord(.09,.91,.09,.91)
+	icon:SetDrawLayer("ARTWORK")
+	icon:Point("TOPLEFT",button,"TOPLEFT",2,-2)
+	icon:Point("BOTTOMRIGHT",button,"BOTTOMRIGHT",-2,2)
+	button:SetTemplate("Default")
+	button:GetNormalTexture():SetTexture(nil)
+	if not InCombatLockdown() then button:Size(C["actionbar"].petbuttonsize) end
+	_G[button:GetName().."Highlight"]:SetTexture(nil)
+	_G[button:GetName().."NormalTexture"]:SetTexture(nil)
+	button:StyleButton()
+	if C["actionbar"].shapeshiftmouseover == true then
+		button:HookScript("OnEnter", function() MultiCastActionBarFrame:SetAlpha(1) end)
+		button:HookScript("OnLeave", function() MultiCastActionBarFrame:SetAlpha(0) end)
+	end	
+end
+hooksecurefunc("MultiCastSummonSpellButton_Update", function(self) StyleTotemSpellButton(self,0) end)
+hooksecurefunc("MultiCastRecallSpellButton_Update", function(self) StyleTotemSpellButton(self,5) end)

@@ -1,6 +1,6 @@
-if not ElvCF["actionbar"].enable == true then return end
-local ElvDB = ElvDB
-local ElvCF = ElvCF
+local E, C, L, DB = unpack(select(2, ...)) -- Import Functions/Constants, Config, Locales
+
+if not C["actionbar"].enable == true then return end
 
 ---------------------------------------------------------------------------
 -- Setup Main Action Bar.
@@ -32,7 +32,7 @@ local Page = {
 
 local function GetBar()
 	local condition = Page["DEFAULT"]
-	local class = ElvDB.myclass
+	local class = E.myclass
 	local page = Page[class]
 	if page then
 		condition = condition.." "..page
@@ -41,30 +41,29 @@ local function GetBar()
 	return condition
 end
 
-function PositionMainBar()
+function E.PositionMainBar()
 	MainMenuBar_UpdateKeyRing()
 	local button
 	for i = 1, 12 do
 		button = _G["ActionButton"..i]
-		button:SetSize(ElvDB.buttonsize, ElvDB.buttonsize)
+		button:SetSize(E.buttonsize, E.buttonsize)
 		button:SetParent(ElvuiMainMenuBar)
 		button:ClearAllPoints()
 		
 		if i == 1 then
-			if ElvCF["actionbar"].swaptopbottombar == true then
-				button:SetPoint("TOPLEFT", ElvuiMainMenuBar, ElvDB.buttonspacing, -ElvDB.buttonspacing)
+			if C["actionbar"].swaptopbottombar == true then
+				button:SetPoint("TOPLEFT", ElvuiMainMenuBar, E.buttonspacing, -E.buttonspacing)
 			else
-				button:SetPoint("BOTTOMLEFT", ElvuiMainMenuBar, ElvDB.buttonspacing, ElvDB.buttonspacing)
+				button:SetPoint("BOTTOMLEFT", ElvuiMainMenuBar, E.buttonspacing, E.buttonspacing)
 			end
 		else
 			local previous = _G["ActionButton"..i-1]
-			button:SetPoint("LEFT", previous, "RIGHT", ElvDB.buttonspacing, 0)
+			button:SetPoint("LEFT", previous, "RIGHT", E.buttonspacing, 0)
 		end
 	end
 end
 
 bar:RegisterEvent("PLAYER_LOGIN")
-bar:RegisterEvent("PLAYER_ENTERING_WORLD")
 bar:RegisterEvent("KNOWN_CURRENCY_TYPES_UPDATE")
 bar:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
 bar:RegisterEvent("BAG_UPDATE")
@@ -75,6 +74,7 @@ bar:SetScript("OnEvent", function(self, event, ...)
 		for i = 1, NUM_ACTIONBAR_BUTTONS do
 			button = _G["ActionButton"..i]
 			self:SetFrameRef("ActionButton"..i, button)
+			button.SetAlpha = E.dummy --weird bug with druids spec change from boomkin to feral
 		end	
 
 		self:Execute([[
@@ -82,7 +82,6 @@ bar:SetScript("OnEvent", function(self, event, ...)
 			for i = 1, 12 do
 				table.insert(buttons, self:GetFrameRef("ActionButton"..i))
 			end
-			firedonce = false
 		]])
 
 		self:SetAttribute("_onstate-page", [[ 
@@ -101,8 +100,6 @@ bar:SetScript("OnEvent", function(self, event, ...)
 		
 		RegisterStateDriver(self, "page", GetBar())
 		RegisterStateDriver(self, "vehicleupdate", "[vehicleui] s2;s1")
-	elseif event == "PLAYER_ENTERING_WORLD" then
-		PositionMainBar()
 	elseif event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		-- attempt to fix blocked glyph change after switching spec.
 		LoadAddOn("Blizzard_GlyphUI")

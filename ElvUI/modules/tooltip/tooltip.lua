@@ -1,10 +1,8 @@
 -- credits : Aezay (TipTac) and Caellian for some parts of code.
-local ElvCF = ElvCF
-local ElvDB = ElvDB
-local ElvL = ElvL
 
-local db = ElvCF["tooltip"]
-if not db.enable then return end
+local E, C, L, DB = unpack(select(2, ...)) -- Import Functions/Constants, Config, Locales
+
+if not C["tooltip"].enable then return end
 
 local ElvuiTooltip = CreateFrame("Frame", nil, UIParent)
 
@@ -17,11 +15,11 @@ TooltipHolder:SetWidth(130)
 TooltipHolder:SetHeight(22)
 TooltipHolder:SetPoint("BOTTOMRIGHT", ElvuiInfoRight, "BOTTOMRIGHT")
 
-ElvDB.CreateMover(TooltipHolder, "TooltipMover", "Tooltip")
+E.CreateMover(TooltipHolder, "TooltipMover", "Tooltip")
 
 local gsub, find, format = string.gsub, string.find, string.format
 
-local Tooltips = {GameTooltip,ItemRefTooltip,ShoppingTooltip1,ShoppingTooltip2,ShoppingTooltip3,WorldMapTooltip}
+local Tooltips = {GameTooltip,ItemRefTooltip,ItemRefShoppingTooltip1,ItemRefShoppingTooltip2,ItemRefShoppingTooltip3,ShoppingTooltip1,ShoppingTooltip2,ShoppingTooltip3,WorldMapTooltip}
 
 local linkTypes = {item = true, enchant = true, spell = true, quest = true, unit = true, talent = true, achievement = true, glyph = true}
 
@@ -34,36 +32,9 @@ local classification = {
  	
 local NeedBackdropBorderRefresh = false
 
---Check if our embed right addon is shown
-local function CheckAddOnShown()
-	if ElvDB.ChatRightShown == true then
-		return true
-	elseif ElvCF["skin"].embedright == "Omen" and IsAddOnLoaded("Omen") and OmenAnchor then
-		if OmenAnchor:IsShown() then
-			return true
-		else
-			return false
-		end
-	elseif ElvCF["skin"].embedright == "Recount" and IsAddOnLoaded("Recount") and Recount_MainWindow then
-		if Recount_MainWindow:IsShown() then
-			return true
-		else
-			return false
-		end
-	elseif  ElvCF["skin"].embedright ==  "Skada" and IsAddOnLoaded("Skada") and SkadaBarWindowSkada then
-		if SkadaBarWindowSkada:IsShown() then
-			return true
-		else
-			return false
-		end
-	else
-		return false
-	end
-end
-
 hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
-	if db.cursor == true then
-		if IsAddOnLoaded("ElvUI_Heal_Layout") and parent ~= UIParent then 
+	if C["tooltip"].cursor == true then
+		if IsAddOnLoaded("Elvui_RaidHeal") and parent ~= UIParent then 
 			self:SetOwner(parent, "ANCHOR_NONE")	
 		else
 			self:SetOwner(parent, "ANCHOR_CURSOR")
@@ -75,32 +46,45 @@ hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
 end)
 
 local function SetRightTooltipPos(self)
+	local inInstance, instanceType = IsInInstance()
 	self:ClearAllPoints()
-	if InCombatLockdown() and db.hidecombat == true and (ElvCF["tooltip"].hidecombatraid == true and inInstance and (instanceType == "raid")) then
+	if InCombatLockdown() and C["tooltip"].hidecombat == true and (C["tooltip"].hidecombatraid == true and inInstance and (instanceType == "raid")) then
 		self:Hide()
-	elseif InCombatLockdown() and db.hidecombat == true and ElvCF["tooltip"].hidecombatraid == false then
+	elseif InCombatLockdown() and C["tooltip"].hidecombat == true and C["tooltip"].hidecombatraid == false then
 		self:Hide()
 	else
-		if ElvCF["others"].enablebag == true and StuffingFrameBags and StuffingFrameBags:IsShown() then
-			self:SetPoint("BOTTOMRIGHT", StuffingFrameBags, "TOPRIGHT", -1, ElvDB.Scale(18))	
-		elseif TooltipMover and ElvDB.Movers["TooltipMover"]["moved"] == true then
-			self:SetPoint("BOTTOMRIGHT", TooltipMover, "TOPRIGHT", -1, ElvDB.Scale(18))
+		if C["others"].enablebag == true and StuffingFrameBags and StuffingFrameBags:IsShown() then
+			self:SetPoint("BOTTOMRIGHT", StuffingFrameBags, "TOPRIGHT", -1, E.Scale(18))	
+		elseif TooltipMover and E.Movers["TooltipMover"]["moved"] == true then
+			local point, _, _, _, _ = TooltipMover:GetPoint()
+			if point == "TOPLEFT" then
+				self:SetPoint("TOPLEFT", TooltipMover, "BOTTOMLEFT", 1, E.Scale(-4))
+			elseif point == "TOPRIGHT" then
+				self:SetPoint("TOPRIGHT", TooltipMover, "BOTTOMRIGHT", -1, E.Scale(-4))
+			elseif point == "BOTTOMLEFT" or point == "LEFT" then
+				self:SetPoint("BOTTOMLEFT", TooltipMover, "TOPLEFT", 1, E.Scale(18))
+			else
+				self:SetPoint("BOTTOMRIGHT", TooltipMover, "TOPRIGHT", -1, E.Scale(18))
+			end
 		else
-			if CheckAddOnShown() == true then
-				if ElvCF["chat"].showbackdrop == true and ElvDB.ChatRightShown == true then
-					self:SetPoint("BOTTOMRIGHT", ChatRBackground2, "TOPRIGHT", -1, ElvDB.Scale(42))	
+			if E.CheckAddOnShown() == true then
+				if C["chat"].showbackdrop == true and E.ChatRightShown == true then
+					if E.RightChat == true then
+						self:SetPoint("BOTTOMRIGHT", ChatRBackground2, "TOPRIGHT", -1, E.Scale(42))	
+					else
+						self:SetPoint("BOTTOMRIGHT", ChatRBackground2, "TOPRIGHT", -1, E.Scale(18))	
+					end
 				else
-					self:SetPoint("BOTTOMRIGHT", ChatRBackground2, "TOPRIGHT", -1, ElvDB.Scale(18))		
+					self:SetPoint("BOTTOMRIGHT", ChatRBackground2, "TOPRIGHT", -1, E.Scale(18))		
 				end	
 			else
-				self:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -15, ElvDB.Scale(42))	
+				self:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", E.Scale(-3), E.Scale(42))	
 			end
 		end
 	end
 end
 
 GameTooltip:HookScript("OnUpdate",function(self, ...)
-	local inInstance, instanceType = IsInInstance()
 	if self:GetAnchorType() == "ANCHOR_CURSOR" then
 		local x, y = GetCursorPosition();
 		local effScale = self:GetEffectiveScale();
@@ -108,12 +92,12 @@ GameTooltip:HookScript("OnUpdate",function(self, ...)
 		self:SetPoint("BOTTOMLEFT","UIParent","BOTTOMLEFT",(x / effScale + (15)),(y / effScale + (7)))		
 	end
 	
-	if self:GetAnchorType() == "ANCHOR_CURSOR" and NeedBackdropBorderRefresh == true and db.cursor ~= true then
+	if self:GetAnchorType() == "ANCHOR_CURSOR" and NeedBackdropBorderRefresh == true and C["tooltip"].cursor ~= true then
 		-- h4x for world object tooltip border showing last border color 
 		-- or showing background sometime ~blue :x
 		NeedBackdropBorderRefresh = false
-		self:SetBackdropColor(unpack(ElvCF.media.backdropfadecolor))
-		self:SetBackdropBorderColor(unpack(ElvCF.media.bordercolor))
+		self:SetBackdropColor(unpack(C.media.backdropfadecolor))
+		self:SetBackdropBorderColor(unpack(C.media.bordercolor))
 	elseif self:GetAnchorType() == "ANCHOR_NONE" then
 		SetRightTooltipPos(self)
 	end
@@ -158,16 +142,16 @@ GameTooltipStatusBar:SetScript("OnValueChanged", function(self, value)
 
 	if not self.text then
 		self.text = self:CreateFontString(nil, "OVERLAY")
-		self.text:SetPoint("CENTER", GameTooltipStatusBar, 0, ElvDB.Scale(-3))
-		self.text:SetFont(ElvCF["media"].font, ElvCF["general"].fontscale, "THINOUTLINE")
+		self.text:SetPoint("CENTER", GameTooltipStatusBar, 0, E.Scale(-3))
+		self.text:SetFont(C["media"].font, C["general"].fontscale, "THINOUTLINE")
 		self.text:Show()
 		if unit then
 			min, max = UnitHealth(unit), UnitHealthMax(unit)
-			local hp = ElvDB.ShortValue(min).." / "..ElvDB.ShortValue(max)
+			local hp = E.ShortValue(min).." / "..E.ShortValue(max)
 			if UnitIsGhost(unit) then
-				self.text:SetText(ElvL.unitframes_ouf_ghost)
+				self.text:SetText(L.unitframes_ouf_ghost)
 			elseif min == 0 or UnitIsDead(unit) or UnitIsGhost(unit) then
-				self.text:SetText(ElvL.unitframes_ouf_dead)
+				self.text:SetText(L.unitframes_ouf_dead)
 			else
 				self.text:SetText(hp)
 			end
@@ -176,9 +160,9 @@ GameTooltipStatusBar:SetScript("OnValueChanged", function(self, value)
 		if unit then
 			min, max = UnitHealth(unit), UnitHealthMax(unit)
 			self.text:Show()
-			local hp = ElvDB.ShortValue(min).." / "..ElvDB.ShortValue(max)
+			local hp = E.ShortValue(min).." / "..E.ShortValue(max)
 			if min == 0 or min == 1 then
-				self.text:SetText(ElvL.unitframes_ouf_dead)
+				self.text:SetText(L.unitframes_ouf_dead)
 			else
 				self.text:SetText(hp)
 			end
@@ -190,18 +174,18 @@ end)
 
 local healthBar = GameTooltipStatusBar
 healthBar:ClearAllPoints()
-healthBar:SetHeight(ElvDB.Scale(5))
-healthBar:SetPoint("TOPLEFT", healthBar:GetParent(), "BOTTOMLEFT", ElvDB.Scale(2), ElvDB.Scale(-5))
-healthBar:SetPoint("TOPRIGHT", healthBar:GetParent(), "BOTTOMRIGHT", -ElvDB.Scale(2), ElvDB.Scale(-5))
-healthBar:SetStatusBarTexture(ElvCF.media.normTex)
+healthBar:SetHeight(E.Scale(5))
+healthBar:SetPoint("TOPLEFT", healthBar:GetParent(), "BOTTOMLEFT", E.Scale(2), E.Scale(-5))
+healthBar:SetPoint("TOPRIGHT", healthBar:GetParent(), "BOTTOMRIGHT", -E.Scale(2), E.Scale(-5))
+healthBar:SetStatusBarTexture(C["media"].normTex)
 
 
 local healthBarBG = CreateFrame("Frame", "StatusBarBG", healthBar)
 healthBarBG:SetFrameLevel(healthBar:GetFrameLevel() - 1)
-healthBarBG:SetPoint("TOPLEFT", -ElvDB.Scale(2), ElvDB.Scale(2))
-healthBarBG:SetPoint("BOTTOMRIGHT", ElvDB.Scale(2), -ElvDB.Scale(2))
-ElvDB.SetTemplate(healthBarBG)
-healthBarBG:SetBackdropColor(unpack(ElvCF.media.backdropfadecolor))
+healthBarBG:SetPoint("TOPLEFT", -E.Scale(2), E.Scale(2))
+healthBarBG:SetPoint("BOTTOMRIGHT", E.Scale(2), -E.Scale(2))
+healthBarBG:SetTemplate("Default")
+healthBarBG:SetBackdropColor(unpack(C.media.backdropfadecolor))
 
 -- Add "Targeted By" line
 local targetedList = {}
@@ -228,10 +212,33 @@ local function AddTargetedBy()
 			GameTooltip:AddLine(" ",nil,nil,nil,1);
 			local line = _G["GameTooltipTextLeft"..GameTooltip:NumLines()];
 			if not line then return end
-			line:SetFormattedText(ElvL.tooltip_whotarget.." (|cffffffff%d|r): %s",(#targetedList + 1) / 3,table.concat(targetedList));
+			line:SetFormattedText(L.tooltip_whotarget.." (|cffffffff%d|r): %s",(#targetedList + 1) / 3,table.concat(targetedList));
 			wipe(targetedList);
 		end
 	end
+end
+
+local SlotName = {
+	"Head","Neck","Shoulder","Back","Chest","Wrist",
+	"Hands","Waist","Legs","Feet","Finger0","Finger1",
+	"Trinket0","Trinket1","MainHand","SecondaryHand","Ranged","Ammo"
+}
+
+local function GetItemLvL(unit)
+	local total, item = 0, 0
+
+	for i in pairs(SlotName) do
+		local slot = GetInventoryItemLink(unit, GetInventorySlotInfo(SlotName[i].."Slot"))
+		if (slot ~= nil) then
+			item = item + 1
+			total = total + select(4, GetItemInfo(slot))
+		end
+	end
+	if (total < 1 or item < 1) then
+		return 0
+	end
+	
+	return floor(total / item);
 end
 
 GameTooltip:HookScript("OnTooltipSetUnit", function(self)
@@ -248,7 +255,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 	if not unit then self:Hide() return end
 	
 	-- for hiding tooltip on unitframes
-	if (self:GetOwner() ~= UIParent and db.hideuf) then self:Hide() return end
+	if (self:GetOwner() ~= UIParent and C["tooltip"].hideuf) then self:Hide() return end
 
 	if self:GetOwner() ~= UIParent and unit then
 		SetRightTooltipPos(self)
@@ -286,7 +293,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 		local offset = 2
 		if guildName then
 			if UnitIsInMyGuild(unit) then
-				_G["GameTooltipTextLeft2"]:SetText("<"..ElvDB.ValColor..guildName.."|r> ["..ElvDB.ValColor..guildRankName.."|r]")
+				_G["GameTooltipTextLeft2"]:SetText("<"..E.ValColor..guildName.."|r> ["..E.ValColor..guildRankName.."|r]")
 			else
 				_G["GameTooltipTextLeft2"]:SetText("<|cff00ff10"..guildName.."|r> [|cff00ff10"..guildRankName.."|r]")
 			end
@@ -294,6 +301,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 		end
 
 		for i= offset, lines do
+			
 			if _G["GameTooltipTextLeft"..i] and _G["GameTooltipTextLeft"..i]:GetText() and (_G["GameTooltipTextLeft"..i]:GetText():find("^"..LEVEL)) then
 				_G["GameTooltipTextLeft"..i]:SetFormattedText("|cff%02x%02x%02x%s|r %s %s%s", r*255, g*255, b*255, level > 0 and level or "??", race, color, class.."|r")
 				break
@@ -302,7 +310,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 	else
 		for i = 2, lines do			
 			if _G["GameTooltipTextLeft"..i] and _G["GameTooltipTextLeft"..i]:GetText() and ((_G["GameTooltipTextLeft"..i]:GetText():find("^"..LEVEL)) or (crtype and _G["GameTooltipTextLeft"..i]:GetText():find("^"..crtype))) then
-				_G["GameTooltipTextLeft"..i]:SetFormattedText("|cff%02x%02x%02x%s|r%s %s", r*255, g*255, b*255, classif ~= "worldboss" and level > 0 and level or "??", classification[classif] or "", crtype or "")
+				_G["GameTooltipTextLeft"..i]:SetFormattedText("|cff%02x%02x%02x%s|r%s %s", r*255, g*255, b*255, classif ~= "worldboss" and level > 0 and level or "?? ", classification[classif] or "", crtype or "")
 				break
 			end
 		end
@@ -316,15 +324,31 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 			break
 		end
 	end
+	
+	if IsShiftKeyDown() and (unit and CanInspect(unit)) and C["tooltip"].itemid == true then
+		local isInspectOpen = (InspectFrame and InspectFrame:IsShown()) or (Examiner and Examiner:IsShown())
+		if ((unit) and (CanInspect(unit)) and (not isInspectOpen)) then
+			NotifyInspect(unit)
+			
+			local ilvl = GetItemLvL(unit)
+			
+			ClearInspectPlayer(unit)
+			
+			if ilvl > 1 then
+				GameTooltip:AddDoubleLine(STAT_AVERAGE_ITEM_LEVEL..":", "|cffFFFFFF"..ilvl.."|r")
+				GameTooltip:Show()
+			end
+		end
+	end	
 
 	-- ToT line
 	if UnitExists(unit.."target") and unit~="player" then
-		local hex, r, g, b = GetColor(unit.."target")
-		if not r and not g and not b then r, g, b = 1, 1, 1 end
-		GameTooltip:AddLine(UnitName(unit.."target"), r, g, b)
+		local hex, _, _, _ = GetColor(unit.."target")
+		if not hex then hex = "|cffFFFFFF" end
+		GameTooltip:AddDoubleLine(TARGET..":", hex..UnitName(unit.."target").."|r")
 	end
 	
-	if ElvCF["tooltip"].whotargetting == true then token = unit AddTargetedBy() end
+	if C["tooltip"].whotargetting == true then token = unit AddTargetedBy() end
 		
 	
 	-- Sometimes this wasn't getting reset, the fact a cleanup isn't performed at this point, now that it was moved to "OnTooltipCleared" is very bad, so this is a fix
@@ -348,9 +372,9 @@ local Colorize = function(self)
 		self:SetBackdropBorderColor(r, g, b)
 		healthBarBG:SetBackdropBorderColor(r, g, b)
 		healthBar:SetStatusBarColor(r, g, b)
-	elseif player and not ElvCF["tooltip"].colorreaction == true then
+	elseif player and not C["tooltip"].colorreaction == true then
 		local class = select(2, UnitClass(unit))
-		local c = ElvDB.colors.class[class]
+		local c = E.colors.class[class]
 		if c then
 			r, g, b = c[1], c[2], c[3]
 		end
@@ -358,7 +382,7 @@ local Colorize = function(self)
 		healthBarBG:SetBackdropBorderColor(r, g, b)
 		healthBar:SetStatusBarColor(r, g, b)
 	elseif reaction then
-		local c = ElvDB.colors.reaction[reaction]
+		local c = E.colors.reaction[reaction]
 		r, g, b = c[1], c[2], c[3]
 		self:SetBackdropBorderColor(r, g, b)
 		healthBarBG:SetBackdropBorderColor(r, g, b)
@@ -370,9 +394,9 @@ local Colorize = function(self)
 			local r, g, b = GetItemQualityColor(quality)
 			self:SetBackdropBorderColor(r, g, b)
 		else
-			self:SetBackdropBorderColor(unpack(ElvCF["media"].bordercolor))
-			healthBarBG:SetBackdropBorderColor(unpack(ElvCF["media"].bordercolor))
-			healthBar:SetStatusBarColor(unpack(ElvCF["media"].bordercolor))
+			self:SetBackdropBorderColor(unpack(C["media"].bordercolor))
+			healthBarBG:SetBackdropBorderColor(unpack(C["media"].bordercolor))
+			healthBar:SetStatusBarColor(unpack(C["media"].bordercolor))
 		end
 	end	
 	-- need this
@@ -380,39 +404,35 @@ local Colorize = function(self)
 end
 
 local SetStyle = function(self)
-	ElvDB.SetNormTexTemplate(self)
-	self:SetBackdropColor(unpack(ElvCF.media.backdropfadecolor))
+	self:SetTemplate("Default", true)
 	Colorize(self)
+	self:SetClampedToScreen(true)
 end
 
 ElvuiTooltip:RegisterEvent("PLAYER_ENTERING_WORLD")
-ElvuiTooltip:SetScript("OnEvent", function(self)
+ElvuiTooltip:SetScript("OnEvent", function(self, event, addon)
 	for _, tt in pairs(Tooltips) do
 		tt:HookScript("OnShow", SetStyle)
 	end
 	
-	ElvDB.SetTemplate(FriendsTooltip)
-	FriendsTooltip:SetBackdropColor(unpack(ElvCF.media.backdropfadecolor))
-	ElvDB.SetTemplate(BNToastFrame)
-	BNToastFrame:SetBackdropColor(unpack(ElvCF.media.backdropfadecolor))
-	ElvDB.SetTemplate(DropDownList1MenuBackdrop)
-	DropDownList1MenuBackdrop:SetBackdropColor(unpack(ElvCF.media.backdropfadecolor))
-	ElvDB.SetTemplate(DropDownList2MenuBackdrop)
-	DropDownList2MenuBackdrop:SetBackdropColor(unpack(ElvCF.media.backdropfadecolor))
-	ElvDB.SetTemplate(DropDownList1Backdrop)
-	DropDownList1Backdrop:SetBackdropColor(unpack(ElvCF.media.backdropfadecolor))
-	ElvDB.SetTemplate(DropDownList2Backdrop)
+	ItemRefTooltip:HookScript("OnTooltipSetItem", SetStyle)
+	FriendsTooltip:SetTemplate("Default", true)
+	BNToastFrame:SetTemplate("Default", true)
+	DropDownList1MenuBackdrop:SetTemplate("Default", true)
+	DropDownList2MenuBackdrop:SetTemplate("Default", true)
+	DropDownList1Backdrop:SetTemplate("Default", true)
+	DropDownList2Backdrop:SetTemplate("Default", true)
 	
 	BNToastFrame:HookScript("OnShow", function(self)
 		self:ClearAllPoints()
-		self:SetPoint("TOPLEFT", UIParent, "TOPLEFT", ElvDB.Scale(5), ElvDB.Scale(-5))
+		self:SetPoint("TOPLEFT", UIParent, "TOPLEFT", E.Scale(5), E.Scale(-5))
 	end)
 		
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	self:SetScript("OnEvent", nil)
 	
 	-- Hide tooltips in combat for actions, pet actions and shapeshift
-	if db.hidebuttons == true then
+	if C["tooltip"].hidebuttons == true then
 		local CombatHideActionButtonsTooltip = function(self)
 			if not IsShiftKeyDown() then
 				self:Hide()
@@ -423,35 +443,137 @@ ElvuiTooltip:SetScript("OnEvent", function(self)
 		hooksecurefunc(GameTooltip, "SetPetAction", CombatHideActionButtonsTooltip)
 		hooksecurefunc(GameTooltip, "SetShapeshift", CombatHideActionButtonsTooltip)
 	end
+	
+	LoadAddOn("Blizzard_DebugTools")
+	FrameStackTooltip:HookScript("OnShow", function(self)
+		local noscalemult = E.mult * C["general"].uiscale
+		self:SetBackdrop({
+		  bgFile = C["media"].blank, 
+		  edgeFile = C["media"].blank, 
+		  tile = false, tileSize = 0, edgeSize = noscalemult, 
+		  insets = { left = -noscalemult, right = -noscalemult, top = -noscalemult, bottom = -noscalemult}
+		})
+		self:SetBackdropColor(unpack(C.media.backdropfadecolor))
+		self:SetBackdropBorderColor(unpack(C.media.bordercolor))
+	end)
+	
+	EventTraceTooltip:HookScript("OnShow", function(self)
+		self:SetTemplate("Transparent")
+	end)
 end)
 
-
-ElvuiTooltip:SetScript("OnUpdate", function(self, elapsed)
-	if(self.elapsed and self.elapsed > 0.1) then
-		if FrameStackTooltip then
-			local noscalemult = ElvDB.mult * ElvCF["general"].uiscale
-			local r, g, b = RAID_CLASS_COLORS[ElvDB.myclass].r, RAID_CLASS_COLORS[ElvDB.myclass].g, RAID_CLASS_COLORS[ElvDB.myclass].b
-			FrameStackTooltip:SetBackdrop({
-			  bgFile = ElvCF["media"].blank, 
-			  edgeFile = ElvCF["media"].blank, 
-			  tile = false, tileSize = 0, edgeSize = noscalemult, 
-			  insets = { left = -noscalemult, right = -noscalemult, top = -noscalemult, bottom = -noscalemult}
-			})
-			FrameStackTooltip:SetBackdropColor(unpack(ElvCF.media.backdropfadecolor))
-			if ElvCF["general"].classcolortheme == true then
-				FrameStackTooltip:SetBackdropBorderColor(r, g, b)
-			else
-				FrameStackTooltip:SetBackdropBorderColor(unpack(ElvCF["media"].bordercolor))
-			end	
-			FrameStackTooltip.SetBackdropColor = ElvDB.dummy
-			FrameStackTooltip.SetBackdropBorderColor = ElvDB.dummy
-			self.elapsed = nil
-			self:SetScript("OnUpdate", nil)
-		end
-		self.elapsed = 0
-	else
-		self.elapsed = (self.elapsed or 0) + elapsed
+--Fix compare tooltips
+hooksecurefunc("GameTooltip_ShowCompareItem", function(self, shift)
+	if ( not self ) then
+		self = GameTooltip;
 	end
+	local item, link = self:GetItem();
+	if ( not link ) then
+		return;
+	end
+	
+	local shoppingTooltip1, shoppingTooltip2, shoppingTooltip3 = unpack(self.shoppingTooltips);
+
+	local item1 = nil;
+	local item2 = nil;
+	local item3 = nil;
+	local side = "left";
+	if ( shoppingTooltip1:SetHyperlinkCompareItem(link, 1, shift, self) ) then
+		item1 = true;
+	end
+	if ( shoppingTooltip2:SetHyperlinkCompareItem(link, 2, shift, self) ) then
+		item2 = true;
+	end
+	if ( shoppingTooltip3:SetHyperlinkCompareItem(link, 3, shift, self) ) then
+		item3 = true;
+	end
+
+	-- find correct side
+	local rightDist = 0;
+	local leftPos = self:GetLeft();
+	local rightPos = self:GetRight();
+	if ( not rightPos ) then
+		rightPos = 0;
+	end
+	if ( not leftPos ) then
+		leftPos = 0;
+	end
+
+	rightDist = GetScreenWidth() - rightPos;
+
+	if (leftPos and (rightDist < leftPos)) then
+		side = "left";
+	else
+		side = "right";
+	end
+
+	-- see if we should slide the tooltip
+	if ( self:GetAnchorType() and self:GetAnchorType() ~= "ANCHOR_PRESERVE" ) then
+		local totalWidth = 0;
+		if ( item1  ) then
+			totalWidth = totalWidth + shoppingTooltip1:GetWidth();
+		end
+		if ( item2  ) then
+			totalWidth = totalWidth + shoppingTooltip2:GetWidth();
+		end
+		if ( item3  ) then
+			totalWidth = totalWidth + shoppingTooltip3:GetWidth();
+		end
+
+		if ( (side == "left") and (totalWidth > leftPos) ) then
+			self:SetAnchorType(self:GetAnchorType(), (totalWidth - leftPos), 0);
+		elseif ( (side == "right") and (rightPos + totalWidth) >  GetScreenWidth() ) then
+			self:SetAnchorType(self:GetAnchorType(), -((rightPos + totalWidth) - GetScreenWidth()), 0);
+		end
+	end
+
+	-- anchor the compare tooltips
+	if ( item3 ) then
+		shoppingTooltip3:SetOwner(self, "ANCHOR_NONE");
+		shoppingTooltip3:ClearAllPoints();
+		if ( side and side == "left" ) then
+			shoppingTooltip3:Point("TOPRIGHT", self, "TOPLEFT", -2, -10);
+		else
+			shoppingTooltip3:Point("TOPLEFT", self, "TOPRIGHT", 2, -10);
+		end
+		shoppingTooltip3:SetHyperlinkCompareItem(link, 3, shift, self);
+		shoppingTooltip3:Show();
+	end
+	
+	if ( item1 ) then
+		if( item3 ) then
+			shoppingTooltip1:SetOwner(shoppingTooltip3, "ANCHOR_NONE");
+		else
+			shoppingTooltip1:SetOwner(self, "ANCHOR_NONE");
+		end
+		shoppingTooltip1:ClearAllPoints();
+		if ( side and side == "left" ) then
+			if( item3 ) then
+				shoppingTooltip1:Point("TOPRIGHT", shoppingTooltip3, "TOPLEFT", -2, 0);
+			else
+				shoppingTooltip1:Point("TOPRIGHT", self, "TOPLEFT", -2, -10);
+			end
+		else
+			if( item3 ) then
+				shoppingTooltip1:Point("TOPLEFT", shoppingTooltip3, "TOPRIGHT", 2, 0);
+			else
+				shoppingTooltip1:Point("TOPLEFT", self, "TOPRIGHT", 2, -10);
+			end
+		end
+		shoppingTooltip1:SetHyperlinkCompareItem(link, 1, shift, self);
+		shoppingTooltip1:Show();
+
+		if ( item2 ) then
+			shoppingTooltip2:SetOwner(shoppingTooltip1, "ANCHOR_NONE");
+			shoppingTooltip2:ClearAllPoints();
+			if ( side and side == "left" ) then
+				shoppingTooltip2:Point("TOPRIGHT", shoppingTooltip1, "TOPLEFT", -2, 0);
+			else
+				shoppingTooltip2:Point("TOPLEFT", shoppingTooltip1, "TOPRIGHT", 2, 0);
+			end
+			shoppingTooltip2:SetHyperlinkCompareItem(link, 2, shift, self);
+			shoppingTooltip2:Show();
+		end
+	end
+
 end)
-
-

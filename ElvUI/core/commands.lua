@@ -1,13 +1,15 @@
+local E, C, L, DB = unpack(select(2, ...)) -- Import Functions/Constants, Config, Locales
+
 -- enable or disable an addon via command
-SlashCmdList.DISABLE_ADDON = function(s) DisableAddOn(s) ReloadUI() end
+SlashCmdList.DISABLE_ADDON = function(addon) local _, _, _, _, _, reason, _ = GetAddOnInfo(addon) if reason ~= "MISSING" then DisableAddOn(addon) ReloadUI() else print("|cffff0000Error, Addon '"..addon.."' not found.|r") end end
 SLASH_DISABLE_ADDON1 = "/disable"
-SlashCmdList.ENABLE_ADDON = function(s) EnableAddOn(s) LoadAddOn(s) ReloadUI() end
+SlashCmdList.ENABLE_ADDON = function(addon) local _, _, _, _, _, reason, _ = GetAddOnInfo(addon) if reason ~= "MISSING" then EnableAddOn(addon) LoadAddOn(addon) ReloadUI() else print("|cffff0000Error, Addon '"..addon.."' not found.|r") end end
 SLASH_ENABLE_ADDON1 = "/enable"
 
 -- switch to heal layout via a command
 local function HEAL()
-	DisableAddOn("ElvUI_Dps_Layout")
-	EnableAddOn("ElvUI_Heal_Layout")
+	DisableAddOn("Elvui_RaidDPS")
+	EnableAddOn("Elvui_RaidHeal")
 	ReloadUI()
 end
 SLASH_HEAL1 = "/heal"
@@ -15,8 +17,8 @@ SlashCmdList["HEAL"] = HEAL
 
 -- switch to dps layout via a command
 local function DPS()
-	DisableAddOn("ElvUI_Heal_Layout");
-	EnableAddOn("ElvUI_Dps_Layout")
+	DisableAddOn("Elvui_RaidHeal");
+	EnableAddOn("Elvui_RaidDPS")
 	ReloadUI()
 end
 SLASH_DPS1 = "/dps"
@@ -39,11 +41,11 @@ SLASH_LUAERROR1 = '/luaerror'
 function DisbandRaidGroup()
 		if InCombatLockdown() then return end -- Prevent user error in combat
 		
-		SendChatMessage(ElvL.disband, "RAID" or "PARTY")
+		SendChatMessage(L.disband, "RAID" or "PARTY")
 		if UnitInRaid("player") then
 			for i = 1, GetNumRaidMembers() do
 				local name, _, _, _, _, _, _, online = GetRaidRosterInfo(i)
-				if online and name ~= ElvDB.myname then
+				if online and name ~= E.myname then
 					UninviteUnit(name)
 				end
 			end
@@ -86,9 +88,9 @@ function SlashCmdList.FARMMODE(msg, editbox)
 	ElvuiMinimapStatsLeft:SetWidth((Minimap:GetWidth() / 2) - 1)
 	ElvuiMinimapStatsRight:SetWidth((Minimap:GetWidth() / 2) - 1)
 	
-	if ElvDB.Movers["AurasMover"]["moved"] ~= true then
+	if E.Movers["AurasMover"]["moved"] ~= true then
 		AurasMover:ClearAllPoints()
-		AurasMover:SetPoint("TOPRIGHT", Minimap, "TOPLEFT", ElvDB.Scale(-8), ElvDB.Scale(2))
+		AurasMover:SetPoint("TOPRIGHT", Minimap, "TOPLEFT", E.Scale(-8), E.Scale(2))
 	end	
 end
 SLASH_FARMMODE1 = '/farmmode'
@@ -100,7 +102,7 @@ SlashCmdList["GM"] = function() ToggleHelpFrame() end
 
 -- Print list of commands to chat
 SLASH_UIHELP1 = "/UIHelp"
-SlashCmdList["UIHELP"] = ElvDB.UIHelp
+SlashCmdList["UIHELP"] = E.UIHelp
 
 --ReInstall UI
 SLASH_CONFIGURE1 = "/installui"
@@ -108,8 +110,29 @@ SlashCmdList.CONFIGURE = function() StaticPopup_Show("INSTALL_UI") end
 
 -- Command to Toggle showing the UI Movers
 SLASH_MOVEUI1 = '/moveui'
-SlashCmdList.MOVEUI = function() ElvDB.ToggleMovers() end
+SlashCmdList.MOVEUI = function()		
+	local func = ElvuiInfoLeftRButton:GetScript("OnMouseDown")
+	
+	if func then
+		func()
+	end
+end
 
 -- Command to reset the movers
 SLASH_RESETMOVERS1 = '/resetui'
-SlashCmdList.RESETMOVERS = function(arg) ElvDB.ResetMovers(arg) end
+SlashCmdList.RESETMOVERS = function(arg) 
+	if arg ~= "uf" then
+		E.ResetMovers(arg) 
+	end
+	
+	if (ElvUI or oUF) and (arg == nil or arg == "" or arg == "uf") then 
+		StaticPopup_Show("RESET_UF") 
+	end 
+end
+
+--Command to fix the Combat Log if it breaks
+local function CLFIX()
+	CombatLogClearEntries()
+end
+SLASH_CLFIX1 = "/clfix"
+SlashCmdList["CLFIX"] = CLFIX

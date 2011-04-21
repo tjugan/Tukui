@@ -1,4 +1,6 @@
-if not ElvCF["actionbar"].enable == true then return end
+local E, C, L, DB = unpack(select(2, ...)) -- Import Functions/Constants, Config, Locales
+
+if not C["actionbar"].enable == true then return end
 
 ---------------------------------------------------------------------------
 -- Hide all Blizzard stuff that we don't need
@@ -6,10 +8,8 @@ if not ElvCF["actionbar"].enable == true then return end
 
 do
 	MainMenuBar:SetScale(0.00001)
-	MainMenuBar:SetAlpha(0)
 	MainMenuBar:EnableMouse(false)
 	VehicleMenuBar:SetScale(0.00001)
-	VehicleMenuBar:SetAlpha(0)
 	PetActionBarFrame:EnableMouse(false)
 	ShapeshiftBarFrame:EnableMouse(false)
 	
@@ -22,7 +22,10 @@ do
 		if element:GetObjectType() == "Frame" then
 			element:UnregisterAllEvents()
 		end
-		element:Hide()
+		
+		if element ~= MainMenuBar then
+			element:Hide()
+		end
 		element:SetAlpha(0)
 	end
 	elements = nil
@@ -55,37 +58,48 @@ end
 
 function RightBarMouseOver(alpha)
 	ElvuiActionBarBackgroundRight:SetAlpha(alpha)
-	if ElvCF["actionbar"].bottompetbar ~= true then
+	if C["actionbar"].bottompetbar ~= true then
 		ElvuiPetActionBarBackground:SetAlpha(alpha)
 	end
-	if (ElvCF["actionbar"].rightbars ~= 0 and ElvCF["actionbar"].splitbar ~= true) then
-		if MultiBarLeft:IsShown() then
+	
+	if E.lowversion ~= true then
+		if E["actionbar"].rightbars > 0 and MultiBarLeft:IsShown() then
 			for i=1, 12 do
 				local pb = _G["MultiBarLeftButton"..i]
 				pb:SetAlpha(alpha)
-			end
-			--MultiBarLeft:SetAlpha(alpha)
+			end	
 		end
-	end
-	if ElvCF["actionbar"].rightbars > 1 then
-		if MultiBarBottomRight:IsShown() then
+		
+		if E["actionbar"].rightbars > 1 and MultiBarBottomRight:IsShown() then
 			for i=1, 12 do
 				local pb = _G["MultiBarBottomRightButton"..i]
 				pb:SetAlpha(alpha)
 			end
-			--MultiBarBottomRight:SetAlpha(alpha)
 		end
-	end
-	if ElvCF["actionbar"].bottomrows ~= 3 then
-		if MultiBarRight:IsShown() then
+
+		if E["actionbar"].rightbars > 2 and MultiBarRight:IsShown() then
+			for i=1, 12 do
+				local pb = _G["MultiBarRightButton"..i]
+				pb:SetAlpha(alpha)
+			end		
+		end
+	else
+		if E["actionbar"].rightbars > 0 and MultiBarRight:IsShown() then
 			for i=1, 12 do
 				local pb = _G["MultiBarRightButton"..i]
 				pb:SetAlpha(alpha)
 			end
-			--MultiBarRight:SetAlpha(alpha)
+		end
+		
+		if E["actionbar"].rightbars > 1 and MultiBarBottomRight:IsShown() then
+			for i=1, 12 do
+				local pb = _G["MultiBarBottomRightButton"..i]
+				pb:SetAlpha(alpha)
+			end
 		end
 	end
-	if ElvuiPetBar:IsShown() and ElvCF["actionbar"].bottompetbar ~= true then
+
+	if ElvuiPetBar:IsShown() and C["actionbar"].bottompetbar ~= true then
 		for i=1, 10 do
 			local pb = _G["PetActionButton"..i]
 			pb:SetAlpha(alpha)
@@ -102,7 +116,7 @@ function ShapeShiftMouseOver(alpha)
 end
 
 do
-	if ElvCF["actionbar"].rightbarmouseover == true then
+	if C["actionbar"].rightbarmouseover == true then
 		ElvuiActionBarBackgroundRight:SetAlpha(0)
 		ElvuiActionBarBackgroundRight:SetScript("OnEnter", function() RightBarMouseOver(1) end)
 		ElvuiActionBarBackgroundRight:SetScript("OnLeave", function() RightBarMouseOver(0) end)
