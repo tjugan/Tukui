@@ -27,6 +27,10 @@ local displayFloatString = string.join("", "%s", E.ValColor, "%.2f%%|r")
 local function CalculateMitigation(level, effective)
 	local mitigation
 	
+	if not effective then
+		_, effective, _, _, _ = UnitArmor("player")
+	end
+	
 	if level < 60 then
 		mitigation = (effective/(effective + 400 + (85 * level)));
 	else
@@ -128,3 +132,4 @@ end
 Stat:SetScript("OnEnter", function() ShowTooltip(Stat) end)
 Stat:SetScript("OnLeave", function() GameTooltip:Hide() end)
 Stat:SetScript("OnUpdate", Update)
+Update(Stat, 6)

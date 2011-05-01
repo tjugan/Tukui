@@ -15,7 +15,7 @@ local freebg = {}
 -- styling functions
 local createbg = function()
 	local bg = CreateFrame("Frame")
-	bg:SetTemplate("Default")
+	bg:SetTemplate("Transparent")
 	return bg
 end
 
@@ -176,14 +176,14 @@ f:SetScript("OnEvent", function(self, event, addon)
 		
 		f:UnregisterEvent("ADDON_LOADED")
 	elseif event == "PLAYER_ENTERING_WORLD" then
-		SlashCmdList["BigWigs"]()
+		LoadAddOn("BigWigs_Core")
+		LoadAddOn("BigWigs_Plugins")
+		LoadAddOn("BigWigs_Options")
+		BigWigs:Enable()
 		BigWigsOptions:SendMessage("BigWigs_StartConfigureMode", true)
 		BigWigsOptions:SendMessage("BigWigs_StopConfigureMode")
-		InterfaceOptionsFrameTab1:Click()
-		InterfaceOptionsFrameCategoriesButton1:Click()
-		HideUIPanel(InterfaceOptionsFrame)
 		PositionBWAnchor()
-		
+
 		if Skada and Skada:GetWindows() and Skada:GetWindows()[1] and C["skin"].embedright == "Skada" then
 			Skada:GetWindows()[1].bargroup:HookScript("OnShow", function() PositionBWAnchor() end)
 			Skada:GetWindows()[1].bargroup:HookScript("OnHide", function() PositionBWAnchor() end)
@@ -193,7 +193,7 @@ f:SetScript("OnEvent", function(self, event, addon)
 		elseif OmenAnchor and C["skin"].embedright == "Omen" then
 			OmenAnchor:HookScript("OnShow", function() PositionBWAnchor() end)
 			OmenAnchor:HookScript("OnHide", function() PositionBWAnchor() end)		
-		end	
+		end
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		PositionBWAnchor()
 	elseif event == "PLAYER_REGEN_ENABLED" then
@@ -207,15 +207,11 @@ if C["skin"].hookbwright == true then
 	f:RegisterEvent("PLAYER_REGEN_DISABLED")
 	f:RegisterEvent("PLAYER_ENTERING_WORLD")
 
-	ChatRBackground.anim_o:HookScript("OnFinished", function(self)
+	ChatRBackground:HookScript("OnHide", function(self)
 		PositionBWAnchor()
 	end)
 	
-	ChatRBackground.anim:HookScript("OnPlay", function(self)
-		PositionBWAnchor()
-	end)	
-	
-	ChatRBackground.anim:HookScript("OnFinished", function(self)
+	ChatRBackground:HookScript("OnShow", function(self)
 		PositionBWAnchor()
 	end)		
 end

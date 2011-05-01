@@ -21,7 +21,7 @@ local movers = {
 
 local function SkinKLEBar(bar)
 	-- The main bar
-	bar:SetTemplate("Default")
+	bar:SetTemplate("Transparent")
 	bar.bg:SetTexture(nil)
 	bar.border:Kill()
 	bar.statusbar:SetStatusBarTexture(C["media"].normTex)
@@ -61,12 +61,12 @@ KLE.NotifyBackgroundColorChanged = E.dummy
 KLE.CreateWindow_ = KLE.CreateWindow
 KLE.CreateWindow = function(self, name, width, height)
 	local win = self:CreateWindow_(name, width, height)
-	win:SetTemplate("Default")
+	win:SetTemplate("Transparent")
 	return win
 end
 
 -- Skin the pane
-KLE.Pane:SetTemplate("Default")
+KLE.Pane:SetTemplate("Transparent")
 
 -- Hook Health frames (Skin & spacing)
 KLE.LayoutHealthWatchers_ = KLE.LayoutHealthWatchers
@@ -75,7 +75,7 @@ KLE.LayoutHealthWatchers = function(self)
 	self:LayoutHealthWatchers_()
 	for i,hw in ipairs(self.HW) do
 		if hw:IsShown() then
-			hw:SetTemplate("Default")
+			hw:SetTemplate("Transparent")
 			hw.border:Kill()
 			hw.healthbar:SetStatusBarTexture(C["media"].normTex)
 		end
@@ -195,15 +195,11 @@ if C["skin"].hookkleright == true then
 	KLE_Skin:RegisterEvent("PLAYER_REGEN_ENABLED")
 	KLE_Skin:RegisterEvent("PLAYER_REGEN_DISABLED")
 
-	ChatRBackground.anim_o:HookScript("OnFinished", function(self)
+	ChatRBackground:HookScript("OnHide", function(self)
 		PositionKLEAnchor()
 	end)
 	
-	ChatRBackground.anim:HookScript("OnPlay", function(self)
+	ChatRBackground:HookScript("OnShow", function(self)
 		PositionKLEAnchor()
-	end)	
-	
-	ChatRBackground.anim:HookScript("OnFinished", function(self)
-		PositionKLEAnchor()	
 	end)	
 end

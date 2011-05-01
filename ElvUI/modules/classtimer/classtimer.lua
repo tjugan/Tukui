@@ -20,6 +20,7 @@ SPARK = C["classtimer"].showspark;
 CAST_SEPARATOR = C["classtimer"].cast_suparator;
 CAST_SEPARATOR_COLOR = CreateColor( 0, 0, 0, 0.5 );
 TEXT_MARGIN = 5;
+local GROUP_SPACING = 3
 
 if ( E and C["media"] and C["media"]["uffont"] ) then
 	-- Sets font for all texts
@@ -68,7 +69,7 @@ function E.LoadClassTimers(Elv_player, Elv_target)
 			local byPlayer = caster == "player" or caster == "pet" or caster == "vehicle";
 				
 			for _, v in ipairs( filter ) do
-				if ( v.id == id and ( v.castByAnyone or byPlayer ) ) then return v; end
+				if ( v.id == id and ( v.castByAnyone or byPlayer ) and v.enabled == true ) then return v; end
 			end
 			
 			return false;
@@ -165,9 +166,13 @@ function E.LoadClassTimers(Elv_player, Elv_target)
 			for _, v in pairs( filter ) do
 				local clone = { };
 				
+				if v.color then
+					clone.color = {v.color.r, v.color.g, v.color.b}
+				end
+
+				clone.enabled = v.enabled;
 				clone.id = v.id;
 				clone.castByAnyone = v.castByAnyone;
-				clone.color = v.color;
 				clone.unitType = v.unitType;
 				clone.castSpellId = v.castSpellId;
 				
@@ -184,6 +189,7 @@ function E.LoadClassTimers(Elv_player, Elv_target)
 			for _, v in pairs( filter ) do
 				local clone = { };
 				
+				clone.enabled = v.enabled;
 				clone.id = v.id;
 				clone.castByAnyone = v.castByAnyone;
 				clone.color = v.color;
@@ -456,7 +462,7 @@ function E.LoadClassTimers(Elv_player, Elv_target)
 					end			
 					
 					if ( bit.band( ICON_POSITION, 2 ) == 2 ) then
-						icon:SetPoint( iconAnchor1, result, iconAnchor2, iconOffset * 6, 0 );
+						icon:SetPoint( iconAnchor1, result, iconAnchor2, iconOffset * 5, 0 );
 					else
 						icon:SetPoint( iconAnchor1, result, iconAnchor2, iconOffset * ( -BAR_HEIGHT ), 0 );
 					end			
@@ -471,20 +477,14 @@ function E.LoadClassTimers(Elv_player, Elv_target)
 						iconbackdrop:SetPoint("TOPLEFT", icon, "TOPLEFT", E.Scale(-2), E.Scale(2))
 						iconbackdrop:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", E.Scale(2), E.Scale(-2))
 						iconbackdrop:SetTemplate("Default")
-						if C["general"].sharpborders == true then
-							iconbackdrop.iborder:SetBackdropBorderColor(0, 0, 0, 0)
-							iconbackdrop.oborder:SetBackdropBorderColor(0, 0, 0, 0)
-						end
 						iconbackdrop:SetFrameLevel(result:GetFrameLevel() - 1)
 					end
 					
 					local stacks = result:CreateFontString( nil, "OVERLAY", nil );
 					stacks:SetFont( unpack( STACKS_FONT ) );
-					stacks:SetShadowColor( 0, 0, 0 );
+					stacks:SetShadowColor( 0, 0, 0, 0 );
 					stacks:SetShadowOffset( 1.25, -1.25 );
-					stacks:SetJustifyH( "CENTER" );
-					stacks:SetJustifyV( "CENTER" );
-					stacks:SetPoint( "CENTER", icon, "CENTER", 0, E.mult*2);
+					stacks:SetPoint( "CENTER", icon, "CENTER", 1, 0);
 					result.stacks = stacks;
 					
 
@@ -494,6 +494,7 @@ function E.LoadClassTimers(Elv_player, Elv_target)
 				
 				local bar = CreateFrame( "StatusBar", nil, result, nil );
 				bar:SetStatusBarTexture( C["media"].normTex );
+				
 				if ( bit.band( ICON_POSITION, 2 ) == 2 or bit.band( ICON_POSITION, 4 ) == 4 ) then
 					bar:SetPoint( "TOPLEFT", result, "TOPLEFT", 0, 0 );
 					bar:SetPoint( "BOTTOMRIGHT", result, "BOTTOMRIGHT", 0, 0 );
@@ -506,6 +507,19 @@ function E.LoadClassTimers(Elv_player, Elv_target)
 						bar:SetPoint( "BOTTOMRIGHT", result, "BOTTOMRIGHT", 0, 0 );					
 					end	
 				end
+				
+				bar.backdrop = CreateFrame("Frame", nil, bar)
+				bar.backdrop:Point("TOPLEFT", bar, "TOPLEFT", -2, 2)
+				bar.backdrop:Point("BOTTOMRIGHT", bar, "BOTTOMRIGHT", 2, -2)
+				bar.backdrop:SetTemplate("Transparent")
+				bar.backdrop:SetFrameLevel(bar:GetFrameLevel() - 1)
+				
+				if ICON_POSITION == 0 then
+					bar.backdrop:Point("TOPLEFT", bar, "TOPLEFT", -20, 2)
+				elseif ICON_POSITION == 1 then
+					bar.backdrop:Point("BOTTOMRIGHT", bar, "BOTTOMRIGHT", 20, -2)
+				end
+				
 				result.bar = bar;
 				
 				if ( SPARK ) then
@@ -529,19 +543,19 @@ function E.LoadClassTimers(Elv_player, Elv_target)
 				local name = bar:CreateFontString( nil, "OVERLAY", nil );
 				name:SetFont( unpack( MASTER_FONT ) );
 				name:SetJustifyH( "LEFT" );
-				name:SetShadowColor( 0, 0, 0 );
+				name:SetShadowColor( 0, 0, 0, 0 );
 				name:SetShadowOffset( 1.25, -1.25 );
 				name:SetPoint( "TOPLEFT", bar, "TOPLEFT", TEXT_MARGIN, 0 );
-				name:SetPoint( "BOTTOMRIGHT", bar, "BOTTOMRIGHT", -45, 2 );
+				name:SetPoint( "BOTTOMRIGHT", bar, "BOTTOMRIGHT", -45, 0 );
 				result.name = name;
 				
 				local time = bar:CreateFontString( nil, "OVERLAY", nil );
 				time:SetFont( unpack( MASTER_FONT ) );
 				time:SetJustifyH( "RIGHT" );
-				time:SetShadowColor( 0, 0, 0 );
+				time:SetShadowColor( 0, 0, 0, 0 );
 				time:SetShadowOffset( 1.25, -1.25 );
 				time:SetPoint( "TOPLEFT", name, "TOPRIGHT", 0, 0 );
-				time:SetPoint( "BOTTOMRIGHT", bar, "BOTTOMRIGHT", -TEXT_MARGIN, 2 );
+				time:SetPoint( "BOTTOMRIGHT", bar, "BOTTOMRIGHT", -TEXT_MARGIN, 0 );
 				result.time = time;
 				
 				result.SetIcon = SetIcon;
@@ -665,7 +679,7 @@ function E.LoadClassTimers(Elv_player, Elv_target)
 			result.background = background;
 			
 			local border = CreateFrame( "Frame", nil, result, nil );
-				border:SetTemplate("Default")
+				--border:SetTemplate("Default")
 				border:SetPoint("TOPLEFT", E.Scale(-2), E.Scale(2))
 				border:SetPoint("BOTTOMRIGHT", E.Scale(2), E.Scale(-2))
 				if result:GetFrameLevel() - 1 > -1 then 
@@ -711,27 +725,28 @@ function E.LoadClassTimers(Elv_player, Elv_target)
 		local yOffset = 6;
 		local xOffset1 = 0
 		local xOffset2 = -2
+		if ICON_POSITION == 0 or ICON_POSITION == 1 then
+			xOffset1 = 3
+		end		
 		if ICON_POSITION == 2 then
 			xOffset2 = -2
-			xOffset1 = xOffset1 + BAR_HEIGHT+8
+			xOffset1 = xOffset1 + BAR_HEIGHT+7
 		end
 		if ICON_POSITION == 3 then
 			xOffset1 = 2
-			xOffset2 = xOffset2 - (BAR_HEIGHT+6)
+			xOffset2 = xOffset2 - (BAR_HEIGHT+5)
 		end
 		
 		playerFrame:SetHiddenHeight( -yOffset );
-		if C["unitframes"].playerauras == true then
-			if C["unitframes"].playershowonlydebuffs == true then
-				playerFrame:Point( "BOTTOMLEFT", Elv_player.Debuffs, "TOPLEFT", xOffset1, yOffset );
-				playerFrame:Point( "BOTTOMRIGHT", Elv_player.Debuffs, "TOPRIGHT", xOffset2, yOffset );
-			else
-				playerFrame:Point( "BOTTOMLEFT", Elv_player.Buffs, "TOPLEFT", xOffset1, yOffset );
-				playerFrame:Point( "BOTTOMRIGHT", Elv_player.Buffs, "TOPRIGHT", xOffset2, yOffset );
-			end
+		if Elv_player.Debuffs then
+			playerFrame:Point( "BOTTOMLEFT", Elv_player.Debuffs, "TOPLEFT", xOffset1, yOffset );
+			playerFrame:Point( "BOTTOMRIGHT", Elv_player.Debuffs, "TOPRIGHT", xOffset2, yOffset );	
+		elseif Elv_player.Buffs then
+			playerFrame:Point( "BOTTOMLEFT", Elv_player.Buffs, "TOPLEFT", xOffset1, yOffset );
+			playerFrame:Point( "BOTTOMRIGHT", Elv_player.Buffs, "TOPRIGHT", xOffset2, yOffset );		
 		else
 			playerFrame:Point( "BOTTOMLEFT", Elv_player, "TOPLEFT", xOffset1, yOffset );
-			playerFrame:Point( "BOTTOMRIGHT", Elv_player, "TOPRIGHT", xOffset2, yOffset );	
+			playerFrame:Point( "BOTTOMRIGHT", Elv_player, "TOPRIGHT", xOffset2, yOffset );			
 		end
 		
 		playerFrame:Show(); 
@@ -749,52 +764,56 @@ function E.LoadClassTimers(Elv_player, Elv_target)
 			playerDataSource:AddFilter( classFilter.player, PLAYER_BAR_COLOR, PLAYER_DEBUFF_COLOR );
 			playerDataSource:AddFilter( classFilter.procs, TRINKET_BAR_COLOR );
 		end
-
+		if ICON_POSITION == 0 or ICON_POSITION == 1 then
+			xOffset1 = 3
+		end
 		local yOffset = 6;
 		local xOffset1 = 0
 		local xOffset2 = -2
 		if ICON_POSITION == 2 then
 			xOffset2 = -2
-			xOffset1 = xOffset1 + BAR_HEIGHT+8
+			xOffset1 = xOffset1 + BAR_HEIGHT+7
 		end
 		if ICON_POSITION == 3 then
 			xOffset1 = 2
-			xOffset2 = xOffset2 - (BAR_HEIGHT+6)
+			xOffset2 = xOffset2 - (BAR_HEIGHT+5)
 		end
 		
 		local playerFrame = CreateAuraBarFrame( playerDataSource, Elv_player );	
 		playerFrame:SetHiddenHeight( -yOffset );
 		local playerFrame = CreateAuraBarFrame( playerDataSource, Elv_player );
 		playerFrame:SetHiddenHeight( -yOffset );
-		if C["unitframes"].playerauras == true then
-			if C["unitframes"].playershowonlydebuffs == true then
-				playerFrame:Point( "BOTTOMLEFT", Elv_player.Debuffs, "TOPLEFT", xOffset1, yOffset );
-				playerFrame:Point( "BOTTOMRIGHT", Elv_player.Debuffs, "TOPRIGHT", xOffset2, yOffset );
-			else
-				playerFrame:Point( "BOTTOMLEFT", Elv_player.Buffs, "TOPLEFT", xOffset1, yOffset );
-				playerFrame:Point( "BOTTOMRIGHT", Elv_player.Buffs, "TOPRIGHT", xOffset2, yOffset );
-			end
+		if Elv_player.Debuffs then
+			playerFrame:Point( "BOTTOMLEFT", Elv_player.Debuffs, "TOPLEFT", xOffset1, yOffset );
+			playerFrame:Point( "BOTTOMRIGHT", Elv_player.Debuffs, "TOPRIGHT", xOffset2, yOffset );	
+		elseif Elv_player.Buffs then
+			playerFrame:Point( "BOTTOMLEFT", Elv_player.Buffs, "TOPLEFT", xOffset1, yOffset );
+			playerFrame:Point( "BOTTOMRIGHT", Elv_player.Buffs, "TOPRIGHT", xOffset2, yOffset );		
 		else
 			playerFrame:Point( "BOTTOMLEFT", Elv_player, "TOPLEFT", xOffset1, yOffset );
-			playerFrame:Point( "BOTTOMRIGHT", Elv_player, "TOPRIGHT", xOffset2, yOffset );	
+			playerFrame:Point( "BOTTOMRIGHT", Elv_player, "TOPRIGHT", xOffset2, yOffset );			
 		end
 		playerFrame:Show();
 
 		local targetFrame = CreateAuraBarFrame( targetDataSource, Elv_player );
-		targetFrame:Point( "BOTTOMLEFT", playerFrame, "TOPLEFT", 0, yOffset );
-		targetFrame:Point( "BOTTOMRIGHT", playerFrame, "TOPRIGHT", 0, yOffset );
+		targetFrame:Point( "BOTTOMLEFT", playerFrame, "TOPLEFT", 0, BAR_SPACING+GROUP_SPACING );
+		targetFrame:Point( "BOTTOMRIGHT", playerFrame, "TOPRIGHT", 0, BAR_SPACING+GROUP_SPACING );
 		targetFrame:Show();
 	elseif ( LAYOUT == 3 ) then
 		local yOffset = 6;
 		local xOffset1 = 0
 		local xOffset2 = -2
+		
+		if ICON_POSITION == 0 or ICON_POSITION == 1 then
+			xOffset1 = 3
+		end		
 		if ICON_POSITION == 2 then
 			xOffset2 = -2
-			xOffset1 = xOffset1 + BAR_HEIGHT+8
+			xOffset1 = xOffset1 + BAR_HEIGHT+7
 		end
 		if ICON_POSITION == 3 then
 			xOffset1 = 2
-			xOffset2 = xOffset2 - (BAR_HEIGHT+6)
+			xOffset2 = xOffset2 - (BAR_HEIGHT+5)
 		end
 		
 		local targetDataSource = CreateUnitAuraDataSource( "target" );
@@ -816,43 +835,47 @@ function E.LoadClassTimers(Elv_player, Elv_target)
 		playerFrame:SetHiddenHeight( -yOffset );
 		local playerFrame = CreateAuraBarFrame( playerDataSource, Elv_player );
 		playerFrame:SetHiddenHeight( -yOffset );
-		if C["unitframes"].playerauras == true then
-			if C["unitframes"].playershowonlydebuffs == true then
-				playerFrame:Point( "BOTTOMLEFT", Elv_player.Debuffs, "TOPLEFT", xOffset1, yOffset );
-				playerFrame:Point( "BOTTOMRIGHT", Elv_player.Debuffs, "TOPRIGHT", xOffset2, yOffset );
-			else
-				playerFrame:Point( "BOTTOMLEFT", Elv_player.Buffs, "TOPLEFT", xOffset1, yOffset );
-				playerFrame:Point( "BOTTOMRIGHT", Elv_player.Buffs, "TOPRIGHT", xOffset2, yOffset );
-			end
+		
+		if Elv_player.Debuffs then
+			playerFrame:Point( "BOTTOMLEFT", Elv_player.Debuffs, "TOPLEFT", xOffset1, yOffset );
+			playerFrame:Point( "BOTTOMRIGHT", Elv_player.Debuffs, "TOPRIGHT", xOffset2, yOffset );	
+		elseif Elv_player.Buffs then
+			playerFrame:Point( "BOTTOMLEFT", Elv_player.Buffs, "TOPLEFT", xOffset1, yOffset );
+			playerFrame:Point( "BOTTOMRIGHT", Elv_player.Buffs, "TOPRIGHT", xOffset2, yOffset );		
 		else
 			playerFrame:Point( "BOTTOMLEFT", Elv_player, "TOPLEFT", xOffset1, yOffset );
-			playerFrame:Point( "BOTTOMRIGHT", Elv_player, "TOPRIGHT", xOffset2, yOffset );	
+			playerFrame:Point( "BOTTOMRIGHT", Elv_player, "TOPRIGHT", xOffset2, yOffset );			
 		end
 
 		playerFrame:Show();
 
 		local trinketFrame = CreateAuraBarFrame( trinketDataSource, Elv_player );
-		trinketFrame:SetHiddenHeight( -yOffset );
-		trinketFrame:Point( "BOTTOMLEFT", playerFrame, "TOPLEFT", 0, yOffset );
-		trinketFrame:Point( "BOTTOMRIGHT", playerFrame, "TOPRIGHT", 0, yOffset );
+		trinketFrame:SetHiddenHeight( -BAR_SPACING );
+		trinketFrame:Point( "BOTTOMLEFT", playerFrame, "TOPLEFT", 0, BAR_SPACING+GROUP_SPACING );
+		trinketFrame:Point( "BOTTOMRIGHT", playerFrame, "TOPRIGHT", 0, BAR_SPACING+GROUP_SPACING );
 		trinketFrame:Show();
 		
 		local targetFrame = CreateAuraBarFrame( targetDataSource, Elv_player );
-		targetFrame:SetHiddenHeight( -yOffset );
-		targetFrame:Point( "BOTTOMLEFT", trinketFrame, "TOPLEFT", 0, yOffset );
-		targetFrame:Point( "BOTTOMRIGHT", trinketFrame, "TOPRIGHT", 0, yOffset );
+		targetFrame:SetHiddenHeight( -BAR_SPACING );
+		targetFrame:Point( "BOTTOMLEFT", trinketFrame, "TOPLEFT", 0, BAR_SPACING+GROUP_SPACING );
+		targetFrame:Point( "BOTTOMRIGHT", trinketFrame, "TOPRIGHT", 0, BAR_SPACING+GROUP_SPACING );
 		targetFrame:Show();
 	elseif ( LAYOUT == 4 ) then
 		local yOffset = 6;
 		local xOffset1 = 0
 		local xOffset2 = -2
+		
+		if ICON_POSITION == 0 or ICON_POSITION == 1 then
+			xOffset1 = 3
+		end
+		
 		if ICON_POSITION == 2 then
 			xOffset2 = -2
-			xOffset1 = xOffset1 + BAR_HEIGHT+8
+			xOffset1 = xOffset1 + BAR_HEIGHT+7
 		end
 		if ICON_POSITION == 3 then
 			xOffset1 = 2
-			xOffset2 = xOffset2 - (BAR_HEIGHT+6)
+			xOffset2 = xOffset2 - (BAR_HEIGHT+5)
 		end
 		
 		local targetDataSource = CreateUnitAuraDataSource( "target" );
@@ -872,50 +895,52 @@ function E.LoadClassTimers(Elv_player, Elv_target)
 
 		local playerFrame = CreateAuraBarFrame( playerDataSource, Elv_player );
 		playerFrame:SetHiddenHeight( -yOffset );
-		if C["unitframes"].playerauras == true then
-			if C["unitframes"].playershowonlydebuffs == true then
-				playerFrame:Point( "BOTTOMLEFT", Elv_player.Debuffs, "TOPLEFT", xOffset1, yOffset );
-				playerFrame:Point( "BOTTOMRIGHT", Elv_player.Debuffs, "TOPRIGHT", xOffset2, yOffset );
-			else
-				playerFrame:Point( "BOTTOMLEFT", Elv_player.Buffs, "TOPLEFT", xOffset1, yOffset );
-				playerFrame:Point( "BOTTOMRIGHT", Elv_player.Buffs, "TOPRIGHT", xOffset2, yOffset );
-			end						
+		if Elv_player.Debuffs then
+			playerFrame:Point( "BOTTOMLEFT", Elv_player.Debuffs, "TOPLEFT", xOffset1, yOffset );
+			playerFrame:Point( "BOTTOMRIGHT", Elv_player.Debuffs, "TOPRIGHT", xOffset2, yOffset );	
+		elseif Elv_player.Buffs then
+			playerFrame:Point( "BOTTOMLEFT", Elv_player.Buffs, "TOPLEFT", xOffset1, yOffset );
+			playerFrame:Point( "BOTTOMRIGHT", Elv_player.Buffs, "TOPRIGHT", xOffset2, yOffset );		
 		else
 			playerFrame:Point( "BOTTOMLEFT", Elv_player, "TOPLEFT", xOffset1, yOffset );
-			playerFrame:Point( "BOTTOMRIGHT", Elv_player, "TOPRIGHT", xOffset2, yOffset );	
+			playerFrame:Point( "BOTTOMRIGHT", Elv_player, "TOPRIGHT", xOffset2, yOffset );			
 		end
 		playerFrame:Show();
 
 
 		local trinketFrame = CreateAuraBarFrame( trinketDataSource, Elv_player );
-		trinketFrame:SetHiddenHeight( -yOffset );
-		trinketFrame:Point( "BOTTOMLEFT", playerFrame, "TOPLEFT", 0, yOffset );
-		trinketFrame:Point( "BOTTOMRIGHT", playerFrame, "TOPRIGHT", 0, yOffset );
+		trinketFrame:SetHiddenHeight( -BAR_SPACING );
+		trinketFrame:Point( "BOTTOMLEFT", playerFrame, "TOPLEFT", 0, BAR_SPACING+GROUP_SPACING );
+		trinketFrame:Point( "BOTTOMRIGHT", playerFrame, "TOPRIGHT", 0, BAR_SPACING+GROUP_SPACING );
 		trinketFrame:Show();
 		
 		local targetFrame = CreateAuraBarFrame( targetDataSource, Elv_target );
-		if C["unitframes"].targetauras == true then
+		if Elv_target.Debuffs then
 			targetFrame:Point( "BOTTOMLEFT", Elv_target.Debuffs, "TOPLEFT", xOffset1, yOffset );
 			targetFrame:Point( "BOTTOMRIGHT", Elv_target.Debuffs, "TOPRIGHT", xOffset2, yOffset );
+		elseif Elv_target.Buffs then
+			targetFrame:Point( "BOTTOMLEFT", Elv_target.Buffs, "TOPLEFT", xOffset1, yOffset );
+			targetFrame:Point( "BOTTOMRIGHT", Elv_target.Buffs, "TOPRIGHT", xOffset2, yOffset );		
 		else
-			if E.myclass == "DRUID" or E.myclass == "ROGUE" then
-				targetFrame:Point( "BOTTOMLEFT", Elv_target.Health, "TOPLEFT", xOffset1, yOffset + 14 );
-				targetFrame:Point( "BOTTOMRIGHT", Elv_target.Health, "TOPRIGHT", xOffset2, yOffset + 14 );				
-			else
-				targetFrame:Point( "BOTTOMLEFT", Elv_target.Health, "TOPLEFT", xOffset1, yOffset );
-				targetFrame:Point( "BOTTOMRIGHT", Elv_target.Health, "TOPRIGHT", xOffset2, yOffset );	
-			end
-		end
+			targetFrame:Point( "BOTTOMLEFT", Elv_target, "TOPLEFT", xOffset1, yOffset );
+			targetFrame:Point( "BOTTOMRIGHT", Elv_target, "TOPRIGHT", xOffset2, yOffset );		
+		end		
 		targetFrame:Show();
 	elseif ( LAYOUT == 5 ) then
 		local yOffset = 6;
 		local xOffset1 = 0
-		local xOffset2 = 0
+		local xOffset2 = -2
+		
+		if ICON_POSITION == 0 or ICON_POSITION == 1 then
+			xOffset1 = 3
+		end		
 		if ICON_POSITION == 2 then
-			xOffset1 = xOffset1 + BAR_HEIGHT+6
+			xOffset2 = -2
+			xOffset1 = xOffset1 + BAR_HEIGHT+7
 		end
 		if ICON_POSITION == 3 then
-			xOffset2 = xOffset2 - (BAR_HEIGHT+6)
+			xOffset1 = 2
+			xOffset2 = xOffset2 - (BAR_HEIGHT+5)
 		end
 		
 		local playerDataSource = CreateUnitAuraDataSource( "player" );
@@ -932,25 +957,23 @@ function E.LoadClassTimers(Elv_player, Elv_target)
 
 		local playerFrame = CreateAuraBarFrame( playerDataSource, Elv_player );
 		playerFrame:SetHiddenHeight( -yOffset );
-		if C["unitframes"].playerauras == true then
-			if C["unitframes"].playershowonlydebuffs == true then
-				playerFrame:Point( "BOTTOMLEFT", Elv_player.Debuffs, "TOPLEFT", xOffset1, yOffset );
-				playerFrame:Point( "BOTTOMRIGHT", Elv_player.Debuffs, "TOPRIGHT", xOffset2, yOffset );
-			else
-				playerFrame:Point( "BOTTOMLEFT", Elv_player.Buffs, "TOPLEFT", xOffset1, yOffset );
-				playerFrame:Point( "BOTTOMRIGHT", Elv_player.Buffs, "TOPRIGHT", xOffset2, yOffset );
-			end
+		if Elv_player.Debuffs then
+			playerFrame:Point( "BOTTOMLEFT", Elv_player.Debuffs, "TOPLEFT", xOffset1, yOffset );
+			playerFrame:Point( "BOTTOMRIGHT", Elv_player.Debuffs, "TOPRIGHT", xOffset2, yOffset );	
+		elseif Elv_player.Buffs then
+			playerFrame:Point( "BOTTOMLEFT", Elv_player.Buffs, "TOPLEFT", xOffset1, yOffset );
+			playerFrame:Point( "BOTTOMRIGHT", Elv_player.Buffs, "TOPRIGHT", xOffset2, yOffset );		
 		else
 			playerFrame:Point( "BOTTOMLEFT", Elv_player, "TOPLEFT", xOffset1, yOffset );
-			playerFrame:Point( "BOTTOMRIGHT", Elv_player, "TOPRIGHT", xOffset2, yOffset );	
+			playerFrame:Point( "BOTTOMRIGHT", Elv_player, "TOPRIGHT", xOffset2, yOffset );			
 		end
 		playerFrame:Show();
 
 
 		local trinketFrame = CreateAuraBarFrame( trinketDataSource, Elv_player );
-		trinketFrame:SetHiddenHeight( -yOffset );
-		trinketFrame:Point( "BOTTOMLEFT", playerFrame, "TOPLEFT", 0, yOffset );
-		trinketFrame:Point( "BOTTOMRIGHT", playerFrame, "TOPRIGHT", 0, yOffset );
+		trinketFrame:SetHiddenHeight( -BAR_SPACING );
+		trinketFrame:Point( "BOTTOMLEFT", playerFrame, "TOPLEFT", 0, BAR_SPACING+GROUP_SPACING );
+		trinketFrame:Point( "BOTTOMRIGHT", playerFrame, "TOPRIGHT", 0, BAR_SPACING+GROUP_SPACING );
 		trinketFrame:Show();
 	else
 		error( "Undefined layout " .. tostring( LAYOUT ) );

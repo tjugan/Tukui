@@ -9,4 +9,7 @@
 	<Script file='skin.lua'/>
 	<Script file='kill.lua'/>
 	<Script file='fonts.lua'/>	
+	<Script file='worldstate.lua'/>
+	<Script file='colorpicker.lua'/>
+	<Script file='timerTracker.lua'/>
 </Ui>

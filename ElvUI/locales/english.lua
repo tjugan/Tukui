@@ -1,6 +1,9 @@
 local E, C, L, DB = unpack(select(2, ...)) -- Import Functions/Constants, Config, Locales
 E.client = GetLocale() 
 
+L.core_resowarning = "|cff1784d1ElvUI:|r the current resolution you are using (%s), is not your monitor's native resolution. To fix this problem please press escape go to video settings and set your resolution to %s."
+L.colorpicker_warning = "|cff1784d1ElvUI|r: Disable ColorPickerPlus AddOn, ElvUI includes the same functionality, type '/disable ColorPickerPlus'"
+
 -- localization for enUS and enGB
 L.chat_BATTLEGROUND_GET = "[B]"
 L.chat_BATTLEGROUND_LEADER_GET = "[B]"
@@ -117,6 +120,7 @@ L.unitframes_ouf_threattext = "Threat on current target:"
 L.tooltip_count = "Count"
 
 L.bags_noslots = "Can't buy anymore slots!"
+L.bags_need_purchase = "You must purchase a bank slot first!"
 L.bags_costs = "Cost: %.2f gold"
 L.bags_buyslots = "Buy new slot with /bags purchase yes"
 L.bags_openbank = "You need to open your bank first."
@@ -134,6 +138,8 @@ L.bags_nothingsort= "Nothing to sort."
 L.bags_bids = "Using bags: "
 L.bags_stackend = "Restacking finished."
 L.bags_rightclick_search = "Right-click to search."
+L.bags_leftclick = "Left Click:"
+L.bags_rightclick = "Right Click:"
 
 L.chat_invalidtarget = "Invalid Target"
 

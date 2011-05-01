@@ -86,3 +86,17 @@ function E.CheckAddOnShown()
 		return false
 	end
 end
+
+-- Hook Omen, Skada and Recount to right frame
+local x = CreateFrame("Frame")
+x:RegisterEvent("PLAYER_ENTERING_WORLD")
+x:SetScript("OnEvent", function(self, event)
+ --if not Skada then return end
+ --ChatRBackground:HookScript("OnShow", function() Skada:SetActive(false) end)
+ --ChatRBackground:HookScript("OnHide", function() Skada:SetActive(true) end)
+ ChatRBackground:HookScript("OnShow", function() Omen:Toggle(false) end)
+ ChatRBackground:HookScript("OnHide", function() Omen:Toggle(true) end)
+ ChatRBackground:HookScript("OnShow", function() Recount.MainWindow:Hide() end)
+ ChatRBackground:HookScript("OnHide", function() Recount.MainWindow:Show() end)
+ self:UnregisterAllEvents()
+end)

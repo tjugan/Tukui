@@ -12,10 +12,8 @@
 ]]--
 local E, C, L, DB = unpack(select(2, ...)) -- Import Functions/Constants, Config, Locales
 
-if C["classtimer"].enable ~= true and C["nameplate"].enable ~= true then return end
-
 CreateSpellEntry = function( id, castByAnyone, color, unitType, castSpellId )
-	return { id = id, castByAnyone = castByAnyone, color = color, unitType = unitType or 0, castSpellId = castSpellId };
+	return { enabled = true, id = id, castByAnyone = castByAnyone, color = color, unitType = unitType or 0, castSpellId = castSpellId };
 end
 
 TRINKET_FILTER = {
@@ -24,13 +22,13 @@ TRINKET_FILTER = {
 	CreateSpellEntry( 67671 ), -- Fury(Banner of Victory)
 	CreateSpellEntry( 54758 ), -- Hyperspeed Acceleration (Hyperspeed Accelerators)
 	CreateSpellEntry( 75170 ), -- Lightweave
-	-- CreateSpellEntry( 2825, true ), --Heroism
-	-- CreateSpellEntry( 32182, true ), -- Bloodlust
-	-- CreateSpellEntry( 90355, true ), -- Hunter Pet Bloodlust
-	-- CreateSpellEntry( 80353 ), -- Time Warp 
+	--CreateSpellEntry( 2825, true ), --Heroism
+	--CreateSpellEntry( 32182, true ), -- Bloodlust
+	--CreateSpellEntry( 90355, true ), -- Hunter Pet Bloodlust
+	--CreateSpellEntry( 80353 ), -- Time Warp 
 	CreateSpellEntry( 26297 ), -- Berserking (troll racial)
 	CreateSpellEntry( 33702 ), CreateSpellEntry( 33697 ), CreateSpellEntry( 20572 ), -- Blood Fury (orc racial)
-	-- CreateSpellEntry( 57933, true ), -- Tricks of Trade (15% dmg buff)
+	CreateSpellEntry( 57933, true ), -- Tricks of Trade (15% dmg buff)
 	CreateSpellEntry( 90992 ), -- Hymn of Power (H Anhuur's Hymnal)
 	CreateSpellEntry( 91149 ), -- Blessing of Isiset (H Blood of Isiset)
 	CreateSpellEntry( 91308 ), -- Egg Shell (H Corrupted Egg Shell)
@@ -67,6 +65,8 @@ TRINKET_FILTER = {
 	CreateSpellEntry( 91810 ), -- Slayer (License to Slay)
 	CreateSpellEntry( 91019 ), -- Soul Power (Soul Casket)
 	CreateSpellEntry( 82174 ), -- Synapse Springs
+	CreateSpellEntry( 95712 ), -- Gnomish X-Ray Scope
+	CreateSpellEntry( 96228 ), -- Synapse Springs (engineer tinker)	
 	CreateSpellEntry( 91047 ), -- Battle Magic (Stump of Time)
 	CreateSpellEntry( 91821 ), -- Race Against Death (Crushing Weight)
 	CreateSpellEntry( 92342 ), -- Race Against Death (H Crushing Weight)
@@ -74,18 +74,18 @@ TRINKET_FILTER = {
 	CreateSpellEntry( 92345 ), -- Rageheart (H Heart of Rage)
 	CreateSpellEntry( 67684 ), -- Hospitality (Talisman of Resurgence)
 	CreateSpellEntry( 71584 ), -- Revitalized (Purified Lunar Dust)
-	-- CreateSpellEntry( 92213 ), -- Memory of Invincibility
+	CreateSpellEntry( 92213 ), -- Memory of Invincibility
 	CreateSpellEntry( 59473 ), -- Twisted (Essence of the Cyclone)
 	CreateSpellEntry(81932), -- Gnomish X-Ray Scope
 	CreateSpellEntry(92123), -- Enigma (Unsolvable Riddle)
 	CreateSpellEntry( 73549 ), -- Demon Panther (Figurine: Demon Panther)
 	CreateSpellEntry( 73552 ), -- Dream Owl (Figurine: Dream Owl)
-	-- CreateSpellEntry( 73550 ), -- Earthen Guardian (Figurine: Earthen Guardian)
+	CreateSpellEntry( 73550 ), -- Earthen Guardian (Figurine: Earthen Guardian)
 	CreateSpellEntry( 73551 ), -- Jeweled Serpent (Figurine: Jeweled Serpent)
 	CreateSpellEntry( 73522 ), -- King of Boars (Figurine: King of Boars)
 	CreateSpellEntry( 91828 ), -- Thrill of Victory (Impatience of Youth)
 	CreateSpellEntry( 91192 ), -- Pattern of Light (Mandala of Stirring Patterns)
-	-- CreateSpellEntry( 92222 ), -- Image of Immortality (Mirror of Broken Images)
+	--CreateSpellEntry( 92222 ), -- Image of Immortality (Mirror of Broken Images)
 	CreateSpellEntry( 92123 ), -- Enigma (Unsolvable Riddle)
 	CreateSpellEntry( 91007 ), -- Dire Magic (Bell of Enraging Resonance)
 	CreateSpellEntry( 92318 ), -- Dire Magic (H Bell of Enraging Resonance)
@@ -103,8 +103,8 @@ TRINKET_FILTER = {
 	CreateSpellEntry( 91024 ), -- Revelation (Theralion's Mirror)
 	CreateSpellEntry( 92320 ), -- Revelation (H Theralion's Mirror)
 	CreateSpellEntry( 92108 ), -- Heedless Carnage (Unheeded Warning)
-	CreateSpellEntry( 92213 ), -- Memory of Invincibility (Vial of Stolen Memories)
-	CreateSpellEntry( 92357 ), -- Memory of Invincibility (H Vial of Stolen Memories)	
+	--CreateSpellEntry( 92213 ), -- Memory of Invincibility (Vial of Stolen Memories)
+	--CreateSpellEntry( 92357 ), -- Memory of Invincibility (H Vial of Stolen Memories)	
 	CreateSpellEntry( 54861 ), -- Nitro Boosts (engineer tinker)
 	CreateSpellEntry( 92126 ), -- Twisted (Essence of the Cyclone)
 	CreateSpellEntry( 92351 ), -- Twisted (Heroic Essence of the Cyclone)
@@ -119,6 +119,17 @@ TRINKET_FILTER = {
 	CreateSpellEntry( 91832 ), -- Raw Fury
 	CreateSpellEntry( 91836 ), -- Forged Fury
 	CreateSpellEntry( 74241 ), -- Power Torrent
+	CreateSpellEntry( 74243 ), -- Windwalk
+	CreateSpellEntry( 74245), -- Landslide
+	CreateSpellEntry( 74221), -- Hurricane	
+	CreateSpellEntry( 91320 ), -- Inner Eye (Jar of Ancient Remedies)
+	CreateSpellEntry( 91329 ), -- Inner Eye (H Jar of Ancient Remedies)
+	CreateSpellEntry( 74224 ), -- Heartsong
+	CreateSpellEntry( 74225 ), -- Heartsong
+	CreateSpellEntry( 91011 ), -- Bell of Enraging Resonance
+	CreateSpellEntry( 91048 ), -- Stump of Time
+	CreateSpellEntry( 90019 ), -- Soul Casket	
+	CreateSpellEntry( 75170 ), -- Lightweave
 	
 	--Turtle Shit
 	CreateSpellEntry( 63877, true ), -- Pain Suppression
@@ -202,6 +213,7 @@ CLASS_FILTERS = {
 			CreateSpellEntry( 467 ), -- Thorns
 			CreateSpellEntry( 78675 ), -- Solar Beam
 			CreateSpellEntry( 93402 ), -- Sunfire
+			CreateSpellEntry( 77758 ), -- Thrash
 		},
 		player = {
 			CreateSpellEntry( 48505 ), -- Starfall
@@ -224,6 +236,7 @@ CLASS_FILTERS = {
 			CreateSpellEntry( 467 ), -- Thorns
 			CreateSpellEntry( 80951 ), -- Pulverize
 			CreateSpellEntry( 62600 ), --[[ Savage Defense]] CreateSpellEntry( 62606 ), -- Savage Defense
+			CreateSpellEntry( 33891 ), --Tree of life
 		},
 		procs = {
 			CreateSpellEntry( 16870 ), -- Clearcasting
@@ -268,18 +281,21 @@ CLASS_FILTERS = {
 			CreateSpellEntry( 53220 ), -- Improved Steadyshot
 			CreateSpellEntry( 70728 ), -- Exploit Weakness (2pc t10)
 			CreateSpellEntry( 71007 ), -- Stinger (4pc t10)
+			CreateSpellEntry( 63087 ), -- Glyph of Raptor stike
+			CreateSpellEntry( 82925 ), -- Mastermarksman
+			CreateSpellEntry( 82926 ), -- Fire!			
 		},
 	},
 	MAGE = {
 		target = { 
-			-- CreateSpellEntry( 44457 ), -- Living Bomb
-			CreateSpellEntry( 118 ), -- Polymorph
-			CreateSpellEntry( 28271 ), -- Polymorph Turtle
-			--CreateSpellEntry( 31589 ), -- Slow
-			--CreateSpellEntry( 116 ), -- Frostbolt
+			--CreateSpellEntry( 44457 ), -- Living Bomb
+			--CreateSpellEntry( 118 ), -- Polymorph
+			--CreateSpellEntry( 28271 ), -- Polymorph Turtle
+			CreateSpellEntry( 31589 ), -- Slow
+			CreateSpellEntry( 116 ), -- Frostbolt
 			CreateSpellEntry( 120 ), -- Cone of Cold
 			CreateSpellEntry( 122 ), -- Frost Nova
-			--CreateSpellEntry( 44614 ), -- Frostfire Bolt
+			CreateSpellEntry( 44614 ), -- Frostfire Bolt
 			--CreateSpellEntry( 92315 ), -- Pyroblast!
 			--CreateSpellEntry( 12654 ), -- Ignite
 			--CreateSpellEntry( 22959 ), -- Critical Mass
@@ -287,6 +303,7 @@ CLASS_FILTERS = {
 			--CreateSpellEntry( 31661 ), -- Dragon's Breath
 			--CreateSpellEntry( 83154 ), -- Piercing Chill
 			CreateSpellEntry( 44572 ), -- Deep Freeze
+			--CreateSpellEntry( 11366 ), -- Dot Pyroblast
 		},
 		player = {
 			CreateSpellEntry( 36032 ), -- Arcane Blast
@@ -337,7 +354,6 @@ CLASS_FILTERS = {
 			CreateSpellEntry( 53563 ), -- Beacon of Light
 			CreateSpellEntry( 31821 ), -- Aura Mastery
 			CreateSpellEntry( 54428 ), -- Divine Plea
-			CreateSpellEntry( 31482 ), -- Divine Favor
 			CreateSpellEntry( 86659 ), --Guardian of Ancient Kings (Prot)
 			CreateSpellEntry( 86669 ), --Guardian of Ancient Kings (Holy)
 			CreateSpellEntry( 86698 ), --Guardian of Ancient Kings (Ret)
@@ -373,7 +389,6 @@ CLASS_FILTERS = {
 		},
 		player = {
 			CreateSpellEntry( 10060 ), -- Power Infusion
-			CreateSpellEntry( 588 ), -- Inner Fire
 			CreateSpellEntry( 47585 ), -- Dispersion
 			CreateSpellEntry( 81700 ), -- Archangel
 			CreateSpellEntry( 87153 ), -- Dark Archangel
@@ -382,7 +397,6 @@ CLASS_FILTERS = {
 			CreateSpellEntry( 81207 ), -- Chakra Renew
 			CreateSpellEntry( 81209 ), -- Chakra Smite
 			CreateSpellEntry( 81206 ), -- Prayer of Healing
-			CreateSpellEntry( 73413 ), -- Inner Will
 			CreateSpellEntry( 27827	), -- Spirit of Redemption
 			CreateSpellEntry( 586 ), -- Fade			
 		},
@@ -445,7 +459,6 @@ CLASS_FILTERS = {
 			CreateSpellEntry( 61295 ), -- Riptide
 			CreateSpellEntry( 51945 ), -- Earthliving
 			CreateSpellEntry( 77661 ), -- Searing Flames
-			CreateSpellEntry( 77657 ), -- Searing Flames
 			CreateSpellEntry( 51514 ), -- Hex
 		},
 		player = {
@@ -455,9 +468,18 @@ CLASS_FILTERS = {
 			CreateSpellEntry( 30823 ), -- Shamanistic Rage
 			CreateSpellEntry( 55198 ), -- Tidal Force
 			CreateSpellEntry( 61295 ), -- Riptide
+			CreateSpellEntry( 16166 ), -- Elemental Mastery (instant cast)
+			CreateSpellEntry( 64701 ), -- Elemental Mastery (damage increase)
+			CreateSpellEntry( 16188 ), -- Nature Swiftness	
+			CreateSpellEntry( 79206 ), -- Spiritwalker's Grace
 		},
 		procs = {
-			CreateSpellEntry( 53817 ), -- Maelstrom Weapon			
+			CreateSpellEntry( 53817 ), -- Maelstrom Weapon
+			CreateSpellEntry( 53390 ), -- Tidal Waves
+			CreateSpellEntry( 16246 ), -- Clearcasting
+			CreateSpellEntry( 73685 ), -- Unleash Life
+			CreateSpellEntry( 73683 ), -- Unleash Fire
+			CreateSpellEntry( 73681 ), -- Unleash Wind			
 		},
 	},
 	WARLOCK = {
@@ -505,46 +527,46 @@ CLASS_FILTERS = {
 			CreateSpellEntry( 71165 ), -- Molten Cor
 			CreateSpellEntry( 63167 ), -- Decimation
 			CreateSpellEntry( 85383, false, nil, nil, 6353 ), -- Imp Soul Fire
+			CreateSpellEntry( 47283 ), -- Empowered Imp
 		},
 	},
 	WARRIOR = { 
 		target = {
-			-- CreateSpellEntry( 94009 ), -- Rend
+			--CreateSpellEntry( 94009 ), -- Rend
 			CreateSpellEntry( 12294 ), -- Mortal Strike
-			-- CreateSpellEntry( 1160 ), -- Demoralizing Shout
+			--CreateSpellEntry( 1160 ), -- Demoralizing Shout
 			CreateSpellEntry( 64382 ), -- Shattering Throw
-			-- CreateSpellEntry( 58567 ), -- Sunder Armor
-			-- CreateSpellEntry( 86346 ), -- Colossus Smash
+			--CreateSpellEntry( 58567 ), -- Sunder Armor
+			--CreateSpellEntry( 86346 ), -- Colossus Smash
 			CreateSpellEntry( 7922 ), -- Charge (stun)
-			-- CreateSpellEntry( 1715 ), -- Hamstring
-			CreateSpellEntry( 50725 ), -- Vigilance
+			--CreateSpellEntry( 1715 ), -- Hamstring
+			--CreateSpellEntry( 50725 ), -- Vigilance
 			CreateSpellEntry( 676 ), -- Disarm
 			CreateSpellEntry( 29703 ), -- Daze (Shield Bash)
 			CreateSpellEntry( 18498 ), -- Gag Order
 			CreateSpellEntry( 12809 ), -- Concussion Blow
-			-- CreateSpellEntry( 6343 ), -- Thunderclap
+			--CreateSpellEntry( 6343 ), -- Thunderclap
 		},
 		player = {
-			CreateSpellEntry( 469 ), -- Commanding Shout
+			--CreateSpellEntry( 469 ), -- Commanding Shout
 			CreateSpellEntry( 6673 ), -- Battle Shout
 			CreateSpellEntry( 55694 ), -- Enraged Regeneration
 			CreateSpellEntry( 23920 ), -- Spell Reflection
-			-- CreateSpellEntry( 871 ), -- Shield Wall
+			--CreateSpellEntry( 871 ), -- Shield Wall
 			CreateSpellEntry( 1719 ), -- Recklessness
 			CreateSpellEntry( 20230 ), -- Retaliation
 			CreateSpellEntry( 2565 ), -- Shield Block
-			-- CreateSpellEntry( 12976 ), -- Last Stand
+			--CreateSpellEntry( 12976 ), -- Last Stand
 			CreateSpellEntry( 90806 ), -- Executioner
 			CreateSpellEntry( 85738 ), CreateSpellEntry( 85739 ), -- Meat Cleaver Rank 1 and 2
 			CreateSpellEntry( 86662 ), CreateSpellEntry( 86663 ), -- Rude interruption rank 1 and 2
 			CreateSpellEntry( 12328 ), -- Sweeping Stikes
 			CreateSpellEntry( 18499 ), -- Berzerker Rage
 			CreateSpellEntry( 85730 ), -- Deadly Calm
-			CreateSpellEntry( 46924 ), -- Bladestorm			
 			CreateSpellEntry( 46924 ), -- Bladestorm	
 			CreateSpellEntry( 86627 ), -- Incite
 			CreateSpellEntry( 12964 ), -- Battle Trance
-			CreateSpellEntry( 14202 ), --Enrage
+			
 		},
 		procs = {
 			CreateSpellEntry( 65156 ), -- Juggernaut

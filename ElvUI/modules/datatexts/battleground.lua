@@ -9,12 +9,12 @@ local join = string.join
 
 local shownbg = true
 local classColor = RAID_CLASS_COLORS[E.myclass]
-local damageDoneString = join("", L.datatext_damage, E.ValColor, "%.02f k")
-local honorGainedString = join("", L.datatext_honor, E.ValColor, "%d")
+local damageDoneString = join("", L.datatext_damage, E.ValColor, "%s")
+local honorGainedString = join("", L.datatext_honor, E.ValColor, "%s")
 local killingBlowsString = join("", L.datatext_killingblows, E.ValColor, "%d")
 local deathsString = join("", L.datatext_ttdeaths, E.ValColor, "%d")
 local honorableKillsString = join("", L.datatext_tthonorkills, E.ValColor, "%d")
-local healingDoneString = join("", L.datatext_healing, E.ValColor, "%.02f k")
+local healingDoneString = join("", L.datatext_healing, E.ValColor, "%s")
 
 --Map IDs
 local WSG = 443
@@ -58,12 +58,12 @@ end
 
 ElvuiInfoLeft:SetScript("OnMouseDown", function(self) 
 	if shownbg == true then 
-		E.SlideOut(ElvuiInfoBattleGroundL) 
-		E.SlideOut(ElvuiInfoBattleGroundR) 
+		ElvuiInfoBattleGroundL:Hide()
+		ElvuiInfoBattleGroundR:Hide()
 		shownbg = false 
 	else 
-		E.SlideIn(ElvuiInfoBattleGroundL) 
-		E.SlideIn(ElvuiInfoBattleGroundR) 
+		ElvuiInfoBattleGroundL:Show()
+		ElvuiInfoBattleGroundR:Show()
 		shownbg = true 
 	end 
 end)
@@ -92,12 +92,12 @@ end)
 
 ElvuiInfoRight:SetScript("OnMouseDown", function(self) 
 	if shownbg == true then 
-		E.SlideOut(ElvuiInfoBattleGroundL) 
-		E.SlideOut(ElvuiInfoBattleGroundR) 
+		ElvuiInfoBattleGroundL:Hide()
+		ElvuiInfoBattleGroundR:Hide()
 		shownbg = false 
 	else 
-		E.SlideIn(ElvuiInfoBattleGroundL) 
-		E.SlideIn(ElvuiInfoBattleGroundR) 
+		ElvuiInfoBattleGroundL:Show()
+		ElvuiInfoBattleGroundR:Show()
 		shownbg = true 
 	end 
 end)
@@ -150,17 +150,14 @@ bgframeR:SetScript("OnEnter", function(self)
 	end
 end)
 
-E.AnimGroup(ElvuiInfoBattleGroundL, 0, E.Scale(-150), 0.4)
-E.AnimGroup(ElvuiInfoBattleGroundR, 0, E.Scale(-150), 0.4)
-
 bgframeL:SetScript("OnMouseDown", function(self) 
 	if shownbg == true then 
-		E.SlideOut(ElvuiInfoBattleGroundL) 
-		E.SlideOut(ElvuiInfoBattleGroundR) 
+		ElvuiInfoBattleGroundL:Hide()
+		ElvuiInfoBattleGroundR:Hide()
 		shownbg = false 
 	else 
-		E.SlideIn(ElvuiInfoBattleGroundL) 
-		E.SlideIn(ElvuiInfoBattleGroundR) 
+		ElvuiInfoBattleGroundL:Show()
+		ElvuiInfoBattleGroundR:Show()
 		shownbg = true 
 	end 
 end)
@@ -190,12 +187,12 @@ end)
 
 bgframeR:SetScript("OnMouseDown", function(self) 
 	if shownbg == true then 
-		E.SlideOut(ElvuiInfoBattleGroundL) 
-		E.SlideOut(ElvuiInfoBattleGroundR) 
+		ElvuiInfoBattleGroundL:Hide()
+		ElvuiInfoBattleGroundR:Hide()
 		shownbg = false 
 	else 
-		E.SlideIn(ElvuiInfoBattleGroundL) 
-		E.SlideIn(ElvuiInfoBattleGroundR) 
+		ElvuiInfoBattleGroundL:Show()
+		ElvuiInfoBattleGroundR:Show()
 		shownbg = true 
 	end 
 end)
@@ -297,12 +294,12 @@ local function OnEvent(self, event)
 		for i=1, GetNumBattlefieldScores() do
 			name, killingBlows, honorableKills, deaths, honorGained, _, _, _, _, damageDone, healingDone = GetBattlefieldScore(i)
 			if name and name == E.myname then
-				Text1:SetFormattedText(damageDoneString, damageDone / 1000 )
-				Text2:SetFormattedText(honorGainedString, honorGained)
+				Text1:SetFormattedText(damageDoneString, E.ShortValue(damageDone) )
+				Text2:SetFormattedText(honorGainedString, E.ShortValue(honorGained))
 				Text3:SetFormattedText(killingBlowsString, killingBlows)
 				Text4:SetFormattedText(deathsString, deaths)
 				Text5:SetFormattedText(honorableKillsString, honorableKills)
-				Text6:SetFormattedText(healingDoneString, healingDone / 1000)
+				Text6:SetFormattedText(healingDoneString, E.ShortValue(healingDone) )
 			end
 		end 
 	end

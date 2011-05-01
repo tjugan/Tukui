@@ -36,6 +36,8 @@ DB["general"] = {
 	["resolutionoverride"] = "NONE",		--override lowversion (Low, High)
 	["layoutoverride"] = "NONE",			--ovverride layout (DPS, Healer)
 	["sharpborders"] = true,
+	["upperpanel"] = false,
+	["lowerpanel"] = false,
 }
 
 DB["skin"] = {
@@ -72,6 +74,8 @@ DB["unitframes"] = {
 	["classbar"] = true,                    -- enable runebar/totembar/holypowerbar/soulshardbar/eclipsebar
 	["combat"] = false,						-- only show main unitframes when in combat/havetarget/or mouseover
 	["mini_powerbar"] = false,
+	["mini_classbar"] = false,
+	["powerbar_offset"] = 0,
 	["showboss"] = true,                   -- enable boss unit frames for PVELOL encounters.
 	["arena"] = true,                 -- enable elvui arena unitframes (requirement : Elvui unitframes enabled)	
 	["swing"] = false,
@@ -90,11 +94,16 @@ DB["unitframes"] = {
 	--auras
 	["auratimer"] = true,                  -- enable timers on buffs/debuffs
 	["auratextscale"] = 11,                -- the font size of buffs/debuffs timers on unitframes
-	["playerauras"] = true,               -- enable auras
+	["playerbuffs"] = false,
+	["playerdebuffs"] = true,
+	["targetbuffs"] = true,
+	["targetdebuffs"] = true,
+	["arenabuffs"] = true,
+	["bossbuffs"] = true,
+	["arenadebuffs"] = true,
+	["bossdebuffs"] = true,
 	["playershowonlydebuffs"] = true, 		-- only show the players debuffs over the player frame, not buffs (playerauras must be true)
 	["playerdebuffsonly"] = true,			-- show the players debuffs on target, and any debuff in the whitelist (see debuffFilter.lua)
-	["targetauras"] = true,                -- enable auras on target unit frame
-	["arenadebuffs"] = true, 				-- enable debuff filter for arena frames
 	["totdebuffs"] = true,                -- enable tot debuffs (high reso only)
 	["focusdebuffs"] = true,              -- enable focus debuffs 
 	["playtarbuffperrow"] = 8,				-- buffs/debuffs per row on player/target frames
@@ -105,11 +114,15 @@ DB["unitframes"] = {
 	["unitcastbar"] = true, -- enable Elvui castbar
 	["cblatency"] = false, -- enable castbar latency
 	["cbicons"] = true, -- enable icons on castbar
+	["cbticks"] = true,
 	["castplayerwidth"] = 275,
+	["castplayerheight"] = 20,
 	["casttargetwidth"] = 275,
+	["casttargetheight"] = 20,
 	["castfocuswidth"] = 275,
+	["castfocusheight"] = 20,
 	["castbarcolor"] = DB["media"].bordercolor, -- Color of player castbar
-	["nointerruptcolor"] = { r = 0.78, g = 0.25, g = 0.25, a = 0.5 }, -- Color of target castbar
+	["nointerruptcolor"] = {r = 0.78, g = 0.25, b = 0.25}, -- Color of target castbar
 	
 	["POWER_MANA"] = {r = 0.31, g = 0.45, b = 0.63},
 	["POWER_RAGE"] = {r = 0.78, g = 0.25, b = 0.25},
@@ -137,14 +150,17 @@ DB["raidframes"] = {
 	["partytarget"]	= false,				--display party members targets (DPS ONLY)
 	["mouseglow"] = true,					--glow the class/reaction color of the unit that you mouseover
 	["raidunitbuffwatch"] = true,       -- track important spell to watch in pve for grid mode.
-	["buffindicatorsize"] = 6,				-- size of the buff indicator on raid/party frames	
+	["buffindicatorsize"] = 6,				-- size of the buff indicator on raid/party frames
+	["debuffs"] = true,
 	["displayaggro"] = true,
+	["mini_powerbar"] = false,
+	["gridonly"] = false,
 }
 
 DB["classtimer"] = {
 	["enable"] = true,
 	["bar_height"] = 17,
-	["bar_spacing"] = 1,
+	["bar_spacing"] = 5,
 	["icon_position"] = 2, -- 0 = left, 1 = right, 2 = Outside left, 3 = Outside Right
 	["layout"] = 4, --1 - both player and target auras in one frame right above player frame, 2 - player and target auras separated into two frames above player frame, 3 - player, target and trinket auras separated into three frames above player frame, 4 - player and trinket auras are shown above player frame and target auras are shown above target frame, 5 - Everything above player frame, no target debuffs.
 	["showspark"] = true,
@@ -186,7 +202,6 @@ DB["nameplate"] = {
 	["enable"] = true,                     -- enable nice skinned nameplates that fit into Elvui
 	["showhealth"] = false,					-- show health text on nameplate
 	["enhancethreat"] = true,				-- threat features based on if your a tank or not
-	["overlap"] = false,				--allow nameplates to overlap
 	["combat"] = false,					--only show enemy nameplates in-combat.
 	["goodcolor"] = {r = 75/255,  g = 175/255, b = 76/255},			--good threat color (tank shows this with threat, everyone else without)
 	["badcolor"] = {r = 0.78, g = 0.25, b = 0.25},			--bad threat color (opposite of above)
@@ -209,6 +224,12 @@ DB["datatext"] = {
 	["hps_text"] = 0,						-- show current hps
 	["currency"] = 0,						-- show watched items in backpack
 	["specswitch"] = 0,
+	["hit"] = 0,
+	["haste"] = 0,
+	["mastery"] = 0,
+	["crit"] = 0,
+	["manaregen"] = 0,
+	["masteryspell"] = false,	
 	["battleground"] = true,               -- enable 3 stats in battleground only that replace stat1,stat2,stat3.
 	["time24"] = false,                     -- set time to 24h format.
 	["localtime"] = true,                 -- set time to local time instead of server time.
@@ -257,7 +278,7 @@ DB["others"] = {
 	["buffreminder"] = true,                     -- this is now the new innerfire warning script for all armor/aspect class.
 	["remindersound"] = true,                      -- enable warning sound notification for reminder.
 	["raidbuffreminder"] = true,			-- buffbar below the minimap, important missing buffs	
-	["announceinterrupt"] = true,			-- announce in party/raid when you interrupt
+	["announceinterrupt"] = "PARTY",			-- announce in party/raid when you interrupt
 	["showthreat"] = true,                 -- enable the threat bar anchored to info right panel.
 	["minimapauras"] = true,				-- enable minimap auras		
 }
