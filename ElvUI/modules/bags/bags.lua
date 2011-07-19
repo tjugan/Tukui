@@ -27,9 +27,8 @@ local hide_soulbag = C["others"].soulbag
 -- hide bags options in default interface
 InterfaceOptionsDisplayPanelShowFreeBagSpace:Hide()
 
-Stuffing = CreateFrame ("Frame", nil, UIParent)
+Stuffing = CreateFrame ("Frame", nil, E.UIParent)
 Stuffing:RegisterEvent("ADDON_LOADED")
-Stuffing:RegisterEvent("PLAYER_ENTERING_WORLD")
 Stuffing:SetScript("OnEvent", function(self, event, ...)
 	Stuffing[event](self, ...)
 end)
@@ -84,42 +83,42 @@ local function MoveChar()
 	if StuffingFrameBank and StuffingFrameBank:IsShown() then		
 		if PlayerTalentFrame and PlayerTalentFrame:IsShown() then
 			PlayerTalentFrame:ClearAllPoints()
-			PlayerTalentFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", C["chat"].chatwidth+30, -116)
+			PlayerTalentFrame:SetPoint("TOPLEFT", E.UIParent, "TOPLEFT", C["chat"].chatwidth+30, -116)
 		end
 		
 		if AchievementFrame and AchievementFrame:IsShown() then
 			AchievementFrame:ClearAllPoints()
-			AchievementFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", C["chat"].chatwidth+30, -116)		
+			AchievementFrame:SetPoint("TOPLEFT", E.UIParent, "TOPLEFT", C["chat"].chatwidth+30, -116)		
 		end
 		
 		if QuestLogFrame and QuestLogFrame:IsShown() then
 			QuestLogFrame:ClearAllPoints()
-			QuestLogFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", C["chat"].chatwidth+30, -116)			
+			QuestLogFrame:SetPoint("TOPLEFT", E.UIParent, "TOPLEFT", C["chat"].chatwidth+30, -116)			
 		end
 		
 		if FriendsFrame and FriendsFrame:IsShown() and not (CharacterFrame:IsShown() or (PVPFrame and PVPFrame:IsShown()) or (GuildFrame and GuildFrame:IsShown()) or (LFDParentFrame and LFDParentFrame:IsShown())) then
 			FriendsFrame:ClearAllPoints()
-			FriendsFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", C["chat"].chatwidth+30, -116)				
+			FriendsFrame:SetPoint("TOPLEFT", E.UIParent, "TOPLEFT", C["chat"].chatwidth+30, -116)				
 		end
 		
 		if PVPFrame and PVPFrame:IsShown() and not (CharacterFrame:IsShown() or (FriendsFrame and FriendsFrame:IsShown()) or (GuildFrame and GuildFrame:IsShown()) or (LFDParentFrame and LFDParentFrame:IsShown())) then
 			PVPFrame:ClearAllPoints()
-			PVPFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", C["chat"].chatwidth+30, -116)				
+			PVPFrame:SetPoint("TOPLEFT", E.UIParent, "TOPLEFT", C["chat"].chatwidth+30, -116)				
 		end
 		
 		if GuildFrame and GuildFrame:IsShown() and not (CharacterFrame:IsShown() or (FriendsFrame and FriendsFrame:IsShown()) or (PVPFrame and PVPFrame:IsShown()) or (LFDParentFrame and LFDParentFrame:IsShown())) then
 			GuildFrame:ClearAllPoints()
-			GuildFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", C["chat"].chatwidth+30, -116)		
+			GuildFrame:SetPoint("TOPLEFT", E.UIParent, "TOPLEFT", C["chat"].chatwidth+30, -116)		
 		end
 		
 		if LFDParentFrame and LFDParentFrame:IsShown() and not (CharacterFrame:IsShown() or (FriendsFrame and FriendsFrame:IsShown()) or (PVPFrame and PVPFrame:IsShown()) or (GuildFrame and GuildFrame:IsShown())) then
 			LFDParentFrame:ClearAllPoints()
-			LFDParentFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", C["chat"].chatwidth+30, -116)				
+			LFDParentFrame:SetPoint("TOPLEFT", E.UIParent, "TOPLEFT", C["chat"].chatwidth+30, -116)				
 		end
 		
 		if CharacterFrame:IsShown() then
 			CharacterFrame:ClearAllPoints()
-			CharacterFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", C["chat"].chatwidth+30, -116)
+			CharacterFrame:SetPoint("TOPLEFT", E.UIParent, "TOPLEFT", C["chat"].chatwidth+30, -116)
 		end
 		DressUpFrame:ClearAllPoints()
 		DressUpFrame:SetPoint("TOPLEFT", CharacterFrame, "TOPRIGHT", 15, 0)
@@ -183,7 +182,7 @@ end
 --
 -- bag slot stuff
 --
-local trashParent = CreateFrame("Frame", nil, UIParent)
+local trashParent = CreateFrame("Frame", nil, E.UIParent)
 local trashButton = {}
 local trashBag = {}
 
@@ -468,7 +467,7 @@ end
 
 function Stuffing:CreateBagFrame(w)
 	local n = "StuffingFrame"  .. w
-	local f = CreateFrame ("Frame", n, UIParent)
+	local f = CreateFrame ("Frame", n, E.UIParent)
 	f:EnableMouse(1)
 	f:SetMovable(1)
 	f:SetToplevel(1)
@@ -476,9 +475,9 @@ function Stuffing:CreateBagFrame(w)
 	f:SetFrameLevel(20)
 
 	if w == "Bank" then
-		f:SetPoint("BOTTOMLEFT", ChatLBackground2, "BOTTOMLEFT")
+		f:SetPoint("BOTTOMLEFT", ChatLPlaceHolder, "BOTTOMLEFT")
 	else
-		f:SetPoint("BOTTOMRIGHT", ChatRBackground2, "BOTTOMRIGHT")
+		f:SetPoint("BOTTOMRIGHT", ChatRPlaceHolder, "BOTTOMRIGHT")
 	end
 	
 	-- close button
@@ -791,6 +790,29 @@ function Stuffing:Layout(lb)
 			b.frame:Size(bsize)
 			b.frame:Show()
 			
+			--Change all bag alpha when mousing over a bag frame to display 
+			--what slots belong to what bag.. 
+			--Feature by Caliburnus
+			local btns = self.buttons
+			b.frame:HookScript("OnEnter", function(self)
+				local bag
+				if lb then bag = v else bag = v + 1 end
+
+				for ind, val in ipairs(btns) do
+					if val.bag == bag then
+						val.frame:SetAlpha(1)
+					else
+						val.frame:SetAlpha(0.2)
+					end
+				end
+			end)
+
+			b.frame:HookScript("OnLeave", function(self)
+				for _, btn in ipairs(btns) do
+					btn.frame:SetAlpha(1)
+				end
+			end)
+			
 			local t = _G[b.frame:GetName().."IconTexture"]
 			b.frame:SetPushedTexture("")
 			b.frame:SetNormalTexture("")
@@ -829,7 +851,7 @@ function Stuffing:Layout(lb)
 		rows = rows + 1
 	end
 
-	f:SetWidth(E.Scale(C["chat"].chatwidth))
+	f:Width(C["chat"].chatwidth)
 	f:SetHeight(E.Scale(rows * 31 + (rows - 1) * 4 + off + 12 * 2))
 
 	local bf = CreateFrame("Frame", "BagHolderFrame", f)
@@ -1001,45 +1023,6 @@ function Stuffing:ADDON_LOADED(addon)
 	CloseBackpack = Stuffing_Close
 
 	BankFrame:UnregisterAllEvents()
-end
-
-function Stuffing:PLAYER_ENTERING_WORLD()
-	-- setting key ring bag
-	-- this is just a reskin of Blizzard key bag to fit Elvui
-
-	local keybackdrop = CreateFrame("Frame", nil, ContainerFrame1)
-	keybackdrop:SetPoint("TOPLEFT", E.Scale(9), E.Scale(-40))
-	keybackdrop:SetPoint("BOTTOMLEFT", 0, 0)
-	keybackdrop:Size(179, 215)
-	keybackdrop:SetTemplate("Transparent")
-	ContainerFrame1CloseButton:Hide()
-	ContainerFrame1Portrait:Hide()
-	ContainerFrame1Name:Hide()
-	ContainerFrame1BackgroundTop:SetAlpha(0)
-	ContainerFrame1BackgroundMiddle1:SetAlpha(0)
-	ContainerFrame1BackgroundMiddle2:SetAlpha(0)
-	ContainerFrame1BackgroundBottom:SetAlpha(0)
-	for i=1, GetKeyRingSize() do
-		local slot = _G["ContainerFrame1Item"..i]
-		local t = _G["ContainerFrame1Item"..i.."IconTexture"]
-		slot:SetPushedTexture("")
-		slot:SetNormalTexture("")
-		t:SetTexCoord(.08, .92, .08, .92)
-		t:SetPoint("TOPLEFT", slot, E.Scale(2), E.Scale(-2))
-		t:SetPoint("BOTTOMRIGHT", slot, E.Scale(-2), E.Scale(2))
-		slot:SetTemplate("Default", true)
-		
-		slot:StyleButton()
-	end
-
-
-	ContainerFrame1:HookScript("OnShow", function(self)
-		ContainerFrame1:ClearAllPoints()
-		ContainerFrame1:SetPoint("TOPRIGHT", StuffingFrameBags, "TOPLEFT", E.Scale(2), E.Scale(40))
-		ContainerFrame1.SetPoint = E.dummy
-		ContainerFrame1.ClearAllPoints = E.dummy
-	end)
-	ContainerFrame1:SetParent(StuffingFrameBags)
 end
 
 function Stuffing:PLAYERBANKSLOTS_CHANGED(id)
@@ -1488,26 +1471,7 @@ function Stuffing.Menu(self, level)
 		Stuffing:Layout()
 	end
 	UIDropDownMenu_AddButton(info, level)
-	
-	wipe(info)
-	info.text = "Show Keyring"
-	info.checked = function()
-		return key_ring == 1
-	end
-	
-	info.func = function()
-		if key_ring == 1 then
-			key_ring = 0
-		else
-			key_ring = 1
-		end
-		ToggleKeyRing()
-		Stuffing:Layout()
-	end
-	
-	
-	UIDropDownMenu_AddButton(info, level)
-
+		
 	wipe(info)
 	info.disabled = nil
 	info.notCheckable = 1

@@ -41,15 +41,67 @@ DB["general"] = {
 }
 
 DB["skin"] = {
+	["enable"] = true,
+		["bags"] = true,
+		["reforge"] = true,
+		["calendar"] = true,
+		["achievement"] = true,
+		["lfguild"] = true,
+		["inspect"] = true,
+		["binding"] = true,
+		["gbank"] = true,
+		["archaeology"] = true,
+		["guildcontrol"] = true,
+		["guild"] = true,
+		["tradeskill"] = true,
+		["raid"] = true,
+		["talent"] = true,
+		["glyph"] = true,
+		["auctionhouse"] = true,
+		["barber"] = true,
+		["macro"] = true,
+		["debug"] = true,
+		["trainer"] = true,
+		["socket"] = true,
+		["achievement_popup"] = true,
+		["bgscore"] = true,
+		["merchant"] = true,
+		["mail"] = true,
+		["help"] = true,
+		["trade"] = true,
+		["gossip"] = true,
+		["greeting"] = true,
+		["worldmap"] = true,
+		["taxi"] = true,
+		["lfd"] = true,
+		["quest"] = true,
+		["petition"] = true,
+		["dressingroom"] = true,
+		["pvp"] = true,
+		["nonraid"] = true,
+		["friends"] = true,
+		["spellbook"] = true,
+		["character"] = true,
+		["misc"] = true,
+		["lfr"] = true,
+		["tabard"] = true,
+		["guildregistrar"] = true,
+		["timemanager"] = true,
+		["encounterjournal"] = true,
 	["recount"] = true,
 	["skada"] = true,
 	["omen"] = true,
 	["kle"] = true,
+	["dxe"] = true,
 	["dbm"] = true,
 	["bigwigs"] = true,
-	["hookkleright"] = true,			-- force KLE's top bar anchor to be hooked onto the right chat window
-	["hookbwright"] = true,			-- force BigWig's bar anchor to be hooked onto the right chat window
+	["clcret"] = true,
+	["clcprot"] = true,
+	["hookkleright"] = false,			-- force KLE's top bar anchor to be hooked onto the right chat window
+	["hookbwright"] = false,			-- force BigWig's bar anchor to be hooked onto the right chat window
+	["hookdxeright"] = false,
 	["embedright"] = "NONE",				-- Addon to embed to the right frame ("Omen", "Recount", "Skada")
+	["embedrighttoggle"] = false,
 }
 
 DB["unitframes"] = {
@@ -62,9 +114,11 @@ DB["unitframes"] = {
 	["pettarget"] = true,					-- show player's pet's target (DPS)
 	["showtotalhpmp"] = false,             -- change the display of info text on player and target with XXXX/Total.
 	["showsmooth"] = true,                 -- enable smooth bar
-	["charportrait"] = true,              -- enable character portrait
+	["charportrait"] = false,              -- enable character portrait
 	["charportraithealth"] = false,			-- portrait overlay healthbar
 	["classcolor"] = false,                  -- color unitframes by class
+	["classcolorpower"] = false,
+	["classcolorbackdrop"] = false,
 	["healthcolor"] = DB["media"].bordercolor, --color of the unitframe
 	["healthcolorbyvalue"] = true,			-- color health by current health remaining
 	["healthbackdrop"] = false,				-- enable using custom healthbackdrop color
@@ -73,13 +127,15 @@ DB["unitframes"] = {
 	["debuffhighlight"] = true,				--highlight frame with the debuff color if the frame is dispellable
 	["classbar"] = true,                    -- enable runebar/totembar/holypowerbar/soulshardbar/eclipsebar
 	["combat"] = false,						-- only show main unitframes when in combat/havetarget/or mouseover
-	["mini_powerbar"] = false,
-	["mini_classbar"] = false,
+	["mini_powerbar"] = true,
+	["mini_classbar"] = true,
 	["powerbar_offset"] = 0,
 	["showboss"] = true,                   -- enable boss unit frames for PVELOL encounters.
 	["arena"] = true,                 -- enable elvui arena unitframes (requirement : Elvui unitframes enabled)	
 	["swing"] = false,
 	["displayaggro"] = true,
+	["powerbar_height"] = 10,
+	["classbar_height"] = 10,
 	
 	--frame sizes
 	["playtarwidth"] = 275,					--width of player/target frame
@@ -106,8 +162,13 @@ DB["unitframes"] = {
 	["playerdebuffsonly"] = true,			-- show the players debuffs on target, and any debuff in the whitelist (see debuffFilter.lua)
 	["totdebuffs"] = true,                -- enable tot debuffs (high reso only)
 	["focusdebuffs"] = true,              -- enable focus debuffs 
-	["playtarbuffperrow"] = 8,				-- buffs/debuffs per row on player/target frames
-	["smallbuffperrow"] = 5,				-- debuffs per row on targettarget/focus frames
+	["playeraurasperrow"] = 8,				-- buffs/debuffs per row on player/target frames
+	["targetaurasperrow"] = 8,
+	["smallaurasperrow"] = 5,				-- debuffs per row on targettarget/focus frames
+	["playernumbuffrows"] = 1,
+	["playernumdebuffrows"] = 1,	
+	["targetnumbuffrows"] = 1,
+	["targetnumdebuffrows"] = 1,
 	
 	
 	--castbar
@@ -115,11 +176,11 @@ DB["unitframes"] = {
 	["cblatency"] = false, -- enable castbar latency
 	["cbicons"] = true, -- enable icons on castbar
 	["cbticks"] = true,
-	["castplayerwidth"] = 275,
+	["castplayerwidth"] = 276,
 	["castplayerheight"] = 20,
-	["casttargetwidth"] = 275,
+	["casttargetwidth"] = 276,
 	["casttargetheight"] = 20,
-	["castfocuswidth"] = 275,
+	["castfocuswidth"] = 276,
 	["castfocusheight"] = 20,
 	["castbarcolor"] = DB["media"].bordercolor, -- Color of player castbar
 	["nointerruptcolor"] = {r = 0.78, g = 0.25, b = 0.25}, -- Color of target castbar
@@ -151,9 +212,10 @@ DB["raidframes"] = {
 	["mouseglow"] = true,					--glow the class/reaction color of the unit that you mouseover
 	["raidunitbuffwatch"] = true,       -- track important spell to watch in pve for grid mode.
 	["buffindicatorsize"] = 6,				-- size of the buff indicator on raid/party frames
+	["buffindicatorcoloricons"] = true,
 	["debuffs"] = true,
 	["displayaggro"] = true,
-	["mini_powerbar"] = false,
+	["mini_powerbar"] = true,
 	["gridonly"] = false,
 }
 
@@ -200,12 +262,15 @@ DB["actionbar"] = {
 
 DB["nameplate"] = {
 	["enable"] = true,                     -- enable nice skinned nameplates that fit into Elvui
+	["showlevel"] = true,
+	["width"] = 105,
 	["showhealth"] = false,					-- show health text on nameplate
 	["enhancethreat"] = true,				-- threat features based on if your a tank or not
 	["combat"] = false,					--only show enemy nameplates in-combat.
 	["goodcolor"] = {r = 75/255,  g = 175/255, b = 76/255},			--good threat color (tank shows this with threat, everyone else without)
 	["badcolor"] = {r = 0.78, g = 0.25, b = 0.25},			--bad threat color (opposite of above)
-	["transitioncolor"] = {r = 218/255, g = 197/255, b = 92/255},	--threat color when gaining threat
+	["goodtransitioncolor"] = {r = 218/255, g = 197/255, b = 92/255},	--threat color when gaining threat
+	["badtransitioncolor"] = {r = 240/255, g = 154/255, b = 17/255}, 
 	["trackauras"] = false,		--track players debuffs only (debuff list derived from classtimer spell list)
 	["trackccauras"] = true,			--track all CC debuffs
 }
@@ -219,12 +284,14 @@ DB["datatext"] = {
 	["gold"] = 6,                          -- show your current gold on panels
 	["guild"] = 7,                         -- show number on guildmate connected on panels
 	["friends"] = 8,                       -- show number of friends connected.
+	["calltoarms"] = 0,
 	["bags"] = 0,							-- show ammount of bag space available
 	["dps_text"] = 0,						-- show current dps
 	["hps_text"] = 0,						-- show current hps
 	["currency"] = 0,						-- show watched items in backpack
 	["specswitch"] = 0,
 	["hit"] = 0,
+	["expertise"] = 0,
 	["haste"] = 0,
 	["mastery"] = 0,
 	["crit"] = 0,
@@ -239,6 +306,7 @@ DB["datatext"] = {
 
 DB["chat"] = {
 	["enable"] = true,                     -- blah
+	["style"] = "ElvUI",
 	["whispersound"] = true,               -- play a sound when receiving whisper
 	["showbackdrop"] = true,				-- show a backdrop on the chat panels
 	["chatwidth"] = 348,					-- width of chat frame
@@ -265,9 +333,10 @@ DB["others"] = {
 	["pvpautorelease"] = false,            -- enable auto-release in bg or wintergrasp.
 	["errorenable"] = true,                     -- true to enable this mod, false to disable
 	["autoacceptinv"] = true,                 -- auto-accept invite from guildmate and friends.
-	["enablemap"] = true,                     -- reskin the map to fit Elvui
 	["enablebag"] = true,                     -- enable an all in one bag mod that fit Elvui perfectly
-	
+	["bagbar"] = false,
+	["bagbardirection"] = "VERTICAL",
+	["bagbarmouseover"] = true,
 
 	["lootframe"] = true,                  -- reskin the loot frame to fit Elvui
 	["rolllootframe"] = true,              -- reskin the roll frame to fit Elvui

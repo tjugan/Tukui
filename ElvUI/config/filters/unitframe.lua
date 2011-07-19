@@ -71,8 +71,8 @@ E.ArenaBuffWhiteList = {
 -- Target/Arena Frames/ Nameplates use these
 E.DebuffWhiteList = {
 	-- Death Knight
-		[SpellName(51209)] = true, --hungering cold
 		[SpellName(47476)] = true, --strangulate
+		[SpellName(49203)] = true, --hungering cold
 	-- Druid
 		[SpellName(33786)] = true, --Cyclone
 		[SpellName(2637)] = true, --Hibernate
@@ -91,6 +91,7 @@ E.DebuffWhiteList = {
 		[SpellName(18469)] = true, --Silenced - Improved Counterspell
 		[SpellName(122)] = true, --Frost Nova
 		[SpellName(55080)] = true, --Shattered Barrier
+		[SpellName(82691)] = true, --Ring of Frost
 	-- Paladin
 		[SpellName(20066)] = true, --Repentance
 		[SpellName(10326)] = true, --Turn Evil
@@ -168,6 +169,7 @@ E.DebuffBlacklist = {
 	[SpellName(24755)] = true, --gay homosexual tricked or treated debuff
 	[SpellName(25163)] = true, --fucking annoying pet debuff oozeling disgusting aura
 	[SpellName(80354)] = true, --timewarp debuff
+	[SpellName(95223)] = true, --group res debuff
 }
 
 --RAID DEBUFFS
@@ -246,7 +248,41 @@ E.RaidDebuffs = {
 	--Al'Akir
 	[SpellName(93260)] = true, -- Ice Storm
 	[SpellName(93295)] = true, -- Lightning Rod
+	
+--Firelands	
+	--Beth'tilac
+	[SpellName(99506)] = true, -- Widows Kiss
+	
+	--Alysrazor
+	[SpellName(101296)] = true, -- Fiero Blast
+	[SpellName(100723)] = true, -- Gushing Wound
+	
+	--Shannox
+	[SpellName(99837)] = true, -- Crystal Prison
+	[SpellName(99937)] = true, -- Jagged Tear
+	
+	--Baleroc
+	[SpellName(99403)] = true, -- Tormented
+	[SpellName(99256)] = true, -- Torment
+	
+	--Lord Rhyolith
+		--<< NONE KNOWN YET >>
+	
+	--Majordomo Staghelm
+	[SpellName(98450)] = true, -- Searing Seeds
+	
+	--Ragnaros
+	[SpellName(99399)] = true, -- Burning Wound
+		
+	--Trash
+	[SpellName(99532)] = true, -- Melt Armor	
+	
+--Baradin Hold
+	--Occu'thar
+	[SpellName(96913)] = true, -- Searing Shadows
 }
+
+
 
 
 E.ReverseTimer = {

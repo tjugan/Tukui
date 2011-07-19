@@ -41,8 +41,7 @@ local function GetBar()
 	return condition
 end
 
-function E.PositionMainBar()
-	MainMenuBar_UpdateKeyRing()
+function E.PositionMainBar()	
 	local button
 	for i = 1, 12 do
 		button = _G["ActionButton"..i]

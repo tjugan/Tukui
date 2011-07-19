@@ -17,7 +17,7 @@
 	 .Swing = CreateFrame("Frame", nil, self)
 	 .Swing:SetWidth(400)
 	 .Swing:SetHeight(20)
-	 .Swing:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 100)
+	 .Swing:SetPoint("BOTTOM", E.UIParent, "BOTTOM", 0, 100)
 	 .Swing.texture = [=[Interface\TargetingFrame\UI-StatusBar]=]
 	 .Swing.color = {1, 0, 0, 0.8}
 	 .Swing.textureBG = [=[Interface\TargetingFrame\UI-StatusBar]=]
@@ -37,6 +37,7 @@
 	 - :OverrideText(now)
 --]]
 
+local E, C, L, DB = unpack(select(2, ...)) -- Import Functions/Constants, Config, Locales
 local addon, ns = ...
 local oUF = oUF or ns.oUF
 
@@ -252,7 +253,7 @@ local function Ranged(self, event, unit, spellName)
 	swingOH:SetScript("OnUpdate", nil)
 end
 
-local function Melee(self, event, _, subevent, GUID)
+local function Melee(self, event, _, subevent, _, GUID)
 	if UnitGUID("player") ~= GUID then return end
 	if not string.find(subevent, "SWING") then return end
 	
@@ -306,8 +307,10 @@ local function Melee(self, event, _, subevent, GUID)
 	lasthit = GetTime()
 end
 
-local function ParryHaste(self, event, _, subevent, _, _, _, _, tarGUID, _, missType)
+local function ParryHaste(self, event, ...)
+	local _, subevent, _, _, _, _, _, tarGUID, _, _, _, missType = ...
 	if UnitGUID("player") ~= tarGUID then return end
+	
 	if not meleeing then return end
 	if not string.find(subevent, "MISSED") then return end
 	if missType ~= "PARRY" then return end

@@ -23,16 +23,16 @@ local backdropPool = {}
 
 local getPoint = function(obj, anchor)
 	if(not anchor) then
-		local UIx, UIy = UIParent:GetCenter()
+		local UIx, UIy = E.UIParent:GetCenter()
 		local Ox, Oy = obj:GetCenter()
 
 		-- Frame doesn't really have a positon yet.
 		if(not Ox) then return end
 
-		local UIS = UIParent:GetEffectiveScale()
+		local UIS = E.UIParent:GetEffectiveScale()
 		local OS = obj:GetEffectiveScale()
 
-		local UIWidth, UIHeight = UIParent:GetRight(), UIParent:GetTop()
+		local UIWidth, UIHeight = E.UIParent:GetRight(), E.UIParent:GetTop()
 
 		local LEFT = UIWidth / 3
 		local RIGHT = UIWidth * 2 / 3
@@ -64,14 +64,14 @@ local getPoint = function(obj, anchor)
 
 		return string.format(
 			'%s\031%s\031%d\031%d',
-			point, 'UIParent', round(x * UIS / OS),  round(y * UIS / OS)
+			point, 'E.UIParent', round(x * UIS / OS),  round(y * UIS / OS)
 		)
 	else
 		local point, parent, _, x, y = anchor:GetPoint()
 
 		return string.format(
 			'%s\031%s\031%d\031%d',
-			point, 'UIParent', round(x), round(y)
+			point, 'E.UIParent', round(x), round(y)
 		)
 	end
 end
@@ -160,7 +160,7 @@ local function restorePosition(obj)
 	-- damn it Blizzard, _how_ did you manage to get the input of this function
 	-- reversed. Any sane person would implement this as: split(str, dlm, lim);
 	local point, parentName, x, y = string.split('\031', _DB[style][identifier])
-	SetPoint(target, point, parentName, point, x / scale, y / scale)
+	SetPoint(target, point, _G[parentName], point, x / scale, y / scale)
 end
 
 local saveDefaultPosition = function(obj)
@@ -295,8 +295,8 @@ do
 
 	function frame:VARIABLES_LOADED()
 		-- I honestly don't trust the load order of SVs.
-		_DB = ElvuiUFpos or {}
-		ElvuiUFpos = _DB
+		_DB = E.SavePath["UFPos"] or {}
+		E.SavePath["UFPos"] = _DB
 
 		-- Got to catch them all!
 		for _, obj in next, oUF.objects do
@@ -323,6 +323,16 @@ do
 	local OnShow = function(self)
 		return self.name:SetText(smartName(self.obj, self.header))
 	end
+	
+	local OnHide = function(self)
+		if(self.dirtyMinHeight) then
+			self:SetAttribute('minHeight', nil)
+		end
+
+		if(self.dirtyMinWidth) then
+			self:SetAttribute('minWidth', nil)
+		end
+	end	
 
 	local OnDragStart = function(self)
 		saveDefaultPosition(self.obj)
@@ -344,7 +354,7 @@ do
 		if(backdropPool[target]) then return backdropPool[target] end
 
 		local backdrop = CreateFrame"Frame"
-		backdrop:SetParent(UIParent)
+		backdrop:SetParent(E.UIParent)
 		backdrop:Hide()
 
 		backdrop:SetBackdrop(_BACKDROP)
@@ -356,7 +366,8 @@ do
 		backdrop:RegisterForDrag"LeftButton"
 
 		backdrop:SetScript("OnShow", OnShow)
-
+		backdrop:SetScript("OnHide", OnHide)
+		
 		local name = backdrop:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 		name:SetPoint"CENTER"
 		name:SetJustifyH"CENTER"
@@ -370,12 +381,32 @@ do
 
 		backdrop:SetTemplate("Default", true)
 
-		-- Work around the fact that headers with no units displayed are 0 in height.
-		if(isHeader and math.floor(isHeader:GetHeight()) == 0) then
-			local height = isHeader:GetChildren():GetHeight()
-			isHeader:SetHeight(height)
-		end
+		-- We have to define a minHeight on the header if it doesn't have one. The
+		-- reason for this is that the header frame will have an height of 0.1 when
+		-- it doesn't have any frames visible.
+		if(
+			isHeader and
+			(
+				not isHeader:GetAttribute'minHeight' and math.floor(isHeader:GetHeight()) == 0 or
+				not isHeader:GetAttribute'minWidth' and math.floor(isHeader:GetWidth()) == 0
+			)
+		) then
+			isHeader:SetHeight(obj:GetHeight())
+			isHeader:SetWidth(obj:GetWidth())
+			
+			if(not isHeader:GetAttribute'minHeight') then
+				isHeader.dirtyMinHeight = true
+				isHeader:SetAttribute('minHeight', obj:GetHeight())
+			end
 
+			if(not isHeader:GetAttribute'minWidth') then
+				isHeader.dirtyMinWidth = true
+				isHeader:SetAttribute('minWidth', obj:GetWidth())
+			end
+		elseif(isHeader) then
+			backdrop.baseWidth, backdrop.baseHeight = isHeader:GetSize()
+		end
+		
 		backdrop:SetScript("OnDragStart", OnDragStart)
 		backdrop:SetScript("OnDragStop", OnDragStop)
 		backdrop:SetScript("OnEnter", function(self)
@@ -395,7 +426,7 @@ end
 
 -- reset data
 function E.ResetUF()
-	ElvuiUFpos = {}
+	E.SavePath["UFPos"] = nil
 end
 
 function E.MoveUF()

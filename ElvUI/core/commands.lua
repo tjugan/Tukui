@@ -85,10 +85,10 @@ function SlashCmdList.FARMMODE(msg, editbox)
 		farm = false
 	end
 
-	ElvuiMinimapStatsLeft:SetWidth((Minimap:GetWidth() / 2) - 1)
-	ElvuiMinimapStatsRight:SetWidth((Minimap:GetWidth() / 2) - 1)
+	ElvuiMinimapStatsLeft:SetWidth((Minimap:GetWidth() / 2) + 2)
+	ElvuiMinimapStatsRight:SetWidth((Minimap:GetWidth() / 2) + 1)
 	
-	if E.Movers["AurasMover"]["moved"] ~= true then
+	if E.Movers and not E.Movers["AurasMover"] or not E.Movers then
 		AurasMover:ClearAllPoints()
 		AurasMover:SetPoint("TOPRIGHT", Minimap, "TOPLEFT", E.Scale(-8), E.Scale(2))
 	end	
@@ -106,7 +106,7 @@ SlashCmdList["UIHELP"] = E.UIHelp
 
 --ReInstall UI
 SLASH_CONFIGURE1 = "/installui"
-SlashCmdList.CONFIGURE = function() StaticPopup_Show("INSTALL_UI") end
+SlashCmdList.CONFIGURE = function() E.Install() end
 
 -- Command to Toggle showing the UI Movers
 SLASH_MOVEUI1 = '/moveui'

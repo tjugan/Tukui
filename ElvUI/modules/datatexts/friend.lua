@@ -40,8 +40,9 @@ Text:SetFont(C["media"].font, C["datatext"].fontsize, "THINOUTLINE")
 Text:SetShadowColor(0, 0, 0, 0.4)
 Text:SetShadowOffset(E.mult, -E.mult)
 E.PP(C["datatext"].friends, Text)
+Stat:SetParent(Text:GetParent())
 
-local menuFrame = CreateFrame("Frame", "ElvuiFriendRightClickMenu", UIParent, "UIDropDownMenuTemplate")
+local menuFrame = CreateFrame("Frame", "ElvuiFriendRightClickMenu", E.UIParent, "UIDropDownMenuTemplate")
 local menuList = {
 	{ text = OPTIONS_MENU, isTitle = true,notCheckable=true},
 	{ text = INVITE, hasArrow = true,notCheckable=true, },
@@ -109,7 +110,7 @@ local function BuildBNTable(total)
 		presenceID, givenName, surname, toonName, toonID, client, isOnline, _, isAFK, isDND, _, noteText = BNGetFriendInfo(i)
 		
 		if isOnline then 
-			_, _, _, realmName, faction, race, class, _, zoneName, level = BNGetToonInfo(presenceID)
+			_, _, _, realmName, _, faction, race, class, _, zoneName, level = BNGetToonInfo(presenceID)
 			for k,v in pairs(LOCALIZED_CLASS_NAMES_MALE) do if class == v then class = k end end
 			BNTable[i] = { presenceID, givenName, surname, toonName, toonID, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level }
 		end
@@ -176,7 +177,7 @@ Stat:SetScript("OnMouseUp", function(self, btn)
 				realID = (BATTLENET_NAME_FORMAT):format(info[2], info[3])
 				menuCountWhispers = menuCountWhispers + 1
 				menuList[3].menuList[menuCountWhispers] = {text = realID, arg1 = realID,notCheckable=true, func = whisperClick}
-
+				
 				if select(1, UnitFactionGroup("player")) == "Horde" then playerFaction = 0 else playerFaction = 1 end
 				if info[6] == wowString and info[11] == E.myrealm and playerFaction == info[12] then
 					classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[14]], GetQuestDifficultyColor(info[16])
@@ -246,8 +247,8 @@ Stat:SetScript("OnEnter", function(self)
 			if info[7] then
 				if info[6] == wowString then
 					if (info[8] == true) then status = 1 elseif (info[9] == true) then status = 2 else status = 3 end
-
 					classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[14]], GetQuestDifficultyColor(info[16])
+					
 					if classc == nil then classc = GetQuestDifficultyColor(info[16]) end
 					
 					if UnitInParty(info[4]) or UnitInRaid(info[4]) then grouped = 1 else grouped = 2 end

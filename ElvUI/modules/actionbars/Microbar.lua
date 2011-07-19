@@ -8,15 +8,17 @@ local microbuttons = {
 	"SpellbookMicroButton",
 	"TalentMicroButton",
 	"QuestLogMicroButton",
-	"MainMenuMicroButton",
 	"PVPMicroButton",
 	"GuildMicroButton",
 	"LFDMicroButton",
+	"EJMicroButton",
+	"RaidMicroButton",
 	"HelpMicroButton",
+	"MainMenuMicroButton",
 	"AchievementMicroButton"
 }
 
-local f = CreateFrame("Frame", "MicroParent", UIParent)
+local f = CreateFrame("Frame", "MicroParent", E.UIParent)
 MicroParent.shown = false
 if C["actionbar"].mousemicro == true then f:SetAlpha(0) end
 
@@ -63,18 +65,12 @@ for i, button in pairs(microbuttons) do
 	local normal = m:GetNormalTexture()
 	local disabled = m:GetDisabledTexture()
 	
+	m:SetParent(MicroParent)
 	m.SetParent = E.dummy
 	_G[button.."Flash"]:SetTexture("")
 	m:SetHighlightTexture("")
 	m.SetHighlightTexture = E.dummy
 
-	if i == 5 then
-		m:Kill()
-	elseif i == 9 then
-		m:ClearAllPoints()
-		m:SetPoint("LEFT", LFDMicroButton, "RIGHT", -3, 0)
-	end
-	
 	local f = CreateFrame("Frame", nil, m)
 	f:SetFrameLevel(1)
 	f:SetFrameStrata("BACKGROUND")
@@ -142,8 +138,9 @@ do
 	GuildMicroButtonTabard.ClearAllPoints = E.dummy
 end
 
-MicroParent:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 2, -2) --Default microbar position
-MicroParent:SetWidth(((CharacterMicroButton:GetWidth() + 4) * 7) + 2)
+MicroParent:SetPoint("TOPLEFT", E.UIParent, "TOPLEFT", 2, -2) --Default microbar position
+
+MicroParent:SetWidth(((CharacterMicroButton:GetWidth() + 4) * 9) + 12)
 MicroParent:SetHeight(CharacterMicroButton:GetHeight() - 28)
 
 CharacterMicroButton:ClearAllPoints()

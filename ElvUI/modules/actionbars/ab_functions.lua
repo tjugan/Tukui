@@ -124,20 +124,25 @@ function E.PositionAllPanels()
 	ElvuiPetActionBarBackground:ClearAllPoints()
 	ElvuiLineToPetActionBarBackground:ClearAllPoints()
 	
+	local yoffset = 0
+	if C["general"].lowerpanel == true then
+		yoffset = yoffset + 30
+	end
+	
 	if C["actionbar"].bottompetbar ~= true then
-		ElvuiActionBarBackground:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, E.Scale(4))
+		ElvuiActionBarBackground:Point("BOTTOM", E.UIParent, "BOTTOM", 0, yoffset + 4)
 		if E["actionbar"].rightbars > 0 then
 			ElvuiPetActionBarBackground:SetPoint("RIGHT", ElvuiActionBarBackgroundRight, "LEFT", E.Scale(-6), 0)
 		else
-			ElvuiPetActionBarBackground:SetPoint("RIGHT", UIParent, "RIGHT", E.Scale(-6), E.Scale(-13.5))
+			ElvuiPetActionBarBackground:SetPoint("RIGHT", E.UIParent, "RIGHT", E.Scale(-6), E.Scale(-13.5))
 		end
 		ElvuiPetActionBarBackground:SetSize(E.petbuttonsize + (E.buttonspacing * 2), (E.petbuttonsize * 10) + (E.buttonspacing * 11))
 		ElvuiLineToPetActionBarBackground:SetSize(30, 265)
 		ElvuiLineToPetActionBarBackground:SetPoint("LEFT", ElvuiPetActionBarBackground, "RIGHT", 0, 0)
 	else
-		ElvuiActionBarBackground:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, (E.buttonsize + (E.buttonspacing * 2)) + E.Scale(8))	
+		ElvuiActionBarBackground:Point("BOTTOM", E.UIParent, "BOTTOM", 0, (E.buttonsize + (E.buttonspacing * 2)) + E.Scale(8) + yoffset)	
 		ElvuiPetActionBarBackground:SetSize((E.petbuttonsize * 10) + (E.buttonspacing * 11), E.petbuttonsize + (E.buttonspacing * 2))
-		ElvuiPetActionBarBackground:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, E.Scale(4))
+		ElvuiPetActionBarBackground:Point("TOP", ElvuiActionBarBackground, "BOTTOM", 0, -5)
 		ElvuiLineToPetActionBarBackground:SetSize(265, 30)
 		ElvuiLineToPetActionBarBackground:SetPoint("BOTTOM", ElvuiPetActionBarBackground, "TOP", 0, 0)
 	end
@@ -157,13 +162,13 @@ function E.PositionAllPanels()
 			ElvuiActionBarBackground:SetHeight(E.buttonsize + (E.buttonspacing * 2))
 		end	
 	end
-	
+
 	--SplitBar
 	if E["actionbar"].splitbar == true then
 		ElvuiSplitActionBarLeftBackground:Show()
 		ElvuiSplitActionBarRightBackground:Show()
 		ElvuiSplitActionBarLeftBackground:SetHeight(ElvuiActionBarBackground:GetHeight())
-		ElvuiSplitActionBarRightBackground:SetHeight(ElvuiActionBarBackground:GetHeight())
+		ElvuiSplitActionBarRightBackground:SetHeight(ElvuiActionBarBackground:GetHeight())	
 	else
 		ElvuiSplitActionBarLeftBackground:Hide()
 		ElvuiSplitActionBarRightBackground:Hide()	

@@ -4,13 +4,13 @@ local E, C, L, DB = unpack(select(2, ...)) -- Import Functions/Constants, Config
 
 if not C["tooltip"].enable then return end
 
-local ElvuiTooltip = CreateFrame("Frame", nil, UIParent)
+local ElvuiTooltip = CreateFrame("Frame", nil, E.UIParent)
 
 local _G = getfenv(0)
 
 local GameTooltip, GameTooltipStatusBar = _G["GameTooltip"], _G["GameTooltipStatusBar"]
 
-local TooltipHolder = CreateFrame("Frame", "TooltipHolder", UIParent)
+local TooltipHolder = CreateFrame("Frame", "TooltipHolder", E.UIParent)
 TooltipHolder:SetWidth(130)
 TooltipHolder:SetHeight(22)
 TooltipHolder:SetPoint("BOTTOMRIGHT", ElvuiInfoRight, "BOTTOMRIGHT")
@@ -19,7 +19,7 @@ E.CreateMover(TooltipHolder, "TooltipMover", "Tooltip")
 
 local gsub, find, format = string.gsub, string.find, string.format
 
-local Tooltips = {GameTooltip,ItemRefTooltip,ItemRefShoppingTooltip1,ItemRefShoppingTooltip2,ItemRefShoppingTooltip3,ShoppingTooltip1,ShoppingTooltip2,ShoppingTooltip3,WorldMapTooltip}
+local Tooltips = {GameTooltip,ItemRefTooltip,ItemRefShoppingTooltip1,ItemRefShoppingTooltip2,ItemRefShoppingTooltip3,ShoppingTooltip1,ShoppingTooltip2,ShoppingTooltip3,WorldMapTooltip,WorldMapCompareTooltip1,WorldMapCompareTooltip2,WorldMapCompareTooltip3}
 
 local linkTypes = {item = true, enchant = true, spell = true, quest = true, unit = true, talent = true, achievement = true, glyph = true}
 
@@ -55,7 +55,9 @@ local function SetRightTooltipPos(self)
 	else
 		if C["others"].enablebag == true and StuffingFrameBags and StuffingFrameBags:IsShown() then
 			self:SetPoint("BOTTOMRIGHT", StuffingFrameBags, "TOPRIGHT", -1, E.Scale(18))	
-		elseif TooltipMover and E.Movers["TooltipMover"]["moved"] == true then
+		elseif #ContainerFrame1.bags > 0 and _G[ContainerFrame1.bags[#ContainerFrame1.bags]]:IsShown() then
+			self:Point("BOTTOMRIGHT", _G[ContainerFrame1.bags[#ContainerFrame1.bags]], "TOPRIGHT", -2, 18)
+		elseif TooltipMover and E.Movers and E.Movers["TooltipMover"] then
 			local point, _, _, _, _ = TooltipMover:GetPoint()
 			if point == "TOPLEFT" then
 				self:SetPoint("TOPLEFT", TooltipMover, "BOTTOMLEFT", 1, E.Scale(-4))
@@ -69,16 +71,12 @@ local function SetRightTooltipPos(self)
 		else
 			if E.CheckAddOnShown() == true then
 				if C["chat"].showbackdrop == true and E.ChatRightShown == true then
-					if E.RightChat == true then
-						self:SetPoint("BOTTOMRIGHT", ChatRBackground2, "TOPRIGHT", -1, E.Scale(42))	
-					else
-						self:SetPoint("BOTTOMRIGHT", ChatRBackground2, "TOPRIGHT", -1, E.Scale(18))	
-					end
+					self:Point("BOTTOMRIGHT", ChatRBGDummy, "TOPRIGHT", 0, 18)	
 				else
-					self:SetPoint("BOTTOMRIGHT", ChatRBackground2, "TOPRIGHT", -1, E.Scale(18))		
+					self:Point("BOTTOMRIGHT", ChatRBGDummy, "TOPRIGHT", -8, -14)				
 				end	
 			else
-				self:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", E.Scale(-3), E.Scale(42))	
+				self:Point("BOTTOMRIGHT", E.UIParent, "BOTTOMRIGHT", -12, 47)	
 			end
 		end
 	end
@@ -89,7 +87,7 @@ GameTooltip:HookScript("OnUpdate",function(self, ...)
 		local x, y = GetCursorPosition();
 		local effScale = self:GetEffectiveScale();
 		self:ClearAllPoints();
-		self:SetPoint("BOTTOMLEFT","UIParent","BOTTOMLEFT",(x / effScale + (15)),(y / effScale + (7)))		
+		self:SetPoint("BOTTOMLEFT", UIParent,"BOTTOMLEFT",(x / effScale + (15)),(y / effScale + (7)))		
 	end
 	
 	if self:GetAnchorType() == "ANCHOR_CURSOR" and NeedBackdropBorderRefresh == true and C["tooltip"].cursor ~= true then
@@ -255,9 +253,9 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 	if not unit then self:Hide() return end
 	
 	-- for hiding tooltip on unitframes
-	if (self:GetOwner() ~= UIParent and C["tooltip"].hideuf) then self:Hide() return end
+	if (self:GetOwner() ~= E.UIParent and C["tooltip"].hideuf) then self:Hide() return end
 
-	if self:GetOwner() ~= UIParent and unit then
+	if self:GetOwner() ~= E.UIParent and unit then
 		SetRightTooltipPos(self)
 	end	
 	
@@ -409,25 +407,61 @@ local SetStyle = function(self)
 	self:SetClampedToScreen(true)
 end
 
+local function PositionBGToastFrame(self, elapsed)
+	if(self.elapsed and self.elapsed > 0.2) then
+		local inInstance, instanceType = IsInInstance()
+		self:ClearAllPoints()
+		if InCombatLockdown() and C["tooltip"].hidecombat == true and (C["tooltip"].hidecombatraid == true and inInstance and (instanceType == "raid")) then
+			self:Hide()
+		elseif InCombatLockdown() and C["tooltip"].hidecombat == true and C["tooltip"].hidecombatraid == false then
+			self:Hide()
+		else
+			if C["others"].enablebag == true and StuffingFrameBags and StuffingFrameBags:IsShown() then
+				self:Point("BOTTOMRIGHT", StuffingFrameBags, "TOPRIGHT", 0, 4)
+			elseif #ContainerFrame1.bags > 0 and _G[ContainerFrame1.bags[#ContainerFrame1.bags]]:IsShown() then
+				self:Point("BOTTOMRIGHT", _G[ContainerFrame1.bags[#ContainerFrame1.bags]], "TOPRIGHT", 0, 4)
+			elseif TooltipMover and E.Movers and E.Movers["TooltipMover"] then
+				local point, _, _, _, _ = TooltipMover:GetPoint()
+				if point == "TOPLEFT" then
+					self:Point("TOPLEFT", TooltipMover, "BOTTOMLEFT", 0, -4)
+				elseif point == "TOPRIGHT" then
+					self:Point("TOPRIGHT", TooltipMover, "BOTTOMRIGHT", 0, -4)
+				elseif point == "BOTTOMLEFT" or point == "LEFT" then
+					self:Point("BOTTOMLEFT", TooltipMover, "TOPLEFT", 0, 4)
+				else
+					self:Point("BOTTOMRIGHT", TooltipMover, "TOPRIGHT", 0, 4)
+				end
+			else
+				if E.CheckAddOnShown() == true then
+					if C["chat"].showbackdrop == true and E.ChatRightShown == true then
+						self:Point("BOTTOMRIGHT", ChatRBGDummy, "TOPRIGHT", 0, 4)
+					else
+						self:Point("BOTTOMRIGHT", ChatRBGDummy, "TOPRIGHT", -7, -25)					
+					end	
+				else
+					self:Point("BOTTOMRIGHT", E.UIParent, "BOTTOMRIGHT", -11, 36)	
+				end
+			end
+		end
+	else
+		self.elapsed = (self.elapsed or 0) + elapsed
+	end
+end
+
 ElvuiTooltip:RegisterEvent("PLAYER_ENTERING_WORLD")
 ElvuiTooltip:SetScript("OnEvent", function(self, event, addon)
 	for _, tt in pairs(Tooltips) do
 		tt:HookScript("OnShow", SetStyle)
 	end
 	
+	E.SkinCloseButton(ItemRefCloseButton)
 	ItemRefTooltip:HookScript("OnTooltipSetItem", SetStyle)
 	FriendsTooltip:SetTemplate("Default", true)
 	BNToastFrame:SetTemplate("Default", true)
-	DropDownList1MenuBackdrop:SetTemplate("Default", true)
-	DropDownList2MenuBackdrop:SetTemplate("Default", true)
-	DropDownList1Backdrop:SetTemplate("Default", true)
-	DropDownList2Backdrop:SetTemplate("Default", true)
-	
-	BNToastFrame:HookScript("OnShow", function(self)
-		self:ClearAllPoints()
-		self:SetPoint("TOPLEFT", UIParent, "TOPLEFT", E.Scale(5), E.Scale(-5))
-	end)
-		
+	BNToastFrame.elapsed = 0.3
+	BNToastFrame:HookScript('OnUpdate', PositionBGToastFrame)
+	BNToastFrame:SetFrameStrata('TOOLTIP')
+	BNToastFrame:SetFrameLevel(20)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	self:SetScript("OnEvent", nil)
 	

@@ -6,34 +6,58 @@ local E, C, L, DB = unpack(select(2, ...)) -- Import Functions/Constants, Config
 --------------------------------------------------------------------
 
 Minimap:ClearAllPoints()
-Minimap:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", E.Scale(-5), E.Scale(-5))
+Minimap:Point("TOPRIGHT", E.UIParent, "TOPRIGHT", -25, -5)
 Minimap:SetSize(E.minimapsize - E.Scale(4), E.minimapsize - E.Scale(4))
 
 function E.PostMinimapMove(frame)
 	local point, _, _, _, _ = frame:GetPoint()
-	if E.Movers[frame:GetName()]["moved"] ~= true then
+	if E.Movers and E.Movers[frame:GetName()] == nil or E.Movers == nil then
 		point, _, _, _, _ = Minimap:GetPoint()
 		frame:ClearAllPoints()
-		frame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", E.Scale(-6), E.Scale(-6))
+		if RaidBuffReminder then
+			frame:Point("TOPRIGHT", E.UIParent, "TOPRIGHT", -(6 + RaidBuffReminder:GetWidth()), -6)
+		else
+			frame:Point("TOPRIGHT", E.UIParent, "TOPRIGHT", -6, -6)
+		end
 	end
 	
-	if point:match("TOP") then
-		ElvuiMinimapStatsLeft:ClearAllPoints()
-		ElvuiMinimapStatsLeft:Point("TOPLEFT", ElvuiMinimap, "BOTTOMLEFT", 0, -3)
-		ElvuiMinimapStatsRight:ClearAllPoints()
-		ElvuiMinimapStatsRight:Point("TOPRIGHT", ElvuiMinimap, "BOTTOMRIGHT", 0, -3)
-		if RaidBuffReminder then
-			RaidBuffReminder:ClearAllPoints()
-			RaidBuffReminder:Point("TOPLEFT", ElvuiMinimapStatsLeft, "BOTTOMLEFT", 0, -3)
+	local playerFrame
+	local bar
+	if ElvDPS_player then
+		playerFrame = ElvDPS_player
+	elseif ElvHeal_player then
+		playerFrame = ElvHeal_player
+	end
+	
+	if playerFrame then
+		if E.level ~= MAX_PLAYER_LEVEL then
+			bar = playerFrame.Experience
+		else
+			bar = playerFrame.Reputation
 		end	
+	end
+	
+	if point:match("BOTTOM") then
+		ElvuiMinimapStatsLeft:ClearAllPoints()
+		ElvuiMinimapStatsLeft:Point("BOTTOMLEFT", ElvuiMinimap, "TOPLEFT", 0, 1)
+		ElvuiMinimapStatsRight:ClearAllPoints()
+		ElvuiMinimapStatsRight:Point("BOTTOMRIGHT", ElvuiMinimap, "TOPRIGHT", 0, 1)	
+		
+		if bar then
+			bar:ClearAllPoints()
+			bar:Point("BOTTOMLEFT", ElvuiMinimapStatsLeft, "TOPLEFT", 2, 3)
+			E.ReputationPositionUpdate(bar)
+		end
 	else
 		ElvuiMinimapStatsLeft:ClearAllPoints()
-		ElvuiMinimapStatsLeft:Point("BOTTOMLEFT", ElvuiMinimap, "TOPLEFT", 0, 3)
+		ElvuiMinimapStatsLeft:Point("TOPLEFT", ElvuiMinimap, "BOTTOMLEFT", 0, -1)
 		ElvuiMinimapStatsRight:ClearAllPoints()
-		ElvuiMinimapStatsRight:Point("BOTTOMRIGHT", ElvuiMinimap, "TOPRIGHT", 0, 3)	
-		if RaidBuffReminder then
-			RaidBuffReminder:ClearAllPoints()
-			RaidBuffReminder:Point("BOTTOMLEFT", ElvuiMinimapStatsLeft, "TOPLEFT", 0, 3)
+		ElvuiMinimapStatsRight:Point("TOPRIGHT", ElvuiMinimap, "BOTTOMRIGHT", 0, -1)
+		
+		if bar then
+			bar:ClearAllPoints()
+			bar:Point("TOPLEFT", ElvuiMinimapStatsLeft, "BOTTOMLEFT", 2, -3)
+			E.ReputationPositionUpdate(bar)
 		end		
 	end
 end
@@ -126,13 +150,18 @@ end
 ----------------------------------------------------------------------------------------
 -- Right click menu
 ----------------------------------------------------------------------------------------
-local menuFrame = CreateFrame("Frame", "MinimapRightClickMenu", UIParent, "UIDropDownMenuTemplate")
+
+--Hax so i don't have to localize this word, remove '/' and capitalize first letter
+local calendar_string = string.gsub(SLASH_CALENDAR1, "/", "")
+calendar_string = string.gsub(calendar_string, "^%l", string.upper)
+
+local menuFrame = CreateFrame("Frame", "MinimapRightClickMenu", E.UIParent, "UIDropDownMenuTemplate")
 local menuList = {
-    {text = CHARACTER_BUTTON,
-    func = function() ToggleCharacter("PaperDollFrame") end},
-    {text = SPELLBOOK_ABILITIES_BUTTON,
-    func = function() if InCombatLockdown() then return end ToggleFrame(SpellBookFrame) end},
-    {text = TALENTS_BUTTON,
+	{text = CHARACTER_BUTTON,
+	func = function() ToggleCharacter("PaperDollFrame") end},
+	{text = SPELLBOOK_ABILITIES_BUTTON,
+	func = function() if InCombatLockdown() then return end ToggleFrame(SpellBookFrame) end},
+	{text = TALENTS_BUTTON,
 	func = function()
 		if not PlayerTalentFrame then
 			LoadAddOn("Blizzard_TalentUI")
@@ -143,15 +172,19 @@ local menuList = {
 		end
 		PlayerTalentFrame_Toggle()
 	end},
-    {text = ACHIEVEMENT_BUTTON,
-    func = function() ToggleAchievementFrame() end},
-    {text = QUESTLOG_BUTTON,
-    func = function() ToggleFrame(QuestLogFrame) end},
-    {text = SOCIAL_BUTTON,
-    func = function() ToggleFriendsFrame(1) end},
-    {text = PLAYER_V_PLAYER,
-    func = function() ToggleFrame(PVPFrame) end},
-    {text = ACHIEVEMENTS_GUILD_TAB,
+	{text = TIMEMANAGER_TITLE,
+	func = function() ToggleFrame(TimeManagerFrame) end},		
+	{text = ACHIEVEMENT_BUTTON,
+	func = function() ToggleAchievementFrame() end},
+	{text = QUESTLOG_BUTTON,
+	func = function() ToggleFrame(QuestLogFrame) end},
+	{text = SOCIAL_BUTTON,
+	func = function() ToggleFriendsFrame(1) end},
+	{text = calendar_string,
+	func = function() GameTimeFrame:Click() end},
+	{text = PLAYER_V_PLAYER,
+	func = function() ToggleFrame(PVPFrame) end},
+	{text = ACHIEVEMENTS_GUILD_TAB,
 	func = function()
 		if IsInGuild() then
 			if not GuildFrame then LoadAddOn("Blizzard_GuildUI") end
@@ -162,17 +195,19 @@ local menuList = {
 			LookingForGuildFrame_Toggle()
 		end
 	end},
-    {text = LFG_TITLE,
-    func = function() ToggleFrame(LFDParentFrame) end},
-    {text = L_LFRAID,
-    func = function() ToggleFrame(LFRParentFrame) end},
-    {text = HELP_BUTTON,
-    func = function() ToggleHelpFrame() end},
-    {text = L_CALENDAR,
-    func = function()
-    if(not CalendarFrame) then LoadAddOn("Blizzard_Calendar") end
-        Calendar_Toggle()
-    end},
+	{text = LFG_TITLE,
+	func = function() ToggleFrame(LFDParentFrame) end},
+	{text = LOOKING_FOR_RAID,
+	func = function() ToggleFrame(LFRParentFrame) end},
+	{text = ENCOUNTER_JOURNAL, 
+	func = function() ToggleFrame(EncounterJournal) end},	
+	{text = L_CALENDAR,
+	func = function()
+	if(not CalendarFrame) then LoadAddOn("Blizzard_Calendar") end
+		Calendar_Toggle()
+	end},			
+	{text = HELP_BUTTON,
+	func = function() ToggleHelpFrame() end},
 }
 
 Minimap:SetScript("OnMouseUp", function(self, btn)
@@ -223,7 +258,7 @@ end
 
 if C["general"].upperpanel ~= true then
 	--Style Zone and Coord panels
-	local m_zone = CreateFrame("Frame",nil,UIParent)
+	local m_zone = CreateFrame("Frame",nil,E.UIParent)
 	m_zone:Height(20)
 	m_zone:SetFrameLevel(5)
 	m_zone:SetFrameStrata("LOW")
@@ -237,7 +272,7 @@ if C["general"].upperpanel ~= true then
 	m_zone_text:SetJustifyV("MIDDLE")
 	m_zone_text:SetHeight(E.Scale(12))
 
-	local m_coord = CreateFrame("Frame",nil,UIParent)
+	local m_coord = CreateFrame("Frame",nil,E.UIParent)
 	m_coord:Width(40)
 	m_coord:Height(20)
 	m_coord:Point("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 2, 2)

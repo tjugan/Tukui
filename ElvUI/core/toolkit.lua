@@ -127,7 +127,7 @@ end
 
 local function CreateBackdrop(f, t, tex)
 	if not t then t = "Default" end
-
+	
 	local b = CreateFrame("Frame", nil, f)
 	b:Point("TOPLEFT", -2, 2)
 	b:Point("BOTTOMRIGHT", 2, -2)
@@ -178,11 +178,15 @@ local function Kill(object)
 	object:Hide()
 end
 
-local function StripTextures(object)
+local function StripTextures(object, kill)
 	for i=1, object:GetNumRegions() do
 		local region = select(i, object:GetRegions())
 		if region:GetObjectType() == "Texture" then
-			region:SetTexture(nil)
+			if kill then
+				region:Kill()
+			else
+				region:SetTexture(nil)
+			end
 		end
 	end		
 end

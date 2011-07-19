@@ -14,7 +14,7 @@ local rowbuffs = 12
 local warningtime = 6
 
 --Holder frame for mover
-local holder = CreateFrame("Frame", "AurasHolder", UIParent)
+local holder = CreateFrame("Frame", "AurasHolder", E.UIParent)
 holder:SetPoint("TOPRIGHT", Minimap, "TOPLEFT", E.Scale(-8), E.Scale(2))
 holder:SetWidth(E.Scale(456)) --(30 + 8) * 12)
 holder:SetHeight(ElvuiMinimap:GetHeight() + E.Scale(3 + 19))
@@ -219,7 +219,7 @@ hooksecurefunc("DebuffButton_UpdateAnchors", UpdateDebuffAnchors)
 
 function E.AurasPostDrag(frame)
 	local point = select(1, frame:GetPoint())
-	
+
 	if string.find(point, "LEFT") then
 		TempEnchant1:ClearAllPoints()
 		TempEnchant2:ClearAllPoints()
@@ -243,7 +243,7 @@ function E.AurasPostDrag(frame)
 	UpdateBuffAnchors()
 	BuffFrame_UpdateAllBuffAnchors()
 	
-	if E.Movers["AurasMover"]["moved"] ~= true then
+	if E.Movers and not E.Movers["AurasMover"] or not E.Movers then
 		AurasMover:ClearAllPoints()
 		AurasMover:SetPoint("TOPRIGHT", Minimap, "TOPLEFT", E.Scale(-8), E.Scale(2))
 	end
